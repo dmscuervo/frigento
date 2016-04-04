@@ -1,0 +1,3 @@
+#Log SQL configuration
+hibernate.show_sql=false
+hibernate.format_sql=false
