@@ -45,3 +45,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+*.classpath
+*.project
+*.prefs
+frigento-mvc/.settings/org.eclipse.wst.common.component
+*.component
+target/mvn-eclipse-cache.properties
+frigento-mvc/.settings/org.eclipse.wst.common.project.facet.core.xml
+frigento-persist/.settings/org.eclipse.wst.common.project.facet.core.xml
