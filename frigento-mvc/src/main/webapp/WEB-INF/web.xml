@@ -11,7 +11,7 @@
     
     <context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext.xml</param-value>
+		<param-value>/WEB-INF/ctx/applicationContext.xml</param-value>
 	</context-param>
 <!--     
     <filter>
@@ -106,6 +106,17 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    
+    <!-- Necesario para la obtencio del contexto Spring a traves de SpringBeanAutowiringSupport -->
+    <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    
+    <servlet>
+        <servlet-name>Inicializacion</servlet-name>
+        <servlet-class>com.soutech.frigento.web.servlet.ServletInitializer</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     
     <!-- 
     <error-page>

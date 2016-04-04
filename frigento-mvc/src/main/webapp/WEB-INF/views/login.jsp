@@ -1,71 +1,52 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 <html>
-<head>
-<title>Login Page</title>
-<style>
-.error {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #a94442;
-	background-color: #f2dede;
-	border-color: #ebccd1;
-}
-
-.msg {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #31708f;
-	background-color: #d9edf7;
-	border-color: #bce8f1;
-}
-
-#login-box {
-	width: 300px;
-	padding: 20px;
-	margin: 100px auto;
-	background: #fff;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border: 1px solid #000;
-}
-</style>
-</head>
-<body onload='document.loginForm.username.focus();'>
-
-	<h1>Spring Security Custom Login Form (Annotation)</h1>
-
-	<div id="login-box">
-
-		<h2>Login with Username and Password</h2>
-
-		<c:if test="${not empty error}">
-			<div class="error">${error}</div>
-		</c:if>
-		<c:if test="${not empty msg}">
-			<div class="msg">${msg}</div>
-		</c:if>
-
-		<c:if test="${param.error != null}"> 
-			<p>Invalid username / password</p>
-		</c:if>
-		<c:url var="loginUrl" value="/login"/>
-		
-		<form action="${loginUrl}" method="post">
-			<p><label for="username">User:</label></p>
-			<input type="text" id="username" name="username"/> 
-		
-			<p><label for="password">Password:</label></p>
-			<input type="password" id="password" name="password"> 
-		
-			<div>
-				<input name="submit" type="submit"/>
-			</div>
-		</form>
-	</div>
-
-</body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title><fmt:message key="login.title"/></title>
+        <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet" />
+        <link href="<c:url value='/resources/css/app.css' />" rel="stylesheet" />
+        <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet" />
+    </head>
+ 
+    <body>
+        <div id="mainWrapper">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-form">
+                        <c:url var="loginUrl" value="/login" />
+                        <form action="${loginUrl}" method="post" class="form-horizontal">
+                        	<p>
+                            <c:if test="${param.error != null}">
+                                <div class="alert alert-danger">
+                                    ${param.msg}
+                                </div>
+                            </c:if>
+                            <c:if test="${param.logout != null}">
+                                <div class="alert alert-success">
+                                    <fmt:message key="login.logout.ok"/>
+                                </div>
+                            </c:if>
+                            </p>
+                            <p><span style="navbar-brand"><fmt:message key="login.subtitle"/></span></p>
+                            <div class="input-group input-sm">
+                                <label class="input-group-addon" for="username"><i class="fa fa-user"></i></label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder='<fmt:message key="login.username"/>' required>
+                            </div>
+                            <div class="input-group input-sm">
+                                <label class="input-group-addon" for="password"><i class="fa fa-lock"></i></label> 
+                                <input type="password" class="form-control" id="password" name="password" placeholder='<fmt:message key="login.password"/>' required>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                 
+                            <div class="form-actions">
+                                <input type="submit"
+                                    class="btn btn-block btn-primary btn-default" value="<fmt:message key="boton.ingresar"/>">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+    </body>
 </html>

@@ -8,12 +8,12 @@
     <meta name="author" content="">
     <title><fmt:message key="app.title"/></title>
     
-    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/metisMenu.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/timeline.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/sb-admin-2.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/morris.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/resources/css/metisMenu.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/resources/css/timeline.css" />" rel="stylesheet" />
+    <link href="<c:url value="/resources/css/sb-admin-2.css" />" rel="stylesheet" />
+    <link href="<c:url value="/resources/css/morris.css" />" rel="stylesheet" />
+    <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet" />
     
     <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
     <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
@@ -35,7 +35,7 @@
 <body>
 
     <div id="wrapper">
-<sec:authorize access="hasRole('ROLE_ADMIN')">
+<sec:authorize access="isAuthenticated()">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -119,7 +119,7 @@
                         <li><a href="#"><i class="fa fa-user fa-fw"></i><fmt:message key="menu.header.user.profile"/></a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i><fmt:message key="menu.header.user.logout"/></a>
+                        <li><a href="logout"><i class="fa fa-sign-out fa-fw"></i><fmt:message key="menu.header.user.logout"/></a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->

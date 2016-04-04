@@ -1,5 +1,5 @@
 package com.soutech.frigento.service;
 
-public interface ClienteService {
+public interface UsuarioService {
 
 }

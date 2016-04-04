@@ -16,7 +16,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Table(name = "REL_PEDIDO_PRODUCTO")
-
 public class RelPedidoProducto {
 
     /**

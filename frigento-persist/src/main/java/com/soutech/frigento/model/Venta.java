@@ -37,8 +37,8 @@ public class Venta {
      */
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ID_CLIENTE")
-    private Cliente cliente;
+    @JoinColumn(name = "ID_USUARIO")
+    private Usuario usuario;
 
     /**
      */
@@ -90,13 +90,13 @@ public class Venta {
         this.estado = estado;
     }
 
-	public Cliente getCliente() {
-        return this.cliente;
-    }
+	public Usuario getUsuario() {
+		return usuario;
+	}
 
-	public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	public Date getFecha() {
         return this.fecha;

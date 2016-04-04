@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -13,11 +14,24 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-@Table(name = "USUARIO")
+@Table(name = "users", uniqueConstraints=@UniqueConstraint(columnNames={"username"}))
+public class Usuario {
 
-public class Cliente {
-
-    /**
+	@NotNull
+    @Column(name = "username")
+    @Size(max = 50)
+    private String username;
+	
+	@NotNull
+	@Column(name = "password")
+    @Size(min = 64, max = 64)
+    private String password;
+	
+	@NotNull
+    @Column(name = "enabled")
+    private Boolean habilitado;
+	
+	/**
      */
     @NotNull
     @Column(name = "NOMBRE")
@@ -66,8 +80,8 @@ public class Cliente {
     private Boolean esAdmin;
 
 	@Id
-    @SequenceGenerator(name = "clienteGen", sequenceName = "SEQ_USUARIO")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "clienteGen")
+    @SequenceGenerator(name = "usuarioGen", sequenceName = "SEQ_USUARIO")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "usuarioGen")
     @Column(name = "ID_USUARIO")
     private Integer id;
 
@@ -146,4 +160,29 @@ public class Cliente {
 	public void setEsAdmin(Boolean esAdmin) {
         this.esAdmin = esAdmin;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(Boolean habilitado) {
+		this.habilitado = habilitado;
+	}
+	
 }
