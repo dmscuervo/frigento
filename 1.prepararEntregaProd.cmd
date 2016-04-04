@@ -1,0 +1,1 @@
+start mvn releaseCas:prepare -Dambiente=prod

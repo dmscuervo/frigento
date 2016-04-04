@@ -1,0 +1,1 @@
+start mvn releaseCas:snapshot -Dambiente=prod

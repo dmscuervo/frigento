@@ -1,0 +1,1 @@
+start mvn clean compile eclipse:clean eclipse:eclipse -Dwtpversion=2.0 -DskipTests=true

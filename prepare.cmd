@@ -1,0 +1,1 @@
+start mvn eclipse:clean eclipse:eclipse -DskipTests=true

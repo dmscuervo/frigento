@@ -1,0 +1,1 @@
+start mvn clean install -Dambiente=prod -DskipTests=true
