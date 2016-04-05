@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
+<c:url var="pathBase" value="/" />
 <html >
 <head>
     <meta charset="utf-8">
@@ -16,11 +17,13 @@
     <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet" />
     
     <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+    <script src="<c:url value="/resources/js/jquery.blockUI.js" />"></script>
+    <script src="<c:url value="/resources/js/frigento.js" />"></script>
     <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
     <script src="<c:url value="/resources/js/metisMenu.min.js" />"></script>
     <script src="<c:url value="/resources/js/raphael-min.js" />"></script>
     <script src="<c:url value="/resources/js/morris.min.js" />"></script>
-    <script src="<c:url value="/resources/js/morris-data.js" />"></script>
+    <!-- script src="<c:url value="/resources/js/morris-data.js" />"></script-->
     <script src="<c:url value="/resources/js/sb-admin-2.js" />"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -29,10 +32,36 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script type="text/javascript">
+    	var bodyBlock=false;
+    	
+    	function loadInBody(path){
+    		//$('button .navbar-toggle').click();
+    		var url = '${pathBase}' + path;
+    		$('#page-wrapper').load(url, function(data){
+    			console.log('A ver....');
+    			console.log(data);
+    		});
+    	}
+    	
+    	function submitInBody(form){
+    		console.log(form);
+    		$.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(result) {
+                	console.log(result);
+                	$('#page-wrapper').html(result);
+                }
+            });
+    	}
+    </script>
 
 </head>
 
 <body>
+
 
     <div id="wrapper">
 <sec:authorize access="isAuthenticated()">
@@ -142,16 +171,16 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="#"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> <fmt:message key="menu.categoria"/><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="flot.html">Flot Charts</a>
+                                    <a href="javascript:loadInBody('categoria?alta')"><fmt:message key="menu.categoria.alta"/></a>
                                 </li>
                                 <li>
-                                    <a href="morris.html">Morris.js Charts</a>
+                                    <a href="morris.html"><fmt:message key="menu.categoria.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

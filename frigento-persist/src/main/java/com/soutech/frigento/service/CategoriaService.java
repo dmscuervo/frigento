@@ -8,5 +8,9 @@ public interface CategoriaService {
 
 	public List<Categoria> obtenerCategorias();
 
+	public void saveCategoria(Categoria categoria);
+
+	public Categoria obtenerCategoria(Short id);
+
 
 }

@@ -1,30 +1,32 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<html>
-<head>
-  <title><fmt:message key="login.titulo"/></title>
-  <style>
-    .error { color: red; }
-  </style>  
-</head>
-<body>
-<h1><fmt:message key="login.user"/></h1>
-<form:form method="post" commandName="categoriaForm">
-  <table width="95%" bgcolor="f8f8ff" border="0" cellspacing="0" cellpadding="5">
-    <tr>
-      <td align="right" width="20%">Increase (%):</td>
-        <td width="20%">
-          <form:input path="descripcion"/>
-        </td>
-        <td width="60%">
-          <form:errors path="descripcion" cssClass="error" />
-        </td>
-    </tr>
-  </table>
-  <br>
-  <input type="submit" align="center" value="Execute">
-</form:form>
-<a href="<c:url value="hello.htm"/>">Home</a>
-</body>
-</html>
+<div id="mainWrapper">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-form" style="width: 50%; float: left; min-width: 300px">
+                <c:url var="urlAltaCategoria" value="/categoria" />
+                <form:form action="${urlAltaCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
+                	<p>
+                    <c:if test="${param.error != null}">
+                        <div class="alert alert-danger">
+                            ${param.msg}
+                        </div>
+                    </c:if>
+                    </p>
+                    <p><span style="navbar-brand"><fmt:message key="categoria.alta.title"/></span></p>
+                    <div class="input-group input-sm">
+                        <label class="input-group-addon" for="descripcion"><fmt:message key="categoria.descripcion"/></label>
+                        <form:input path="descripcion" cssClass="form-control" id="idDesc" />
+                        <form:errors path="descripcion" cssClass="error"/>
+                        <%-- <form:input class="form-control" path="descripcion" name="username" placeholder='<fmt:message key="categoria.descripcion.ingrese"/>' required> --%>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <div class="form-actions">
+                        <input type="button"
+                            class="btn btn-block btn-primary btn-default" value="<fmt:message key="boton.ingresar"/>" onclick="javascript:submitInBody($('#idFormCat'))">
+                    </div>
+                </form:form>
+            </div>
+        </div>
+    </div>
+</div>

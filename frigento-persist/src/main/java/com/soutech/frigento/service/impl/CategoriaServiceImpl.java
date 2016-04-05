@@ -20,4 +20,14 @@ public class CategoriaServiceImpl implements CategoriaService {
 		return categoriaDao.findAll();
 	}
 
+	@Override
+	public void saveCategoria(Categoria categoria) {
+		categoriaDao.save(categoria);
+	}
+
+	@Override
+	public Categoria obtenerCategoria(Short id) {
+		return categoriaDao.findById(id);
+	}
+
 }

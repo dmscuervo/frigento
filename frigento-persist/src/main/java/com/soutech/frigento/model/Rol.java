@@ -19,6 +19,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class Rol {
 
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_USER = "ROLE_USER";
 
 	@Id
     @SequenceGenerator(name = "authoritiesGen", sequenceName = "SEQ_ROL")
