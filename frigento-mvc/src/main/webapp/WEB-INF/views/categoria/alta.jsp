@@ -1,32 +1,42 @@
-<%@ include file="/WEB-INF/views/include.jsp" %>
+<%@ include file="/WEB-INF/views/include.jsp"%>
 
-<div id="mainWrapper">
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-form" style="width: 50%; float: left; min-width: 300px">
-                <c:url var="urlAltaCategoria" value="/categoria" />
-                <form:form action="${urlAltaCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
-                	<p>
-                    <c:if test="${param.error != null}">
-                        <div class="alert alert-danger">
-                            ${param.msg}
-                        </div>
-                    </c:if>
-                    </p>
-                    <p><span style="navbar-brand"><fmt:message key="categoria.alta.title"/></span></p>
-                    <div class="input-group input-sm">
-                        <label class="input-group-addon" for="descripcion"><fmt:message key="categoria.descripcion"/></label>
-                        <form:input path="descripcion" cssClass="form-control" id="idDesc" />
-                        <form:errors path="descripcion" cssClass="error"/>
-                        <%-- <form:input class="form-control" path="descripcion" name="username" placeholder='<fmt:message key="categoria.descripcion.ingrese"/>' required> --%>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                    <div class="form-actions">
-                        <input type="button"
-                            class="btn btn-block btn-primary btn-default" value="<fmt:message key="boton.ingresar"/>" onclick="javascript:submitInBody($('#idFormCat'))">
-                    </div>
-                </form:form>
-            </div>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<div style="width: 50%; float: left; min-width: 300px">
+	<h3>
+		<fmt:message key="categoria.alta.title" />
+	</h3>
+	<br />
+	<c:url var="urlAltaCategoria" value="/categoria" />
+	<form:form action="${urlAltaCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
+	<div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" style="float: right;">
+				<label class="col-sm-2 control-label" for="idDesc">
+					<fmt:message key="categoria.descripcion" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+				<form:input path="descripcion" cssClass="form-control" id="idDesc" for="idDescError" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="descripcion" cssClass="form-validate" />
+			</div>
         </div>
     </div>
+	<div class='row'>
+        <div class='col-sm-12'> 
+			<div class="form-group">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.confirmar"/>'
+						onclick="javascript:submitInBody($('#idFormCat'))">
+			</div>
+        </div>
+    </div>
+	
+	</form:form>
 </div>

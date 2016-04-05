@@ -14,6 +14,8 @@
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 	
 	<mvc:view-controller path="/login"/>
+	
+	<mvc:default-servlet-handler/>
 
      <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. 
     The messages*.properties files translate Roo generated messages which are part of the admin interface, the 

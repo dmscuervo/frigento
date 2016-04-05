@@ -9,6 +9,7 @@
     <meta name="author" content="">
     <title><fmt:message key="app.title"/></title>
     
+    <link href="<c:url value="/resources/css/frigento.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/metisMenu.min.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/timeline.css" />" rel="stylesheet" />
@@ -45,14 +46,21 @@
     	}
     	
     	function submitInBody(form){
-    		console.log(form);
+    		if(!bodyBlock){
+				blockControl($('#wrapper'));
+				bodyBlock = true;				
+			}
     		$.ajax({
                 url: form.attr('action'),
                 type: 'POST',
                 data: form.serialize(),
                 success: function(result) {
-                	console.log(result);
+                	console.log('asdasdadsasd');
+    				console.log(result);
+                	$('#wrapper').unblock();
+        			bodyBlock = false;
                 	$('#page-wrapper').html(result);
+                	$('#myModalMessage').modal('show')
                 }
             });
     	}
@@ -272,5 +280,15 @@
 </sec:authorize>
     </div>
     <!-- /#wrapper -->
+    <!-- Div para blockControl -->
+    <div id="loadingDiv" style="display: none;overflow: auto; height: auto;width: 99%;">
+		<table id="loading-img" cellpadding="0" cellspacing="0">
+			<tr>
+				<td><img src="<c:url value="/resources/images/ajax-loader.gif"/> "></td>
+				<td style="width: 5px;">&nbsp;</td>
+				<td style="FONT-FAMILY: Arial,Verdana;font-size: 12px; font-weight: bold; vertical-align: middle;">Cargando ...</td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>

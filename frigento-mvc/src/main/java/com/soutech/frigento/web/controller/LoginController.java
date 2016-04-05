@@ -1,7 +1,6 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class LoginController {
+public class LoginController extends GenericController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
-	@Autowired
-	public MessageSource messageSource;
-
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage() {
         return "login";
@@ -52,7 +47,7 @@ public class LoginController {
 	
 	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
     public String accessDeniedPage(ModelMap model) {
-        model.addAttribute("msg", messageSource.getMessage("login.error.user.password", null, Locale.getDefault()));
+        model.addAttribute("msg", getMessage("login.error.user.password", null));
         return "redirect:/login?error";
     }
 	

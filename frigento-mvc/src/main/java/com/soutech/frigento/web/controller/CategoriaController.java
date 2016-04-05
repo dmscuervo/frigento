@@ -23,7 +23,7 @@ import com.soutech.frigento.service.CategoriaService;
 
 @Controller
 @RequestMapping(value="/categoria")
-public class CategoriaController {
+public class CategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
     @Autowired
@@ -38,12 +38,12 @@ public class CategoriaController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid @ModelAttribute("categoriaForm") Categoria categoriaForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-        	uiModel.addAttribute("categoriaForm", new Categoria());
-            return "categoria/alta";
+        	return "categoria/alta";
         }
         uiModel.asMap().clear();
         categoriaService.saveCategoria(categoriaForm);
-        httpServletRequest.setAttribute("msg", "Categoria dada de alta.");
+        httpServletRequest.setAttribute("msgTitle", getMessage("categoria.alta.title"));
+        httpServletRequest.setAttribute("msgResult", getMessage("categoria.alta.ok", categoriaForm.getDescripcion()));
         return "generic/mensaje";
     }
     

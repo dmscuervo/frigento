@@ -1,3 +1,10 @@
+/**
+* Funcion para agregar una pantalla que bloquee el control
+*/
+function blockControl(control){
+	control.block({message: jQuery('#loading-img'), css:{border:'none',backgroundColor:'#fff',opacity: '.8', width:'120px'}});
+}
+
 function showPopup(control, width, left){
 	$('#wrapper').block({
 		message: control, 
