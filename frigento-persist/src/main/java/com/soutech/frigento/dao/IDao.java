@@ -20,4 +20,6 @@ public interface IDao<T, I> {
 	List<T> findAll();
 
 	List<T> findAll(String condicion);
+	
+	List<T> findAll(String sortFieldName, String sortOrder);
 }

@@ -6,8 +6,8 @@
 		<fmt:message key="categoria.alta.title" />
 	</h3>
 	<br />
-	<c:url var="urlAltaCategoria" value="/categoria/alta" />
-	<form:form action="${urlAltaCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
+	<c:url var="urlAlta" value="/categoria/alta" />
+	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="categoriaForm" id="idForm">
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -32,7 +32,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.confirmar"/>'
-						onclick="javascript:submitInBody($('#idFormCat'))">
+						onclick="javascript:submitInBody($('#idForm'))">
 			</div>
         </div>
     </div>

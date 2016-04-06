@@ -229,7 +229,16 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> <fmt:message key="menu.producto"/><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="javascript:loadInBody('producto?alta')"><fmt:message key="menu.producto.alta"/></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:loadInBody('producto?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.producto.listar"/></a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
                         <li>
                             <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>

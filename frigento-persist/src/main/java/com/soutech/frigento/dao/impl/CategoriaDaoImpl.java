@@ -12,19 +12,4 @@ import com.soutech.frigento.model.Categoria;
 @Transactional(readOnly=true)
 public class CategoriaDaoImpl extends AbstractSpringDao<Categoria, Short> implements CategoriaDao {
 
-	@Override
-	public List<Categoria> findAll(String sortFieldName, String sortOrder) {
-		StringBuilder query = new StringBuilder("from ");
-		query.append(Categoria.class.getCanonicalName());
-		query.append(" c ");
-		if(sortFieldName != null){
-			query.append("order by ");
-			query.append(sortFieldName);
-			query.append(" ");
-			query.append(sortOrder);
-		}
-		return findQuery(query.toString());
-	}
-
-	
 }

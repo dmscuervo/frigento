@@ -94,6 +94,21 @@ public abstract class AbstractSpringDao<T, I extends Serializable> {
 	@Transactional(readOnly=true)
 	public List<T> findAll(String condicion) {
 		return getSession().createQuery(" from " + type.getName()+" "+condicion).list();
-	}		
+	}
+	
+	@Transactional(readOnly=true)
+	public List<T> findAll(String sortFieldName, String sortOrder) {
+		StringBuilder query = new StringBuilder("from ");
+		query.append(type.getName());
+		query.append(" e ");
+		if(sortFieldName != null){
+			query.append("order by ");
+			query.append(sortFieldName);
+			query.append(" ");
+			query.append(sortOrder);
+		}
+		return findQuery(query.toString());
+	}
+
 
 }

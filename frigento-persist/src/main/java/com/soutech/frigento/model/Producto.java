@@ -12,6 +12,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.soutech.frigento.model.annotattions.Numeric;
+
 
 @Entity
 @Table(name = "PRODUCTO")
@@ -20,6 +24,7 @@ public class Producto {
     /**
      */
     @NotNull
+    @NotEmpty
     @Column(name = "CODIGO")
     @Size(max = 15)
     private String codigo;
@@ -27,18 +32,17 @@ public class Producto {
     /**
      */
     @NotNull
+    @NotEmpty
     @Column(name = "DESCRIPCION")
     @Size(max = 100)
     private String descripcion;
 
-    /**
-     */
+    @Numeric(tipo=Numeric.decimal)
     @NotNull
     @Column(name = "COSTO_ACTUAL")
     private BigDecimal costoActual;
 
-    /**
-     */
+    @Numeric(tipo=Numeric.decimal)
     @NotNull
     @Column(name = "STOCK")
     private Float stock;
@@ -53,13 +57,11 @@ public class Producto {
     @Column(name = "IMAGEN")
     private Blob imagen;
 
-    /**
-     */
+    @Numeric(tipo=Numeric.decimal)
     @Column(name = "PESO_CAJA")
     private Float pesoCaja;
 
-    /**
-     */
+    @Numeric(tipo=Numeric.decimal)
     @Column(name = "PESO_ENVASE")
     private Float pesoEnvase;
 
