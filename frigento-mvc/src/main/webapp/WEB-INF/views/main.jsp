@@ -16,6 +16,17 @@
     <link href="<c:url value="/resources/css/sb-admin-2.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/morris.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet" />
+    <%-- DataTable cs --%>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/autofill/2.1.1/css/autoFill.bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.3.1/css/colReorder.bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.2.1/css/fixedColumns.bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.1/css/fixedHeader.bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/scroller/1.4.1/css/scroller.bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
+	
+ 
     
     <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
     <script src="<c:url value="/resources/js/jquery.blockUI.js" />"></script>
@@ -26,6 +37,16 @@
     <script src="<c:url value="/resources/js/morris.min.js" />"></script>
     <!-- script src="<c:url value="/resources/js/morris-data.js" />"></script-->
     <script src="<c:url value="/resources/js/sb-admin-2.js" />"></script>
+    <%-- DataTable js --%>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/autofill/2.1.1/js/dataTables.autoFill.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/autofill/2.1.1/js/autoFill.bootstrap.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/colreorder/1.3.1/js/dataTables.colReorder.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.1/js/dataTables.fixedHeader.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/scroller/1.4.1/js/dataTables.scroller.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,10 +59,11 @@
     	
     	function loadInBody(path){
     		//$('button .navbar-toggle').click();
+    		console.log(path);
     		var url = '${pathBase}' + path;
     		$('#page-wrapper').load(url, function(data){
-    			console.log('A ver....');
-    			console.log(data);
+    			//En caso mobile, collapsa el menu luego de elegir una opcion
+    			$('.sidebar-nav').attr('class', 'sidebar-nav navbar-collapse collapse');
     		});
     	}
     	
@@ -50,13 +72,12 @@
 				blockControl($('#wrapper'));
 				bodyBlock = true;				
 			}
+    		
     		$.ajax({
                 url: form.attr('action'),
                 type: 'POST',
                 data: form.serialize(),
                 success: function(result) {
-                	console.log('asdasdadsasd');
-    				console.log(result);
                 	$('#wrapper').unblock();
         			bodyBlock = false;
                 	$('#page-wrapper').html(result);
@@ -188,7 +209,7 @@
                                     <a href="javascript:loadInBody('categoria?alta')"><fmt:message key="menu.categoria.alta"/></a>
                                 </li>
                                 <li>
-                                    <a href="morris.html"><fmt:message key="menu.categoria.listar"/></a>
+                                    <a href="javascript:loadInBody('categoria?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.categoria.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

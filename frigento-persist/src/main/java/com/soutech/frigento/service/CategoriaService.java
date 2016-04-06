@@ -12,5 +12,9 @@ public interface CategoriaService {
 
 	public Categoria obtenerCategoria(Short id);
 
+	public List<Categoria> obtenerCategorias(String sortFieldName, String sortOrder);
 
+	public void actualizarCategoria(Categoria categoria);
+
+	public void eliminarCategoria(Categoria categoria);
 }

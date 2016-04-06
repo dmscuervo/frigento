@@ -1,14 +1,16 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title><fmt:message key="login.title" /></title>
-<link href="<c:url value="/resources/css/bootstrap.min.css" />"
-	rel="stylesheet" />
-<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
-<link href="<c:url value="/resources/css/font-awesome.min.css" />"
-	rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title><fmt:message key="login.title" /></title>
+	<link href="<c:url value="/resources/css/bootstrap.min.css" />"
+		rel="stylesheet" />
+	<link href="<c:url value="/resources/css/font-awesome.min.css" />"
+		rel="stylesheet" />
+		
+	<script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+	<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 </head>
 
 <body>

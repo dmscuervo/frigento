@@ -30,4 +30,19 @@ public class CategoriaServiceImpl implements CategoriaService {
 		return categoriaDao.findById(id);
 	}
 
+	@Override
+	public List<Categoria> obtenerCategorias(String sortFieldName, String sortOrder) {
+		return categoriaDao.findAll(sortFieldName, sortOrder);
+	}
+
+	@Override
+	public void actualizarCategoria(Categoria categoria) {
+		categoriaDao.update(categoria);
+	}
+
+	@Override
+	public void eliminarCategoria(Categoria categoria) {
+		categoriaDao.delete(categoria);		
+	}
+	
 }

@@ -3,11 +3,11 @@
 
 <div style="width: 50%; float: left; min-width: 300px">
 	<h3>
-		<fmt:message key="categoria.alta.title" />
+		<fmt:message key="categoria.editar.title" />
 	</h3>
 	<br />
-	<c:url var="urlAltaCategoria" value="/categoria/alta" />
-	<form:form action="${urlAltaCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
+	<c:url var="urlEditarCategoria" value="/categoria/editar" />
+	<form:form action="${urlEditarCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idFormCat">
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -36,6 +36,8 @@
 			</div>
         </div>
     </div>
+	
+	<form:hidden path="id" />
 	
 	</form:form>
 </div>
