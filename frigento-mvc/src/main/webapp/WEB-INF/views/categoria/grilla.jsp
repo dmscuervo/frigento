@@ -1,31 +1,25 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 
 <script type="text/javascript">
+
 	$(document).ready(function() {
-	    $('#idGrillaCat').DataTable(
-	    );
+	    $('#idGrillaCat').DataTable();
+	    if('${informar}' != null){
+	    	$('#idModalMensaje').attr('style', 'visible');
+	    }
 	});
-	
-/* 	function confirmDelete(idCat){
-		var msg = '#msg-'+idCat;
-		$('#pMsg').html($(msg).val());
-		$("#btBorrar").on('click', function(){
-			loadInBody('categoria/{'+idCat+'}?borrar');	
-		});
-		$('#idModalBorrar').modal('show');
-	} */
 			
 </script>
 
 <h3>
-	<fmt:message key="categoria.alta.title" />
+	<fmt:message key="categoria.grilla.title" />
 </h3>
 <br />
 <table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
         <thead>
             <tr>
                 <th><fmt:message key="categoria.descripcion" /></th>
-                <th>Acciones</th>
+                <th><fmt:message key="categoria.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
@@ -47,28 +41,21 @@
 
 <div id="divVentanaGrilla">
 </div>
-<%--
-<div class="modal fade" id="idModalBorrar" tabindex="-1" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title"><fmt:message key="categoria.borrar.title"/></h4>
-			</div>
-			<div class="modal-body">
-				<p id="pMsg">
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button id="btBorrar" type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.aceptar"/></button>
-				<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
+
+
+<div class="modal fade" id="idModalMensaje" tabindex="-1" role="dialog" style="visibility: hidden;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><fmt:message key="mensaje.title" /></h4>
+      </div>
+      <div class="modal-body">
+        <p>${informar}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.aceptar"/></button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
 </div>
---%>

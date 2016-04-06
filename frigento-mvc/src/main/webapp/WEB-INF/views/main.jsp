@@ -47,6 +47,11 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.1/js/dataTables.fixedHeader.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/scroller/1.4.1/js/dataTables.scroller.js"></script>
+	
+	
+	<%-- Ubicar a lo ultimo. Sobre escribe los mensajes de datatable --%> 
+	<script src="<c:url value="/resources/js/datatable.language.js" />"></script>
+	
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -89,11 +94,7 @@
         			//Cargo contenido
                 	$('#page-wrapper').html(result);
         			//Levanto Modal
-        			$('#idModalMensaje').on('hidden.bs.modal', function () {
-                		$('#idModalMensaje').modal('hide');
-                		loadInBody($('#idUrlOk').val());
-                	});
-                	$('#idModalMensaje').modal('show');
+        			$('#idModalMensaje').modal('show');
                 }
             });
     	}

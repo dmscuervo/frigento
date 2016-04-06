@@ -27,6 +27,8 @@ import com.soutech.frigento.service.CategoriaService;
 public class CategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
+    private final String BUSQUEDA_DEFAULT = "categoria?sortFieldName=descripcion&sortOrder=asc";
+    
     @Autowired
     public CategoriaService categoriaService;
 
@@ -43,10 +45,7 @@ public class CategoriaController extends GenericController {
         }
         uiModel.asMap().clear();
         categoriaService.saveCategoria(categoriaForm);
-        httpServletRequest.setAttribute("msgTitle", getMessage("categoria.alta.title"));
-        httpServletRequest.setAttribute("msgResult", getMessage("categoria.alta.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
-        return "generic/mensaje";
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("categoria.alta.ok", categoriaForm.getDescripcion())));
     }
     
     @RequestMapping(value = "/{id}", produces = "text/html")
@@ -57,8 +56,11 @@ public class CategoriaController extends GenericController {
     }
     
     @RequestMapping(produces = "text/html")
-    public String listar(@RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    public String listar(@RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
         uiModel.addAttribute("categorias", categoriaService.obtenerCategorias(sortFieldName, sortOrder));
+        if(informar != null){
+        	uiModel.addAttribute("informar", informar);
+        }
         return "categoria/grilla";
     }
     
@@ -75,10 +77,7 @@ public class CategoriaController extends GenericController {
         }
         uiModel.asMap().clear();
         categoriaService.actualizarCategoria(categoriaForm);
-        httpServletRequest.setAttribute("msgTitle", getMessage("categoria.editar.title"));
-        httpServletRequest.setAttribute("msgResult", getMessage("categoria.editar.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
-        return "generic/mensaje";
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("categoria.editar.ok", categoriaForm.getDescripcion())));
     }
     
     @RequestMapping(params = "borrar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
@@ -94,10 +93,7 @@ public class CategoriaController extends GenericController {
         }
         uiModel.asMap().clear();
         categoriaService.eliminarCategoria(categoriaForm);
-        httpServletRequest.setAttribute("msgTitle", getMessage("categoria.borrar.title"));
-        httpServletRequest.setAttribute("msgResult", getMessage("categoria.borrar.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
-        return "generic/mensaje";
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("categoria.borrar.ok", categoriaForm.getDescripcion())));
     }
     
 //    @RequestMapping(params = "borrar", produces = "text/html")
