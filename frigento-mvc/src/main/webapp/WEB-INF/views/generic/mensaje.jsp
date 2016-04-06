@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 
-<div class="modal fade" id="myModalMessage" tabindex="-1" role="dialog">
+<div class="modal fade" id="idModalMensaje" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -11,8 +11,9 @@
         <p>${msgResult}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="loadInBody('${urlOk}')"><fmt:message key="boton.aceptar"/></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.aceptar"/></button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
+  <input type="hidden" id="idUrlOk" value="${urlOk}" />
 </div>

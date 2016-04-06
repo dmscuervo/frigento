@@ -45,7 +45,7 @@ public class CategoriaController extends GenericController {
         categoriaService.saveCategoria(categoriaForm);
         httpServletRequest.setAttribute("msgTitle", getMessage("categoria.alta.title"));
         httpServletRequest.setAttribute("msgResult", getMessage("categoria.alta.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria/grilla");
+        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
         return "generic/mensaje";
     }
     
@@ -77,7 +77,7 @@ public class CategoriaController extends GenericController {
         categoriaService.actualizarCategoria(categoriaForm);
         httpServletRequest.setAttribute("msgTitle", getMessage("categoria.editar.title"));
         httpServletRequest.setAttribute("msgResult", getMessage("categoria.editar.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria/grilla");
+        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
         return "generic/mensaje";
     }
     
@@ -96,9 +96,18 @@ public class CategoriaController extends GenericController {
         categoriaService.eliminarCategoria(categoriaForm);
         httpServletRequest.setAttribute("msgTitle", getMessage("categoria.borrar.title"));
         httpServletRequest.setAttribute("msgResult", getMessage("categoria.borrar.ok", categoriaForm.getDescripcion()));
-        httpServletRequest.setAttribute("urlOk", "categoria/grilla");
+        httpServletRequest.setAttribute("urlOk", "categoria?sortFieldName=descripcion&sortOrder=asc");
         return "generic/mensaje";
     }
+    
+//    @RequestMapping(params = "borrar", produces = "text/html")
+//    public String delete(@RequestParam(value = "id", required = true) Short id, HttpServletRequest httpServletRequest) {
+//        categoriaService.eliminarCategoria(id);
+//        httpServletRequest.setAttribute("msgTitle", getMessage("categoria.borrar.title"));
+//        httpServletRequest.setAttribute("msgResult", getMessage("categoria.borrar.ok"));
+//        httpServletRequest.setAttribute("urlOk", "categoria/grilla");
+//        return "generic/mensaje";
+//    }
     
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();

@@ -58,12 +58,17 @@
     	var bodyBlock=false;
     	
     	function loadInBody(path){
-    		//$('button .navbar-toggle').click();
-    		console.log(path);
     		var url = '${pathBase}' + path;
     		$('#page-wrapper').load(url, function(data){
     			//En caso mobile, collapsa el menu luego de elegir una opcion
     			$('.sidebar-nav').attr('class', 'sidebar-nav navbar-collapse collapse');
+    		});
+    	}
+    	
+    	function confirmDelete(path){
+    		var url = '${pathBase}' + path;
+    		$('#divVentanaGrilla').load(url, function(data){
+    			$('#idModalBorrar').modal('show');
     		});
     	}
     	
@@ -78,13 +83,21 @@
                 type: 'POST',
                 data: form.serialize(),
                 success: function(result) {
+                	//Desbloqueo pantalla
                 	$('#wrapper').unblock();
         			bodyBlock = false;
+        			//Cargo contenido
                 	$('#page-wrapper').html(result);
-                	$('#myModalMessage').modal('show')
+        			//Levanto Modal
+        			$('#idModalMensaje').on('hidden.bs.modal', function () {
+                		$('#idModalMensaje').modal('hide');
+                		loadInBody($('#idUrlOk').val());
+                	});
+                	$('#idModalMensaje').modal('show');
                 }
             });
     	}
+    	
     </script>
 
 </head>
