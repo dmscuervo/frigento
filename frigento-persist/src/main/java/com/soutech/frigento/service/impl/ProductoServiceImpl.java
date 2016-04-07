@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.ProductoDao;
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.service.ProductoService;
 
@@ -18,7 +19,11 @@ public class ProductoServiceImpl implements ProductoService {
     ProductoDao productoDao;
 
 	@Override
-	public void saveProducto(Producto producto) {
+	public void saveProducto(Producto producto) throws EntityExistException {
+		Producto prod = productoDao.findByCodigo(producto);
+		if(prod != null){
+			throw new EntityExistException("codigo");
+		}
 		productoDao.save(producto);
 	}
 

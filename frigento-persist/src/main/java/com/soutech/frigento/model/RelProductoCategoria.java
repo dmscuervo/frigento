@@ -2,6 +2,7 @@ package com.soutech.frigento.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,7 +50,7 @@ public class RelProductoCategoria {
     /**
      */
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     @JoinColumn(name = "ID_CATEGORIA")
     private Categoria categoria;
 

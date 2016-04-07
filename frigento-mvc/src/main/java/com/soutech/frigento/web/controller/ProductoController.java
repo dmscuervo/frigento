@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.service.ProductoService;
-import com.soutech.frigento.web.validator.FormValidator;
+import com.soutech.frigento.util.PrinterStack;
 
 @Controller
 @RequestMapping(value="/producto")
@@ -41,13 +42,19 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
     public String alta(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/alta";
         }
-        FormValidator fv = new FormValidator();
-        fv.validate(productoForm, bindingResult);
-        uiModel.asMap().clear();
-        productoService.saveProducto(productoForm);
+        try {
+			productoService.saveProducto(productoForm);
+			uiModel.asMap().clear();
+		} catch (EntityExistException e) {
+			String key = "EntityExist.productoForm."+e.getField();
+			bindingResult.rejectValue(e.getField(), key);
+			logger.info(getMessage(key));
+			return "producto/alta";
+		}
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.alta.ok", productoForm.getDescripcion())));
     }
     
@@ -75,6 +82,7 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
     public String edit(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/editar";
         }
@@ -91,6 +99,7 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
     public String delete(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/borrar";
         }

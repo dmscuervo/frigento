@@ -16,20 +16,20 @@
 <div class="modal fade" id="idModalBorrar" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<c:url var="urlBorrarCategoria" value="/categoria/borrar" />
-			<form:form action="${urlBorrarCategoria}" method="post"
-				class="form-horizontal" commandName="categoriaForm" id="idForm">
+			<c:url var="urlBorrar" value="/producto/borrar" />
+			<form:form action="${urlBorrar}" method="post"
+				class="form-horizontal" commandName="productoForm" id="idForm">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title"><fmt:message key="categoria.borrar.title"/></h4>
+				<h4 class="modal-title"><fmt:message key="producto.borrar.title"/></h4>
 			</div>
 			<div class="modal-body">
 				<p>
-					<fmt:message key="categoria.borrar.confirm">
-						<fmt:param value='${categoriaForm.descripcion}'/>
+					<fmt:message key="producto.borrar.confirm">
+						<fmt:param value='${productoForm.descripcion}'/>
 					</fmt:message>
 				</p>
 			</div>

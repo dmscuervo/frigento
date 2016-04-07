@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.service.CategoriaService;
 
@@ -87,12 +88,15 @@ public class CategoriaController extends GenericController {
     }
     
     @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
-    public String delete(@Valid @ModelAttribute("categoriaForm") Categoria categoriaForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-        	return "categoria/borrar";
-        }
-        uiModel.asMap().clear();
-        categoriaService.eliminarCategoria(categoriaForm);
+    public String delete(@ModelAttribute("categoriaForm") Categoria categoriaForm, HttpServletRequest httpServletRequest) {
+        try {
+			categoriaService.eliminarCategoria(categoriaForm);
+		} catch (EntityExistException e) {
+			String key = "EntityExist.categoriaForm."+e.getField();
+			httpServletRequest.setAttribute("msgError", getMessage(key, e.getArgs()));
+			logger.info(getMessage(key, e.getArgs()));
+			return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage(key, e.getArgs())));
+		}
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("categoria.borrar.ok", categoriaForm.getDescripcion())));
     }
     

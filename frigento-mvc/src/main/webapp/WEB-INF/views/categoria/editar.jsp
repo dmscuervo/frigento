@@ -6,8 +6,8 @@
 		<fmt:message key="categoria.editar.title" />
 	</h3>
 	<br />
-	<c:url var="urlEditarCategoria" value="/categoria/editar" />
-	<form:form action="${urlEditarCategoria}" method="post" class="form-horizontal" commandName="categoriaForm" id="idForm">
+	<c:url var="urlEditar" value="/categoria/editar" />
+	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="categoriaForm" id="idForm">
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >

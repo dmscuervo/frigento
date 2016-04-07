@@ -14,7 +14,9 @@
 <h3>
 	<fmt:message key="categoria.grilla.title" />
 </h3>
-<br />
+<p class="form-validate">
+	${msgError}
+</p>
 <table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
         <thead>
             <tr>

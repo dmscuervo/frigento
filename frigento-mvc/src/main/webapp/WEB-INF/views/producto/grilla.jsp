@@ -12,26 +12,34 @@
 </script>
 
 <h3>
-	<fmt:message key="categoria.grilla.title" />
+	<fmt:message key="producto.grilla.title" />
 </h3>
 <br />
 <table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
         <thead>
             <tr>
-                <th><fmt:message key="categoria.descripcion" /></th>
-                <th><fmt:message key="categoria.grilla.acciones" /></th>
+                <th><fmt:message key="producto.codigo" /></th>
+                <th><fmt:message key="producto.descripcion" /></th>
+                <th><fmt:message key="producto.costoActual" /></th>
+                <th><fmt:message key="producto.stock" /></th>
+                <th><fmt:message key="producto.pesoCaja" /></th>
+                <th><fmt:message key="producto.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
-        <c:forEach var="cat" items="${categorias}">
+        <c:forEach var="prod" items="${productos}">
         	<tr>
-        		<td>${cat.descripcion}</td>
+        		<td>${prod.codigo}</td>
+        		<td>${prod.descripcion}</td>
+        		<td>${prod.costoActual}</td>
+        		<td>${prod.stock}</td>
+        		<td>${prod.pesoCaja}</td>
         		<td colspan="2">
-        			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
-        			<i class="fa fa-trash" onclick="confirmDelete('categoria/${cat.id}?borrar')"></i>
+        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
+        			<i class="fa fa-trash" onclick="confirmDelete('producto/${prod.id}?borrar')"></i>
         			<%-- 
-        			<i class="fa fa-trash" onclick="confirmDelete('${cat.id}')"></i>
-			        <input type="hidden" id="msg-${cat.id}" value="<fmt:message key='categoria.borrar.confirm'><fmt:param value='${cat.descripcion}'/></fmt:message>" />
+        			<i class="fa fa-trash" onclick="confirmDelete('${prod.id}')"></i>
+			        <input type="hidden" id="msg-${prod.id}" value="<fmt:message key='producto.borrar.confirm'><fmt:param value='${prod.descripcion}'/></fmt:message>" />
 			        --%>
 				</td>
         	</tr>

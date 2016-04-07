@@ -16,8 +16,8 @@
 <div class="modal fade" id="idModalBorrar" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<c:url var="urlBorrarCategoria" value="/categoria/borrar" />
-			<form:form action="${urlBorrarCategoria}" method="post"
+			<c:url var="urlBorrar" value="/categoria/borrar" />
+			<form:form action="${urlBorrar}" method="post"
 				class="form-horizontal" commandName="categoriaForm" id="idForm">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"

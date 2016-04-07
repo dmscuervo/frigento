@@ -1,9 +1,12 @@
 package com.soutech.frigento.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -31,50 +34,38 @@ public class Usuario {
     @Column(name = "enabled")
     private Boolean habilitado;
 	
-	/**
-     */
-    @NotNull
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name = "ID_CATEGORIA")
+	private Categoria categoriaProducto;
+	
+	@NotNull
     @Column(name = "NOMBRE")
     @Size(max = 20)
     private String nombre;
 
-    /**
-     */
     @Column(name = "APPELLIDO")
     @Size(max = 20)
     private String apellido;
 
-    /**
-     */
     @Column(name = "TELEFONO")
     @Size(max = 15)
     private String telefono;
 
-    /**
-     */
     @Column(name = "CELULAR")
     @Size(max = 15)
     private String celular;
 
-    /**
-     */
     @Column(name = "CALLE")
     @Size(max = 30)
     private String calle;
 
-    /**
-     */
     @Column(name = "ALTURA")
     private Short altura;
 
-    /**
-     */
     @Column(name = "DEPTO")
     @Size(max = 10)
     private String depto;
 
-    /**
-     */
     @NotNull
     @Column(name = "ES_ADMIN")
     private Boolean esAdmin;

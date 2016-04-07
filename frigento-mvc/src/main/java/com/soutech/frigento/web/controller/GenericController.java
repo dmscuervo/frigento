@@ -5,8 +5,12 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
+import com.soutech.frigento.web.validator.FormValidator;
+
 public class GenericController {
 	
+	@Autowired
+	protected FormValidator formValidator;
 	@Autowired
 	private MessageSource messageSource;
 	

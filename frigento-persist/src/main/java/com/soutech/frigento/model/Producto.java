@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,50 +19,43 @@ import com.soutech.frigento.model.annotattions.Numeric;
 
 
 @Entity
-@Table(name = "PRODUCTO")
+@Table(name = "PRODUCTO", uniqueConstraints=@UniqueConstraint(columnNames={"CODIGO"}, name="ux_codigo"))
 public class Producto {
 
-    /**
-     */
     @NotNull
     @NotEmpty
     @Column(name = "CODIGO")
     @Size(max = 15)
     private String codigo;
 
-    /**
-     */
     @NotNull
     @NotEmpty
     @Column(name = "DESCRIPCION")
     @Size(max = 100)
     private String descripcion;
 
-    @Numeric(tipo=Numeric.decimal)
+    @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
     @Column(name = "COSTO_ACTUAL")
     private BigDecimal costoActual;
 
-    @Numeric(tipo=Numeric.decimal)
+    @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
     @Column(name = "STOCK")
     private Float stock;
 
-    /**
-     */
+    @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "STOCK_MINIMO")
     private Float stockMinimo;
 
-    /**
-     */
     @Column(name = "IMAGEN")
     private Blob imagen;
 
-    @Numeric(tipo=Numeric.decimal)
+    @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "PESO_CAJA")
     private Float pesoCaja;
 
-    @Numeric(tipo=Numeric.decimal)
+    @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "PESO_ENVASE")
     private Float pesoEnvase;
 

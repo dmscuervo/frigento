@@ -8,11 +8,13 @@ public abstract @interface Numeric {
 	
 	//public abstract java.lang.String message() default "{javax.validation.constraints.Numeric.message}";
 	
-	public final String entero = "entero";
-	public final String decimal = "decimal";
+	public final String entero = "-?\\d";
+	public final String entero_positivo = "\\d";
+	public final String decimal = "-?\\d+(\\.\\d{1,2})?";
+	public final String decimal_positivo = "\\d+(\\.\\d{1,2})?";
 
 	/**
 	 * Valores permitidos: entero, decimal
 	 */
-	abstract String tipo() default "entero";
+	abstract String regexp();
 }
