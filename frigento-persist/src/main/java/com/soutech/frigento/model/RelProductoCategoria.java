@@ -45,7 +45,7 @@ public class RelProductoCategoria {
 
     @Column(name = "F_HASTA")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
+    @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaHasta;
 
     @NotNull
