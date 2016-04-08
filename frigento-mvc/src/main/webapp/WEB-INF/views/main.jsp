@@ -25,8 +25,11 @@
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.bootstrap.css"/>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/scroller/1.4.1/css/scroller.bootstrap.css"/>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
-	
- 
+	<%--
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.1.2/css/buttons.dataTables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../resources/editor/css/editor.dataTables.min.css"/>
+  	--%>
     
     <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
     <script src="<c:url value="/resources/js/jquery.blockUI.js" />"></script>
@@ -47,6 +50,11 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.1/js/dataTables.fixedHeader.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/scroller/1.4.1/js/dataTables.scroller.js"></script>
+	<%--
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/select/1.1.2/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" src="../../resources/editor/js/dataTables.editor.min.js"></script>
+	--%>
 	
 	
 	<%-- Ubicar a lo ultimo. Sobre escribe los mensajes de datatable --%> 

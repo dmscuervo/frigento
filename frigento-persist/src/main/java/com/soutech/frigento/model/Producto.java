@@ -1,4 +1,5 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.Date;
@@ -22,7 +23,9 @@ import com.soutech.frigento.model.annotattions.Numeric;
 
 @Entity
 @Table(name = "PRODUCTO", uniqueConstraints=@UniqueConstraint(columnNames={"CODIGO"}, name="ux_codigo"))
-public class Producto {
+public class Producto implements Serializable {
+
+	private static final long serialVersionUID = 7139237922807940949L;
 
 	@Id
     @SequenceGenerator(name = "productoGen", sequenceName = "SEQ_PRODUCTO")

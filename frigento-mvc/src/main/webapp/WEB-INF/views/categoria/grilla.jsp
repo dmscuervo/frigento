@@ -31,6 +31,7 @@
         		<td colspan="2">
         			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
         			<i class="fa fa-trash" onclick="confirmDelete('categoria/${cat.id}?borrar')"></i>
+        			<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar')"></i>
         			<%-- 
         			<i class="fa fa-trash" onclick="confirmDelete('${cat.id}')"></i>
 			        <input type="hidden" id="msg-${cat.id}" value="<fmt:message key='categoria.borrar.confirm'><fmt:param value='${cat.descripcion}'/></fmt:message>" />
