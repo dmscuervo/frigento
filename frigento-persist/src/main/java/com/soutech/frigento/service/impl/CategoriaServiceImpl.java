@@ -71,7 +71,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 		}
 		
 		List<RelProductoCategoria> relaciones = relProductoCategoriaDao.findAllByCategoria(categoria.getId());
-		if(relaciones != null){
+		if(relaciones != null && !relaciones.isEmpty()){
 			for (RelProductoCategoria relProductoCategoria : relaciones) {
 				relProductoCategoriaDao.delete(relProductoCategoria);
 			}

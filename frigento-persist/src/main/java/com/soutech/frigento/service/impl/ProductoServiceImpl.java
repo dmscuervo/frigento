@@ -2,21 +2,34 @@ package com.soutech.frigento.service.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
+import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.exception.EntityExistException;
+import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
+import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoService;
 
 @Service
-@Transactional
 public class ProductoServiceImpl implements ProductoService {	
 
+	private final Logger logger = Logger.getLogger(this.getClass());
+	
 	@Autowired
     ProductoDao productoDao;
+	@Autowired
+    ProductoCostoDao productoCostoDao;
+	@Autowired
+    RelProductoCategoriaDao relProductoCategoriaDao;
+	@Autowired
+    ControlStockProducto controlStockProducto;
 
 	@Override
 	public void saveProducto(Producto producto) throws EntityExistException {
@@ -33,19 +46,34 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
-	public List<Producto> obtenerProductos(String sortFieldName, String sortOrder) {
-		return productoDao.findAll(sortFieldName, sortOrder);
+	public List<Producto> obtenerProductos(String estado, String sortFieldName, String sortOrder) {
+		return productoDao.findAll(estado, sortFieldName, sortOrder);
 	}
 
 	@Override
-	public void actualizarProducto(Producto producto) {
-		productoDao.update(producto);
+	public void actualizarProducto(Producto producto) throws StockAlteradoException {
+		controlStockProducto.actualizarProductoStock(producto);
 	}
 
+	@Transactional
 	@Override
 	public void eliminarProducto(Producto producto) {
-		productoDao.delete(producto);
+		controlStockProducto.eliminarProductoStock(producto.getId());
+		ProductoCosto prodCosto = productoCostoDao.findCostoActual(producto.getId());
+		if(prodCosto != null){
+			logger.info("El producto contiene relaciones con ProductoCosto. Se procede a su baja logica.");
+			productoCostoDao.delete(prodCosto);
+		}
+		RelProductoCategoria relProdCategoria = relProductoCategoriaDao.findRelacionActual(producto.getId());
+		if(relProdCategoria != null){
+			logger.info("El producto contiene relaciones con RelProductoCategoria. Se procede a su baja logica.");
+			relProductoCategoriaDao.delete(relProdCategoria);
+		}
 	}
 
-	
+	@Override
+	public void reactivarProducto(Producto producto) {
+		controlStockProducto.reactivarProductoStock(producto.getId());
+	}
+
 }

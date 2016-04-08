@@ -1,6 +1,7 @@
 package com.soutech.frigento.model;
 import java.math.BigDecimal;
 import java.sql.Blob;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,7 +24,13 @@ import com.soutech.frigento.model.annotattions.Numeric;
 @Table(name = "PRODUCTO", uniqueConstraints=@UniqueConstraint(columnNames={"CODIGO"}, name="ux_codigo"))
 public class Producto {
 
-    @NotNull
+	@Id
+    @SequenceGenerator(name = "productoGen", sequenceName = "SEQ_PRODUCTO")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "productoGen")
+    @Column(name = "ID_PRODUCTO")
+    private Integer id;
+
+   @NotNull
     @NotEmpty
     @Column(name = "CODIGO")
     @Size(max = 15)
@@ -38,11 +46,16 @@ public class Producto {
     @NotNull
     @Column(name = "COSTO_ACTUAL")
     private BigDecimal costoActual;
-
+    
     @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
     @Column(name = "STOCK")
     private Float stock;
+    
+    @Transient
+    private Float stockPrevio;
+    @Transient
+    private Boolean stockControlado;
 
     @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "STOCK_MINIMO")
@@ -59,6 +72,9 @@ public class Producto {
     @Column(name = "PESO_ENVASE")
     private Float pesoEnvase;
 
+    @Column(name = "FECHA_BAJA")
+    private Date fechaBaja;
+    
 	public String getCodigo() {
         return this.codigo;
     }
@@ -123,12 +139,6 @@ public class Producto {
         this.pesoEnvase = pesoEnvase;
     }
 
-	@Id
-    @SequenceGenerator(name = "productoGen", sequenceName = "SEQ_PRODUCTO")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "productoGen")
-    @Column(name = "ID_PRODUCTO")
-    private Integer id;
-
 	public Integer getId() {
         return this.id;
     }
@@ -136,4 +146,29 @@ public class Producto {
 	public void setId(Integer id) {
         this.id = id;
     }
+
+	public Float getStockPrevio() {
+		return stockPrevio;
+	}
+
+	public void setStockPrevio(Float stockPrevio) {
+		this.stockPrevio = stockPrevio;
+	}
+
+	public Boolean getStockControlado() {
+		return stockControlado;
+	}
+
+	public void setStockControlado(Boolean stockControlado) {
+		this.stockControlado = stockControlado;
+	}
+
+	public Date getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(Date fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+	
 }

@@ -5,11 +5,14 @@
 	<h3>
 		<fmt:message key="producto.editar.title" />
 	</h3>
-	<br />
+	<p class="form-validate">
+		${stockAlterado}
+	</p>
 	<c:url var="urlEditar" value="/producto/editar" />
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+		<form:hidden path="stockPrevio"/>
 	<div class='row'>
-        <div class='col-sm-4'>    
+		<div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idCod" style="white-space: nowrap;">
 					<fmt:message key="producto.codigo" />

@@ -20,6 +20,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.soutech.frigento.exception.EntityExistException;
+import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.util.PrinterStack;
@@ -29,7 +30,7 @@ import com.soutech.frigento.util.PrinterStack;
 public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    private final String BUSQUEDA_DEFAULT = "producto?sortFieldName=descripcion&sortOrder=asc";
+    private final String BUSQUEDA_DEFAULT = "producto?estado=A&sortFieldName=descripcion&sortOrder=asc";
     
     @Autowired
     public ProductoService productoService;
@@ -66,17 +67,20 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(produces = "text/html")
-    public String listar(@RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
-        uiModel.addAttribute("productos", productoService.obtenerProductos(sortFieldName, sortOrder));
+    public String listar(@RequestParam(value = "estado", required = true) String estado, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
+    	httpServletRequest.setAttribute("productos", productoService.obtenerProductos(estado, sortFieldName, sortOrder));
+    	httpServletRequest.setAttribute("estadoSel", estado);
         if(informar != null){
-        	uiModel.addAttribute("informar", informar);
+        	httpServletRequest.setAttribute("informar", informar);
         }
         return "producto/grilla";
     }
     
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
-    	uiModel.addAttribute("productoForm", productoService.obtenerProducto(id));
+    	Producto prod = productoService.obtenerProducto(id);
+    	prod.setStockPrevio(prod.getStock());
+    	uiModel.addAttribute("productoForm", prod);
         return "producto/editar";
     }
     
@@ -87,7 +91,15 @@ public class ProductoController extends GenericController {
         	return "producto/editar";
         }
         uiModel.asMap().clear();
-        productoService.actualizarProducto(productoForm);
+        try {
+			productoService.actualizarProducto(productoForm);
+		} catch (StockAlteradoException e) {
+			logger.info("El producto a actualizar habia alterado su stock en pararelo. Se reintenta la edicion.");
+			e.getProductoRecargado().setStockPrevio(e.getProductoRecargado().getStock());
+	    	uiModel.addAttribute("productoForm", e.getProductoRecargado());
+	    	httpServletRequest.setAttribute("stockAlterado", getMessage("producto.editar.error.stock"));
+	        return "producto/editar";
+		}
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.editar.ok", productoForm.getDescripcion())));
     }
     
@@ -99,23 +111,21 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
     public String delete(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	formValidator.validate(productoForm, bindingResult);
-        if (bindingResult.hasErrors()) {
-        	return "producto/borrar";
-        }
-        uiModel.asMap().clear();
-        productoService.eliminarProducto(productoForm);
+    	productoService.eliminarProducto(productoForm);
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.borrar.ok", productoForm.getDescripcion())));
     }
     
-//    @RequestMapping(params = "borrar", produces = "text/html")
-//    public String delete(@RequestParam(value = "id", required = true) Integer id, HttpServletRequest httpServletRequest) {
-//        productoService.eliminarProducto(id);
-//        httpServletRequest.setAttribute("msgTitle", getMessage("producto.borrar.title"));
-//        httpServletRequest.setAttribute("msgResult", getMessage("producto.borrar.ok"));
-//        httpServletRequest.setAttribute("urlOk", "producto/grilla");
-//        return "generic/mensaje";
-//    }
+    @RequestMapping(params = "activar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String preActivar(@PathVariable("id") Integer id, Model uiModel) {
+    	uiModel.addAttribute("productoForm", productoService.obtenerProducto(id));
+        return "producto/activar";
+    }
+    
+    @RequestMapping(value = "/activar", method = RequestMethod.POST, produces = "text/html")
+    public String activar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	productoService.reactivarProducto(productoForm);
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.activar.ok", productoForm.getDescripcion())));
+    }
     
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();

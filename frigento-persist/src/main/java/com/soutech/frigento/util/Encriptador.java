@@ -3,11 +3,7 @@ package com.soutech.frigento.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.soutech.frigento.enums.TipoEstadoEnum;
-import com.sun.xml.internal.ws.util.Pool.TubePool;
 
 /**
  * @author dsouza

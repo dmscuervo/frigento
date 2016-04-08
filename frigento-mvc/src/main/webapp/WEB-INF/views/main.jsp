@@ -77,6 +77,13 @@
     		});
     	}
     	
+    	function confirmActivar(path){
+    		var url = '${pathBase}' + path;
+    		$('#divVentanaGrilla').load(url, function(data){
+    			$('#idModalActivar').modal('show');
+    		});
+    	}
+    	
     	function submitInBody(form){
     		if(!bodyBlock){
 				blockControl($('#wrapper'));
@@ -235,7 +242,7 @@
                                     <a href="javascript:loadInBody('producto?alta')"><fmt:message key="menu.producto.alta"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('producto?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.producto.listar"/></a>
+                                    <a href="javascript:loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.producto.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
