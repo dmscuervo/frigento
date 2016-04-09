@@ -17,7 +17,7 @@
 <p class="form-validate">
 	${msgError}
 </p>
-<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
+<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
         <thead>
             <tr>
                 <th><fmt:message key="categoria.descripcion" /></th>
@@ -28,7 +28,7 @@
         <c:forEach var="cat" items="${categorias}">
         	<tr>
         		<td>${cat.descripcion}</td>
-        		<td colspan="2">
+        		<td>
         			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
         			<i class="fa fa-trash" onclick="confirmDelete('categoria/${cat.id}?borrar')"></i>
         			<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar')"></i>

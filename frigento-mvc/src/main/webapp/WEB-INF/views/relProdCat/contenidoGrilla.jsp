@@ -2,10 +2,9 @@
 
 <c:forEach var="prodCat" items="${productosCategoria}">
 <tr>
-	<td>${prodCat.producto.codigo}</td>
-    <td>${prodCat.producto.descripcion}</td>
-    <td>${prodCat.incremento}</td>
-    <td>${prodCat.precioCalculado}</td>
-    <td></td>
+	<td style="white-space: nowrap;">${prodCat.producto.codigo} - ${prodCat.producto.descripcion}</td>
+    <td style="white-space: nowrap;">${prodCat.incremento}</td>
+    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
+    <td style="white-space: nowrap;">${prodCat.fechaDesde}</td>
 </tr>
 </c:forEach>

@@ -19,9 +19,10 @@
 			calcularPrecio();
 		});
 		
-		$('#idIncremento').on('change', function(){
+		$('#idIncremento').on('keyup', function(){
 			calcularPrecio();
 		});
+		
 	});
 
 	function calcularPrecio(){
@@ -32,24 +33,32 @@
 			var costo = costosMap[codProd];
 			var factor = incremento/100 + 1;
 			$('#idPrecio').val(Math.round(costo*factor * 100) / 100);
+		}else{
+			$('#idPrecio').val('');
 		}
 	}
 
 	function agregar(){
-		console.log($('#idFechaDesde').val());
 		$.ajax({
             url: $('#idForm').attr('action'),
             type: 'POST',
             data: $('#idForm').serialize(),
             success: function(result) {
-    			//Cargo contenido
-            	$('#idBodyContenido').html(result);
+            	if(result == 'ERROR'){
+            		$('#idMessageError').text('<fmt:message key="relProdCat.asignar.error"/>'); 
+            		return;
+            	}
+            	//Hago que se refresque el contenido al ocultar el modal
+            	$('#idModalAlta').on('hidden.bs.modal', function () {
+            		//Cargo contenido
+                	$('#page-wrapper').html(result);
+    			});
+    			$('#idModalAlta').modal('hide');
             }
         });
 	}
 
 </script>
-
 <div class="modal fade" id="idModalAlta" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -58,7 +67,8 @@
 			</div>
 			<div class="modal-body">
 				<c:url var="urlAlta" value="/relProdCat/alta" />
-				<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm">
+				<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm" autocomplete="off">
+				<form:hidden path="categoria.id"/>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >
@@ -70,13 +80,8 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
 			        		<form:select path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
-			        			<form:option value="-1" label='<fmt:message key="combos.seleccione" />'/>
+			        			<form:option value="-1" label='asdasdas'/>
 			        		</form:select>
-						</div>
-			        </div>
-			        <div class='col-sm-4'>
-			        	<div class="form-group" >
-							<form:errors path="producto.codigo" cssClass="form-validate" />
 						</div>
 			        </div>
 			    </div>
@@ -93,11 +98,6 @@
 							<form:input path="incremento" cssClass="form-control" id="idIncremento" />
 						</div>
 			        </div>
-			        <div class='col-sm-4'>
-			        	<div class="form-group" >
-							<form:errors path="incremento" cssClass="form-validate" />
-						</div>
-			        </div>
 			    </div>
 			    <div class='row'>
 			        <div class='col-sm-4'>    
@@ -109,12 +109,7 @@
 			        </div>
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
-							<form:input path="precioCalculado" cssClass="form-control" id="idPrecio" />
-						</div>
-			        </div>
-			        <div class='col-sm-4'>
-			        	<div class="form-group" >
-							<form:errors path="precioCalculado" cssClass="form-validate" />
+							<form:input readonly="true" path="precioCalculado" cssClass="form-control" id="idPrecio" />
 						</div>
 			        </div>
 			    </div>
@@ -136,21 +131,15 @@
                 			</div>
 						</div>
 			        </div>
-			        <div class='col-sm-4'>
-			        	<div class="form-group" >
-							<form:errors path="fechaDesde" cssClass="form-validate" />
-						</div>
-			        </div>
 			    </div>
 				</form:form>
 			</div>
 			<div class="modal-footer">
 			<div class='row'>
-		        <div class='col-sm-12'> 
+		        <div class='col-sm-8'> 
 					<div class="form-group">
-							<input type="button" class="btn btn-default btn-primary"
-								value='<fmt:message key="boton.agregar"/>'
-								onclick="javascript:agregar()">
+							<label id="idMessageError" class="form-validate" ></label>
+							<button type="button" class="btn btn-default" onclick="agregar()"><fmt:message key="boton.agregar"/></button>
 					</div>
 		        </div>
 		    </div>
