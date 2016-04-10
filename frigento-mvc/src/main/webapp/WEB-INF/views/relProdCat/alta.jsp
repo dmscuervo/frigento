@@ -44,16 +44,25 @@
             type: 'POST',
             data: $('#idForm').serialize(),
             success: function(result) {
-            	if(result == 'ERROR'){
-            		$('#idMessageError').text('<fmt:message key="relProdCat.asignar.error"/>'); 
+            	//Si tengo respuesta JSON es porque contiene errores 
+            	try {
+            		var obj = JSON.parse(result);
+            		$('#errorCodigo').html(obj.codigo);
+            		$('#errorIncremento').html(obj.incremento);
+            		$('#errorPrecioCalculado').html(obj.precioCalculado);
+            		$('#errorFechaDesde').html(obj.fechaDesde);
             		return;
             	}
-            	//Hago que se refresque el contenido al ocultar el modal
-            	$('#idModalAlta').on('hidden.bs.modal', function () {
-            		//Cargo contenido
-                	$('#page-wrapper').html(result);
-    			});
-    			$('#idModalAlta').modal('hide');
+            	catch(err) {
+            		console.log("No JSON");
+	            	//Hago que se refresque el contenido al ocultar el modal
+	            	$('#idModalAlta').on('hidden.bs.modal', function () {
+	            		//Cargo contenido
+	                	$('#page-wrapper').html(result);
+	    			});
+	    			$('#idModalAlta').modal('hide');
+            	}
+            	
             }
         });
 	}
@@ -84,6 +93,11 @@
 			        		</form:select>
 						</div>
 			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group" >
+							<label id="errorCodigo" class="form-validate" style="white-space: nowrap;"></label>
+						</div>
+			        </div>
 			    </div>
 				<div class='row'>
 			        <div class='col-sm-4'>    
@@ -96,6 +110,11 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
 							<form:input path="incremento" cssClass="form-control" id="idIncremento" />
+						</div>
+			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group" >
+							<label id="errorIncremento" class="form-validate" style="white-space: nowrap;"></label>
 						</div>
 			        </div>
 			    </div>
@@ -112,6 +131,11 @@
 							<form:input readonly="true" path="precioCalculado" cssClass="form-control" id="idPrecio" />
 						</div>
 			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group" >
+							<label id="errorPrecioCalculado" class="form-validate" style="white-space: nowrap;"></label>
+						</div>
+			        </div>
 			    </div>
 			    <div class='row'>
 			        <div class='col-sm-4'>    
@@ -124,11 +148,16 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
                 			<div class='input-group date' id='datetimepicker1'>
-                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
+                				<form:input readonly="true" path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>
                     			</span>
                 			</div>
+						</div>
+			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group" >
+							<label id="errorFechaDesde" class="form-validate" style="white-space: nowrap;"></label>
 						</div>
 			        </div>
 			    </div>
@@ -136,7 +165,7 @@
 			</div>
 			<div class="modal-footer">
 			<div class='row'>
-		        <div class='col-sm-8'> 
+		        <div class='col-sm-12'> 
 					<div class="form-group">
 							<label id="idMessageError" class="form-validate" ></label>
 							<button type="button" class="btn btn-default" onclick="agregar()"><fmt:message key="boton.agregar"/></button>

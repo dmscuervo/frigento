@@ -32,6 +32,8 @@ import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.web.validator.ErrorJSONHandler;
+import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 
 @Controller
 @RequestMapping(value="/relProdCat")
@@ -46,10 +48,13 @@ public class RelProductoCategoriaController extends GenericController {
     }
     
     @Autowired
-    public RelProductoCategoriaService relProductoCategoriaService;
+    private RelProductoCategoriaService relProductoCategoriaService;
     
     @Autowired
-    public ProductoService productoService;
+    private ErrorJSONHandler errorJSONHandler;
+    
+    @Autowired
+    private ProductoService productoService;
 
     @SuppressWarnings("unchecked")
 	@RequestMapping(params = "alta", value="/{id}", produces = "text/html", method = RequestMethod.GET)
@@ -72,7 +77,9 @@ public class RelProductoCategoriaController extends GenericController {
 	@RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
     public String alta(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
     	if (bindingResult.hasErrors()) {
-    		uiModel.addAttribute("messageAjax", "ERROR");
+    		RelProdCatErroresView errorView = new RelProdCatErroresView();
+    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
+    		uiModel.addAttribute("messageAjax", json);
         	return "ajax/value";
         }
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
@@ -108,4 +115,5 @@ public class RelProductoCategoriaController extends GenericController {
         uiModel.addAttribute("idCat", idCat);
         return "relProdCat/grilla";
     }
+    
 }
