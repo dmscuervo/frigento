@@ -8,4 +8,6 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 	List<RelProductoCategoria> findAllByCategoria(Short idCat);
 
 	RelProductoCategoria findRelacionActual(Integer idProd);
+
+	RelProductoCategoria findActualByDupla(Short idCat, Integer idProd);
 }

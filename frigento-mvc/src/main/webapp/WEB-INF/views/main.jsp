@@ -68,6 +68,7 @@
     	
     	function loadInBody(path){
     		var url = '${pathBase}' + path;
+    		console.log(url);
     		$('#page-wrapper').load(url, function(data){
     			//En caso mobile, collapsa el menu luego de elegir una opcion
     			$('.sidebar-nav').attr('class', 'sidebar-nav navbar-collapse collapse');

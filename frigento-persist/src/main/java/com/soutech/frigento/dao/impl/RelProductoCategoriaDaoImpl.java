@@ -31,7 +31,7 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" rpc where rpc.producto.id = :idProd ");
-		hql.append(" and rpc.fechaHasta is null");
+		hql.append("and rpc.fechaHasta is null");
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("idProd", idProd);
 		return (RelProductoCategoria) query.uniqueResult();
@@ -49,4 +49,19 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 			//La baja de productoCosto es logica
 			delete(relProdCategoria);
 	}
+
+	@Override
+	public RelProductoCategoria findActualByDupla(Short idCat, Integer idProd) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.categoria.id = :catId ");
+		hql.append("and r.producto.id = :prodId ");
+		hql.append("and r.fechaHasta is null ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("catId", idCat);
+		query.setParameter("prodId", idProd);
+		return (RelProductoCategoria) query.uniqueResult();
+	}
+	
+	
 }

@@ -1,18 +1,32 @@
 package com.soutech.frigento.web.handler;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.soutech.frigento.exception.ControlConcurrenciaExcepcion;
 import com.soutech.frigento.util.PrinterStack;
 
 @ControllerAdvice
 public class HandlerException {
 
 	private static final Logger logger = Logger.getLogger(HandlerException.class);
+	
+	@Autowired
+	private MessageSource messageSource;
     
+	@ExceptionHandler(ControlConcurrenciaExcepcion.class)
+    public String handleControlConcurrenciaException(HttpServletRequest request, ControlConcurrenciaExcepcion ex){
+		logger.info("Control de concurrencia aplicado.");
+		return ex.getPath().concat("&informar=".concat(messageSource.getMessage(ex.getKeyMessage(), null, Locale.getDefault())));
+	}
+	
     @ExceptionHandler(Exception.class)
     public String handleSQLException(HttpServletRequest request, Exception ex){
         logger.info("SQLException Occured:: URL="+request.getRequestURL());

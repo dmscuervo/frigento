@@ -34,7 +34,7 @@
 		var url = '${pathBase}' + path;
 		$.ajax({
             url: url,
-            type: 'GET',
+            type: 'POST',
             success: function(result) {
             	$('#page-wrapper').html(result);
             }
@@ -52,11 +52,24 @@
 </p>
 <c:if test="${not empty codProductosMap}">
 	<p>
-	<i class="fa fa-plus-square" onclick="generar('relProdCat?alta')"></i>
+	
 	</p>
 </c:if>
+<div class='row'>
+	<div class='col-sm-4'>
+		<div class="form-group">
+			<fmt:message key="relProdCat.grilla.agregar.producto" />
+			<i class="fa fa-plus-square" onclick="generar('relProdCat?alta')"></i>
+		</div>
+	</div>
+	<div class='col-sm-4'>
+		<div class="form-group">
+			<input type="button" value='<fmt:message key="boton.confirmar" />' onclick="loadInBody('relProdCat?confirmar')">
+		</div>
+	</div>
+</div>
 <table id="idGrilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
-    <thead>
+	<thead>
         <tr>
             <th>Producto</th>
             <th>Incremento (%)</th>
@@ -73,8 +86,10 @@
 		    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
 		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm"/></td>
 		    <td style="white-space: nowrap;">
-		    	<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')"></i>
-		    	<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')"></i>
+		    	<c:if test="${empty prodCat.id}">
+		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
+		    	</c:if>
+		    	<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
 		    </td>
 		</tr>
 		</c:forEach>

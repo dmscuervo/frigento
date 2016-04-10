@@ -18,12 +18,12 @@ import com.soutech.frigento.util.Constantes;
 public class ProductoDaoImpl extends AbstractSpringDao<Producto, Integer> implements ProductoDao {
 
 	@Override
-	public Producto findByCodigo(Producto producto) {
+	public Producto findByCodigo(String codigo) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(Producto.class.getCanonicalName());
 		hql.append(" p where p.codigo = :cod");
 		Query query = getSession().createQuery(hql.toString());
-		query.setParameter("cod", producto.getCodigo());
+		query.setParameter("cod", codigo);
 		return (Producto) query.uniqueResult();
 	}
 	

@@ -78,6 +78,7 @@
 				<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm" autocomplete="off">
 				<form:hidden path="categoria.id"/>
 				<form:hidden path="id"/>
+				<form:hidden path="indiceLista"/>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >

@@ -28,7 +28,7 @@ import com.soutech.frigento.service.CategoriaService;
 public class CategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    private final String BUSQUEDA_DEFAULT = "categoria?sortFieldName=descripcion&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "categoria?sortFieldName=descripcion&sortOrder=asc";
     
     @Autowired
     public CategoriaService categoriaService;

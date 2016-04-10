@@ -22,14 +22,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.CategoriaService;
+import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
@@ -42,6 +45,7 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
+    private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -50,6 +54,9 @@ public class RelProductoCategoriaController extends GenericController {
     
     @Autowired
     private RelProductoCategoriaService relProductoCategoriaService;
+    
+    @Autowired
+    private ProductoCostoService productoCostoService;
     
     @Autowired
     private ErrorJSONHandler errorJSONHandler;
@@ -81,6 +88,10 @@ public class RelProductoCategoriaController extends GenericController {
     public String alta(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
     	if (bindingResult.hasErrors()) {
     		RelProdCatErroresView errorView = new RelProdCatErroresView();
+    		ProductoCosto pc = productoCostoService.obtenerActual(relProdCatForm.getProducto().getId());
+    		if(relProdCatForm.getFechaDesde() != null && pc != null && relProdCatForm.getFechaDesde().before(pc.getFechaDesde())){
+    			errorView.setFechaDesde(getMessage("relProdCatForm.fechaDesde.anterior", sdf_desde_hasta.format(pc.getFechaDesde())));
+    		}
     		String json = errorJSONHandler.getJSON(errorView, bindingResult);
     		uiModel.addAttribute("messageAjax", json);
         	return "ajax/value";
@@ -98,8 +109,7 @@ public class RelProductoCategoriaController extends GenericController {
     public String preEdit(@PathVariable("idx") Integer index, Model uiModel) {
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	RelProductoCategoria rpc = lista.get(index.intValue());
-    	//Por comodidad uso el id para guardar el indice. Cuando tengo que persistir lo tengo que eliminar
-    	rpc.setId(index);
+    	rpc.setIndiceLista(index);
     	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
         return "relProdCat/editar";
     }
@@ -118,7 +128,7 @@ public class RelProductoCategoriaController extends GenericController {
     	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
         //Cambio el producto
-        String codProdAnt = lista.get(relProdCatForm.getId()).getProducto().getCodigo();
+        String codProdAnt = lista.get(relProdCatForm.getIndiceLista()).getProducto().getCodigo();
         String codProd = relProdCatForm.getProducto().getCodigo();
         if(!codProd.equals(codProdAnt)){
         	//Actualizo
@@ -128,12 +138,12 @@ public class RelProductoCategoriaController extends GenericController {
 			}
         	uiModel.addAttribute("codProductosMap", codDescripcionMap);
         }
-        lista.set(relProdCatForm.getId(), relProdCatForm);
+        lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
         return "relProdCat/grilla";
     }
     
     @SuppressWarnings("unchecked")
-	@RequestMapping(params = "borrar", value="/{idx}", produces = "text/html", method = RequestMethod.GET)
+	@RequestMapping(params = "borrar", value="/{idx}", produces = "text/html", method = RequestMethod.POST)
     public String borrar(@PathVariable("idx") Integer index, Model uiModel) {
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	RelProductoCategoria rpc = lista.get(index.intValue());
@@ -143,9 +153,17 @@ public class RelProductoCategoriaController extends GenericController {
     	lista.remove(index.intValue());
         return "relProdCat/grilla";
     }
+    
+    @SuppressWarnings("unchecked")
+    @RequestMapping(params = "confirmar", produces = "text/html", method = RequestMethod.GET)
+    public String confirmar(Model uiModel) {
+    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	relProductoCategoriaService.asignarProductos((Categoria)uiModel.asMap().get("categoria"), lista);
+        return "redirect:/".concat(CategoriaController.BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
+    }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String listar(@PathVariable("id") Short idCat, Model uiModel) {
+    public String listar(@PathVariable("id") Short idCat, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	Categoria categoria = categoriaService.obtenerCategoria(idCat);
         uiModel.addAttribute("productosCategoria", relProductoCategoriaService.obtenerProductosCategoria(idCat));
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
@@ -168,6 +186,9 @@ public class RelProductoCategoriaController extends GenericController {
         uiModel.addAttribute("codProductosMasterMap", codDescripcionMap);
         uiModel.addAttribute("codCostoJson", json);
         uiModel.addAttribute("categoria", categoria);
+        if(informar != null){
+        	uiModel.addAttribute("informar", informar);
+        }
         return "relProdCat/grilla";
     }
     

@@ -61,6 +61,9 @@ public class RelProductoCategoria {
     @Transient
     private BigDecimal precioCalculado;
     
+    @Transient
+    private Integer indiceLista;
+    
 	public BigDecimal getIncremento() {
         return this.incremento;
     }
@@ -119,6 +122,14 @@ public class RelProductoCategoria {
 
 	public void setPrecioCalculado(BigDecimal precioCalculado) {
 		this.precioCalculado = precioCalculado;
+	}
+
+	public Integer getIndiceLista() {
+		return indiceLista;
+	}
+
+	public void setIndiceLista(Integer indiceLista) {
+		this.indiceLista = indiceLista;
 	}
 	
 }

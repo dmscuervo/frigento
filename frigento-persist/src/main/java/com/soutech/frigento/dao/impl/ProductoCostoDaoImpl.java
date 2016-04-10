@@ -37,4 +37,12 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 			//La baja de productoCosto es logica
 			delete(prodCosto);
 	}
+
+	@Override
+	public ProductoCosto findActualByProducto(Integer idProd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }

@@ -79,6 +79,7 @@
 				<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm" autocomplete="off">
 				<form:hidden path="categoria.id"/>
 				<form:hidden path="id"/>
+				<form:hidden path="indiceLista"/>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >
@@ -89,7 +90,7 @@
 			        </div>
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
-			        		<form:select path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
+			        		<form:select disabled="disabled" path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
 			        			<form:option value="-1" label='asdasdas'/>
 			        		</form:select>
 						</div>
@@ -149,7 +150,7 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
                 			<div class='input-group date' id='datetimepicker1'>
-                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
+                				<form:input readonly="true" path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>
                     			</span>

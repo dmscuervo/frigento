@@ -33,7 +33,7 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public void saveProducto(Producto producto) throws EntityExistException {
-		Producto prod = productoDao.findByCodigo(producto);
+		Producto prod = productoDao.findByCodigo(producto.getCodigo());
 		if(prod != null){
 			throw new EntityExistException("codigo");
 		}

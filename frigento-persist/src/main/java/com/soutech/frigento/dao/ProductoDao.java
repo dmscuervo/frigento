@@ -5,7 +5,7 @@ import com.soutech.frigento.model.Producto;
 
 public interface ProductoDao extends IDao<Producto, Integer> {
 
-	Producto findByCodigo(Producto producto);
+	Producto findByCodigo(String codigo);
 
 	Float obtenerStock(Integer idProd);
 
