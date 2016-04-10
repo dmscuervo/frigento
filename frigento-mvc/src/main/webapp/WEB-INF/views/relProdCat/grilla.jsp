@@ -3,11 +3,14 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-	    $('#idGrilla').DataTable({
-	        "columnDefs": [
-	                       { "orderable": false, "targets": -1 }
-	                     ]
-	    }); 
+		if(!$.fn.DataTable.isDataTable('#idGrilla')){
+		    $('#idGrilla').DataTable({
+		    	"paging": false,
+		        "columnDefs": [
+		                       { "orderable": false, "targets": -1 }
+		                     ]
+		    }); 
+		}
 	});
 	
 	$('#idGrilla tbody').on( 'click', 'tr', function () {
@@ -26,17 +29,32 @@
 			$('#idModalAlta').modal('show');
 		});
 	}
+	
+	function eliminar(path){
+		var url = '${pathBase}' + path;
+		$.ajax({
+            url: url,
+            type: 'GET',
+            success: function(result) {
+            	$('#page-wrapper').html(result);
+            }
+        });
+	}
 </script>
 
 <h3>
-	<fmt:message key="relProdCat.grilla.title" />
+	<fmt:message key="relProdCat.grilla.title" >
+		<fmt:param value="${categoria.descripcion}" />
+	</fmt:message>
 </h3>
 <p class="form-validate">
 	${msgError}
 </p>
-<p>
-<i class="fa fa-plus-square" onclick="generar('relProdCat/${idCat}?alta')"></i>
-</p>
+<c:if test="${not empty codProductosMap}">
+	<p>
+	<i class="fa fa-plus-square" onclick="generar('relProdCat?alta')"></i>
+	</p>
+</c:if>
 <table id="idGrilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
     <thead>
         <tr>
@@ -48,15 +66,15 @@
         </tr>
     </thead>
     <tbody id="idBodyContenido">
-    	<c:forEach var="prodCat" items="${productosCategoria}">
+    	<c:forEach var="prodCat" items="${productosCategoria}" varStatus="status">
 		<tr>
 			<td style="white-space: nowrap;">${prodCat.producto.codigo} - ${prodCat.producto.descripcion}</td>
 		    <td style="white-space: nowrap;">${prodCat.incremento}</td>
 		    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
 		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm"/></td>
 		    <td style="white-space: nowrap;">
-		    	<i class="fa fa-pencil-square" onclick="generar('relProdCat/${idCat}?edita')"></i>
-		    	<i class="fa fa-minus-square" onclick="generar('relProdCat/${idCat}?borrar')"></i>
+		    	<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')"></i>
+		    	<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')"></i>
 		    </td>
 		</tr>
 		</c:forEach>

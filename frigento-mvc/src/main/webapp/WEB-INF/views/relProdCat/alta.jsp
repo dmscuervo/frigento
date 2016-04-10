@@ -54,8 +54,7 @@
             		return;
             	}
             	catch(err) {
-            		console.log("No JSON");
-	            	//Hago que se refresque el contenido al ocultar el modal
+            		//Hago que se refresque el contenido al ocultar el modal
 	            	$('#idModalAlta').on('hidden.bs.modal', function () {
 	            		//Cargo contenido
 	                	$('#page-wrapper').html(result);
@@ -78,6 +77,7 @@
 				<c:url var="urlAlta" value="/relProdCat/alta" />
 				<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm" autocomplete="off">
 				<form:hidden path="categoria.id"/>
+				<form:hidden path="id"/>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >
@@ -148,7 +148,7 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
                 			<div class='input-group date' id='datetimepicker1'>
-                				<form:input readonly="true" path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
+                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>
                     			</span>

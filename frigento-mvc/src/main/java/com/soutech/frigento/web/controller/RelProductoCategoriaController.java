@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelProductoCategoria;
+import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
@@ -37,7 +38,7 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 
 @Controller
 @RequestMapping(value="/relProdCat")
-@SessionAttributes(names={"productosCategoria", "codProductosMap", "codCostoJson"})
+@SessionAttributes(names={"categoria", "productosCategoria", "codProductosMap", "codProductosMasterMap", "codCostoJson"})
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -56,12 +57,14 @@ public class RelProductoCategoriaController extends GenericController {
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private CategoriaService categoriaService;
+    
     @SuppressWarnings("unchecked")
-	@RequestMapping(params = "alta", value="/{id}", produces = "text/html", method = RequestMethod.GET)
-    public String preAlta(@PathVariable("id") Short idCat, Model uiModel) {
+	@RequestMapping(params = "alta", produces = "text/html", method = RequestMethod.GET)
+    public String preAlta(Model uiModel) {
     	RelProductoCategoria rpc = new RelProductoCategoria();
-    	Categoria cat = new Categoria();
-    	cat.setId(idCat);
+    	Categoria cat = (Categoria)uiModel.asMap().get("categoria");
     	rpc.setCategoria(cat);
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	if(lista != null && !lista.isEmpty()){
@@ -86,13 +89,64 @@ public class RelProductoCategoriaController extends GenericController {
     	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
         lista.add(relProdCatForm);
-        uiModel.addAttribute("idCat", relProdCatForm.getCategoria().getId());
         codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
+        return "relProdCat/grilla";
+    }
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(params = "editar", value="/{idx}", produces = "text/html", method = RequestMethod.GET)
+    public String preEdit(@PathVariable("idx") Integer index, Model uiModel) {
+    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	RelProductoCategoria rpc = lista.get(index.intValue());
+    	//Por comodidad uso el id para guardar el indice. Cuando tengo que persistir lo tengo que eliminar
+    	rpc.setId(index);
+    	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
+        return "relProdCat/editar";
+    }
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
+    public String edit(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
+    	if (bindingResult.hasErrors()) {
+    		RelProdCatErroresView errorView = new RelProdCatErroresView();
+    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
+    		uiModel.addAttribute("messageAjax", json);
+        	return "ajax/value";
+        }
+    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
+    	Map<String, String> codProductosMasterMap = (Map<String, String>) uiModel.asMap().get("codProductosMasterMap");
+    	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
+        List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+        //Cambio el producto
+        String codProdAnt = lista.get(relProdCatForm.getId()).getProducto().getCodigo();
+        String codProd = relProdCatForm.getProducto().getCodigo();
+        if(!codProd.equals(codProdAnt)){
+        	//Actualizo
+        	codDescripcionMap = new HashMap<String, String>(codProductosMasterMap);
+        	for (RelProductoCategoria rpc : lista) {
+				codDescripcionMap.remove(rpc.getProducto().getCodigo());
+			}
+        	uiModel.addAttribute("codProductosMap", codDescripcionMap);
+        }
+        lista.set(relProdCatForm.getId(), relProdCatForm);
+        return "relProdCat/grilla";
+    }
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(params = "borrar", value="/{idx}", produces = "text/html", method = RequestMethod.GET)
+    public String borrar(@PathVariable("idx") Integer index, Model uiModel) {
+    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	RelProductoCategoria rpc = lista.get(index.intValue());
+    	//Vuelvo a incorporarlo como posible producto a seleccionar
+    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
+    	lista.remove(index.intValue());
         return "relProdCat/grilla";
     }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String listar(@PathVariable("id") Short idCat, Model uiModel) {
+    	Categoria categoria = categoriaService.obtenerCategoria(idCat);
         uiModel.addAttribute("productosCategoria", relProductoCategoriaService.obtenerProductosCategoria(idCat));
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         Map<String, String> codDescripcionMap = new HashMap<String, String>();
@@ -111,8 +165,9 @@ public class RelProductoCategoriaController extends GenericController {
 			throw new RuntimeException("Error al convertir el mapa codigo-costo de productos.");
 		}
         uiModel.addAttribute("codProductosMap", codDescripcionMap);
+        uiModel.addAttribute("codProductosMasterMap", codDescripcionMap);
         uiModel.addAttribute("codCostoJson", json);
-        uiModel.addAttribute("idCat", idCat);
+        uiModel.addAttribute("categoria", categoria);
         return "relProdCat/grilla";
     }
     
