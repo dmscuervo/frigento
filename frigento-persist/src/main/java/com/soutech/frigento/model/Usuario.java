@@ -1,4 +1,6 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +20,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Table(name = "users", uniqueConstraints=@UniqueConstraint(columnNames={"username"}))
-public class Usuario {
+public class Usuario implements Serializable {
+
+	private static final long serialVersionUID = -1039096380771137501L;
 
 	@NotNull
     @Column(name = "username")

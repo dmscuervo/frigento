@@ -1,4 +1,6 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +17,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "CATEGORIA")
-public class Categoria {
+public class Categoria implements Serializable {
 
-    /**
-     */
+    private static final long serialVersionUID = 3908265881937560824L;
+	
     @NotNull
     @Size(max = 30)
     @Column(name = "DESCRIPCION")

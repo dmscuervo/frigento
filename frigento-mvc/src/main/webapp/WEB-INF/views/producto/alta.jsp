@@ -1,6 +1,17 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		$('#datetimepickerProdAlta').datetimepicker({
+			maxDate: moment(),
+			locale: 'es'
+            //format: 'DD/MM/YYYY HH:mm:ss'
+        });
+	});
+</script>
+		
 <div style="width: 50%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="producto.alta.title" />
@@ -8,6 +19,30 @@
 	<br />
 	<c:url var="urlAltaProducto" value="/producto/alta" />
 	<form:form action="${urlAltaProducto}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+	<div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idFechaAlta" style="white-space: nowrap;">
+					<fmt:message key="producto.fecha.alta" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+        		<div class='input-group date' id='datetimepickerProdAlta'>
+     				<form:input path="fechaAlta" cssClass="form-control" id="idFechaAlta" />
+        				<span class="input-group-addon">
+             			<span class="glyphicon glyphicon-calendar"></span>
+         			</span>
+     			</div>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="fechaAlta" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >

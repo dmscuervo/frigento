@@ -1,5 +1,7 @@
 package com.soutech.frigento.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,8 +18,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Table(name="authorities", uniqueConstraints=@UniqueConstraint(columnNames={"username", "authority"}))
-public class Rol {
+public class Rol implements Serializable {
 
+	private static final long serialVersionUID = 2584650747668420837L;
+	
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER = "ROLE_USER";
 

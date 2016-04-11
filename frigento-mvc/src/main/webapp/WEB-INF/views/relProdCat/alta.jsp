@@ -5,8 +5,9 @@
 	
 
 	$(document).ready(function(){
-		$('#datetimepicker1').datetimepicker({
-            locale: 'es'
+		$('#datetimepickerRPCAlta').datetimepicker({
+			maxDate: moment(),
+			locale: 'es'
         });
 		//Aplico restricciones
 		$('#idIncremento').keyup(function(){
@@ -148,7 +149,7 @@
 			        </div>
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
-                			<div class='input-group date' id='datetimepicker1'>
+                			<div class='input-group date' id='datetimepickerRPCAlta'>
                 				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>

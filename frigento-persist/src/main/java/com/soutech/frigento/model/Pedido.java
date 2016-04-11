@@ -1,5 +1,6 @@
 package com.soutech.frigento.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -24,46 +25,36 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "PEDIDO")
 
-public class Pedido {
+public class Pedido implements Serializable {
 
-	/**
-	 */
+	private static final long serialVersionUID = -715466677393880427L;
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_ESTADO")
 	private Estado estado;
 
-	/**
-	 */
 	@NotNull
 	@Column(name = "FECHA")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date fecha;
 
-	/**
-	 */
 	@NotNull
 	@Column(name = "COSTO")
 	@DateTimeFormat(style = "M-")
 	private BigDecimal costo;
 
-	/**
-	 */
 	@Column(name = "F_ENTREGAR")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date fechaAEntregar;
 
-	/**
-	 */
 	@Column(name = "F_ENTREGADO")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")
 	private Date fechaEntregado;
 
-	/**
-	 */
 	@Column(name = "F_ANULADO")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "M-")

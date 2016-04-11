@@ -32,12 +32,18 @@ public class ProductoServiceImpl implements ProductoService {
     ControlStockProducto controlStockProducto;
 
 	@Override
+	@Transactional
 	public void saveProducto(Producto producto) throws EntityExistException {
 		Producto prod = productoDao.findByCodigo(producto.getCodigo());
 		if(prod != null){
 			throw new EntityExistException("codigo");
 		}
 		productoDao.save(producto);
+		ProductoCosto rpc = new ProductoCosto();
+		rpc.setCosto(producto.getCostoActual());
+		rpc.setFechaDesde(producto.getFechaAlta());
+		rpc.setProducto(producto);
+		productoCostoDao.save(rpc);
 	}
 
 	@Override
@@ -51,7 +57,14 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
+	@Transactional
 	public void actualizarProducto(Producto producto) throws StockAlteradoException {
+		//Primero actualizo productoCosto
+		ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(producto.getId(), producto.getFechaAlta());
+		prodCosto.setCosto(producto.getCostoActual());
+		prodCosto.setFechaDesde(producto.getFechaAlta());
+		productoCostoDao.update(prodCosto);
+		
 		controlStockProducto.actualizarProductoStock(producto);
 	}
 

@@ -1,4 +1,6 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,10 +20,10 @@ import com.soutech.frigento.enums.TipoEstadoEnum;
 
 @Entity
 @Table(name = "ESTADO")
-public class Estado {
+public class Estado implements Serializable {
 
-    /**
-     */
+    private static final long serialVersionUID = -7234561460573812053L;
+	
     @NotNull
     @Size(max = 15)
     private String descripcion;

@@ -62,6 +62,16 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		query.setParameter("prodId", idProd);
 		return (RelProductoCategoria) query.uniqueResult();
 	}
+
+	@Override
+	public Date findMinDate(Integer idProd) {
+		StringBuilder hql = new StringBuilder("select min(rpc.fechaDesde) from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" rpc where rpc.producto.id = :idProd ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		return (Date) query.uniqueResult();
+	}
 	
 	
 }

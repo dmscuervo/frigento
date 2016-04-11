@@ -48,18 +48,15 @@
 	</fmt:message>
 </h3>
 <p class="form-validate">
-	${msgError}
+	${msgRespuesta}
 </p>
-<c:if test="${not empty codProductosMap}">
-	<p>
-	
-	</p>
-</c:if>
 <div class='row'>
 	<div class='col-sm-4'>
 		<div class="form-group">
+		<c:if test="${not empty codProductosMap}">
 			<fmt:message key="relProdCat.grilla.agregar.producto" />
-			<i class="fa fa-plus-square" onclick="generar('relProdCat?alta')"></i>
+			<i class="fa fa-plus-square fa-lg" onclick="generar('relProdCat?alta')"></i>
+		</c:if>			
 		</div>
 	</div>
 	<div class='col-sm-4'>

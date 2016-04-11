@@ -39,9 +39,36 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 	}
 
 	@Override
-	public ProductoCosto findActualByProducto(Integer idProd) {
-		// TODO Auto-generated method stub
-		return null;
+	public Date getMinFechaDesde(Integer idProd) {
+		StringBuilder hql = new StringBuilder("select min(pc.fechaDesde) from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc where pc.producto.id = :idProd ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		return (Date) query.uniqueResult();
+	}
+
+	@Override
+	public ProductoCosto findByProductoFecha(Integer idProd, Date fecha) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc where pc.producto.id = :idProd ");
+		hql.append("and pc.fechaDesde <= :fecha ");
+		hql.append("and (pc.fechaHasta is null or pc.fechaHasta > :fecha ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		query.setParameter("fecha", fecha);
+		return (ProductoCosto) query.uniqueResult();
+	}
+
+	@Override
+	public Date getMinFechaHasta(Integer idProd) {
+		StringBuilder hql = new StringBuilder("select min(pc.fechaHasta) from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc where pc.producto.id = :idProd ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		return (Date) query.uniqueResult();
 	}
 	
 	

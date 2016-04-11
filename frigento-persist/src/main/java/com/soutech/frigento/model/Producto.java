@@ -78,6 +78,9 @@ public class Producto implements Serializable {
     @Column(name = "FECHA_BAJA")
     private Date fechaBaja;
     
+    @Transient
+    private Date fechaAlta;
+    
 	public String getCodigo() {
         return this.codigo;
     }
@@ -172,6 +175,14 @@ public class Producto implements Serializable {
 
 	public void setFechaBaja(Date fechaBaja) {
 		this.fechaBaja = fechaBaja;
+	}
+
+	public Date getFechaAlta() {
+		return fechaAlta;
+	}
+
+	public void setFechaAlta(Date fechaAlta) {
+		this.fechaAlta = fechaAlta;
 	}
 	
 }

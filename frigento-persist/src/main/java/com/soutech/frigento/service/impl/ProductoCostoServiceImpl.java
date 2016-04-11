@@ -1,5 +1,7 @@
 package com.soutech.frigento.service.impl;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,17 @@ public class ProductoCostoServiceImpl implements ProductoCostoService {
 
 	@Override
 	public ProductoCosto obtenerActual(Integer idProd) {
-		return productoCostoDao.findActualByProducto(idProd);
+		return productoCostoDao.findCostoActual(idProd);
+	}
+
+	@Override
+	public Date obtenerMinFechaHasta(Integer idProd) {
+		return productoCostoDao.getMinFechaHasta(idProd);
+	}
+
+	@Override
+	public Date obtenerMinFechaDesde(Integer idProd) {
+		return productoCostoDao.getMinFechaDesde(idProd);
 	}
 
 	

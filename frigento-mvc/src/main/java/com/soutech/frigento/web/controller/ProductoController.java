@@ -1,6 +1,8 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -8,9 +10,12 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +27,11 @@ import org.springframework.web.util.WebUtils;
 import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
-import com.soutech.frigento.util.PrinterStack;
+import com.soutech.frigento.service.RelPedidoProductoService;
+import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.util.Constantes;
 
 @Controller
 @RequestMapping(value="/producto")
@@ -31,13 +39,30 @@ public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
     private final String BUSQUEDA_DEFAULT = "producto?estado=A&sortFieldName=descripcion&sortOrder=asc";
+    private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   
+    }
     
     @Autowired
     public ProductoService productoService;
+    
+    @Autowired
+    public RelProductoCategoriaService relProductoCategoriaService;
+    
+    @Autowired
+    public ProductoCostoService productoCostoService;
+    
+    @Autowired
+    public RelPedidoProductoService relPedidoProductoService;
 
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
-    	uiModel.addAttribute("productoForm", new Producto());
+    	Producto producto = new Producto();
+    	producto.setFechaAlta(new Date());
+		uiModel.addAttribute("productoForm", producto );
         return "producto/alta";
     }
     
@@ -78,7 +103,31 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
+    	Date fechaHastaMin = relProductoCategoriaService.obtenerMinFechaDesde(id);
+    	Date fechaHastaMin2 = productoCostoService.obtenerMinFechaHasta(id);
+    	Date fechaHastaMin3 = relPedidoProductoService.obtenerMinFechaPedido(id);
+    	//Me quedo con la mas vieja
+    	String fechaMin = sdf_desde_hasta.format(new Date());
+    	if(fechaHastaMin != null){
+    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : null;
+    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : null;
+    	}else if(fechaHastaMin2 != null){
+    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin2 : null;
+    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin2 : null;
+    	}else if(fechaHastaMin3 != null){
+    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin3 : null;
+    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : null;
+    	}
+    	if(fechaHastaMin != null){
+    		Date fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;
+    		fechaMinD = fechaMinD.before(fechaHastaMin3) ? fechaMinD : fechaHastaMin3;
+    		fechaMin = sdf_desde_hasta.format(fechaMinD);
+    	}
+    	
+    	uiModel.addAttribute("maxDateAlta", fechaMin);
+    	Date fechaDesdeMin = productoCostoService.obtenerMinFechaDesde(id);
     	Producto prod = productoService.obtenerProducto(id);
+    	prod.setFechaAlta(fechaDesdeMin);
     	prod.setStockPrevio(prod.getStock());
     	uiModel.addAttribute("productoForm", prod);
         return "producto/editar";

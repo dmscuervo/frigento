@@ -150,7 +150,7 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
                 			<div class='input-group date' id='datetimepicker1'>
-                				<form:input readonly="true" path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
+                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>
                     			</span>

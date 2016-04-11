@@ -1,4 +1,6 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,24 +16,20 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "REL_VENTA_PRODUCTO")
-public class RelVentaProducto {
+public class RelVentaProducto implements Serializable {
 
-    /**
-     */
-    @NotNull
+    private static final long serialVersionUID = -5309062407934288318L;
+
+	@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_VENTA")
     private Venta venta;
 
-    /**
-     */
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_REL_PROD_CAT")
     private RelProductoCategoria relProductoCategoria;
 
-    /**
-     */
     @NotNull
     @Column(name = "CANTIDAD")
     private Float cantidad;

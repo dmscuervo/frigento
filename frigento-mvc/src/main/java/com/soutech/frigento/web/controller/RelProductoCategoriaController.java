@@ -2,11 +2,14 @@ package com.soutech.frigento.web.controller;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.logging.Log;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
@@ -45,6 +49,7 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
+    public static final String BUSQUEDA_DEFAULT = "relProdCat/${cat.id}?listar";
     private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
     
     @InitBinder
@@ -74,10 +79,15 @@ public class RelProductoCategoriaController extends GenericController {
     	Categoria cat = (Categoria)uiModel.asMap().get("categoria");
     	rpc.setCategoria(cat);
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	//En caso de haber realizado un alta nuevo, vuelvo a dejar la misma fecha elegida
     	if(lista != null && !lista.isEmpty()){
     		rpc.setFechaDesde(lista.get(0).getFechaDesde());
     	}else{
-    		rpc.setFechaDesde(new Date());
+    		for (RelProductoCategoria relProdCat : lista) {
+				if(relProdCat.getId() != null){
+					rpc.setFechaDesde(new Date());
+				}
+			}
     	}
     	uiModel.addAttribute("relProdCatForm", rpc);
         return "relProdCat/alta";
@@ -88,7 +98,10 @@ public class RelProductoCategoriaController extends GenericController {
     public String alta(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
     	if (bindingResult.hasErrors()) {
     		RelProdCatErroresView errorView = new RelProdCatErroresView();
-    		ProductoCosto pc = productoCostoService.obtenerActual(relProdCatForm.getProducto().getId());
+    		ProductoCosto pc = null;
+    		if(relProdCatForm.getProducto().getId() != null){
+    			pc = productoCostoService.obtenerActual(relProdCatForm.getProducto().getId());
+    		}
     		if(relProdCatForm.getFechaDesde() != null && pc != null && relProdCatForm.getFechaDesde().before(pc.getFechaDesde())){
     			errorView.setFechaDesde(getMessage("relProdCatForm.fechaDesde.anterior", sdf_desde_hasta.format(pc.getFechaDesde())));
     		}
@@ -156,20 +169,36 @@ public class RelProductoCategoriaController extends GenericController {
     
     @SuppressWarnings("unchecked")
     @RequestMapping(params = "confirmar", produces = "text/html", method = RequestMethod.GET)
-    public String confirmar(Model uiModel) {
+    public String confirmar(Model uiModel, HttpServletRequest httpServletRequest) {
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
-    	relProductoCategoriaService.asignarProductos((Categoria)uiModel.asMap().get("categoria"), lista);
-        return "redirect:/".concat(CategoriaController.BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
+    	Categoria categoria = (Categoria)uiModel.asMap().get("categoria");
+    	try{
+			relProductoCategoriaService.asignarProductos(categoria, lista);
+    	} catch (FechaDesdeException e) {
+			String key = e.getKeyMessage();
+			logger.info(getMessage(key, e.getArgs()));
+			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
+			return "relProdCat/grilla";
+		}
+    	httpServletRequest.setAttribute("msgRespuesta", getMessage("relProdCat.confirmar.ok"));
+    	return "relProdCat/grilla";
     }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String listar(@PathVariable("id") Short idCat, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	Categoria categoria = categoriaService.obtenerCategoria(idCat);
-        uiModel.addAttribute("productosCategoria", relProductoCategoriaService.obtenerProductosCategoria(idCat));
+        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat);
+		uiModel.addAttribute("productosCategoria", relProdCats);
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
-        Map<String, String> codDescripcionMap = new HashMap<String, String>();
+        Map<String, String> codDescripcionMap = new TreeMap<String, String>();
+        List<Integer> productosYaRelacionados = new ArrayList<Integer>();
+        for (RelProductoCategoria relProdCat : relProdCats) {
+        	productosYaRelacionados.add(relProdCat.getProducto().getId());
+        }
         for (Producto producto : productos) {
-			codDescripcionMap.put(producto.getCodigo(), producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
+        	if(!productosYaRelacionados.contains(producto.getId())){
+        		codDescripcionMap.put(producto.getCodigo(), producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
+        	}
 		}
         Map<String, BigDecimal> codCostoMap = new HashMap<String, BigDecimal>();
         for (Producto producto : productos) {

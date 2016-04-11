@@ -1,4 +1,5 @@
 package com.soutech.frigento.model;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -25,7 +26,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "REL_PRODUCTO_CATEGORIA")
 
-public class RelProductoCategoria {
+public class RelProductoCategoria implements Serializable {
+
+	private static final long serialVersionUID = 1119849523734354664L;
 
 	@Id
     @SequenceGenerator(name = "relProductoCategoriaGen", sequenceName = "SEQ_REL_PROD_CAT")
@@ -40,7 +43,7 @@ public class RelProductoCategoria {
     @NotNull
     @Column(name = "F_DESDE")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
+    @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaDesde;
 
     @Column(name = "F_HASTA")

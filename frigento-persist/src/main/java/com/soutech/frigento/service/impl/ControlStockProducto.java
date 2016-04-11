@@ -21,6 +21,7 @@ public class ControlStockProducto {
 				throw new StockAlteradoException(producto);
 			}
 		}
+		
 		//Actualizo el producto
 		producto.setStockControlado(Boolean.TRUE);
 		productoDao.update(producto);
