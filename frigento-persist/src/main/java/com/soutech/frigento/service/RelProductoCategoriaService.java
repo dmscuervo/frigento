@@ -15,4 +15,6 @@ public interface RelProductoCategoriaService {
 
 	Date obtenerMinFechaDesde(Integer idProd);
 
+	List<RelProductoCategoria> obtenerCategoriasProducto(Integer idProd, String estado);
+
 }

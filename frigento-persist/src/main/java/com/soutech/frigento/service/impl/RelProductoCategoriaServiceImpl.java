@@ -112,5 +112,10 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 			ControlVentaVsPrecioProducto.aplicarFlags(Boolean.FALSE);
 		}
 	}
+
+	@Override
+	public List<RelProductoCategoria> obtenerCategoriasProducto(Integer idProd, String estado) {
+		return relProductoCategoriaDao.findAllByProducto(idProd, estado);
+	}
 	
 }

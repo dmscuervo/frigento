@@ -49,7 +49,6 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "relProdCat/${cat.id}?listar";
     private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
     
     @InitBinder

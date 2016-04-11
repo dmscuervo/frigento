@@ -32,15 +32,20 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public RelProductoCategoria findRelacionActual(Integer idProd) {
+	public List<RelProductoCategoria> findAllByProducto(Integer idProd, String estado) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" rpc where rpc.producto.id = :idProd ");
-		hql.append("and rpc.fechaHasta is null");
+		if(estado != null && estado.equals(Constantes.ESTADO_REL_VIGENTE)){
+			hql.append("and rpc.fechaHasta is null");
+		}else if(estado != null && estado.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
+			hql.append("and rpc.fechaHasta is not null");
+		}
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("idProd", idProd);
-		return (RelProductoCategoria) query.uniqueResult();
+		return query.list();
 	}
 
 	@Transactional
@@ -78,6 +83,4 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		query.setParameter("idProd", idProd);
 		return (Date) query.uniqueResult();
 	}
-	
-	
 }

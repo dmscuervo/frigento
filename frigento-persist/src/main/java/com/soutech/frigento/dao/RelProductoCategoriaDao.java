@@ -8,9 +8,10 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 
 	List<RelProductoCategoria> findAllByCategoria(Short idCat, String estado);
 
-	RelProductoCategoria findRelacionActual(Integer idProd);
+	List<RelProductoCategoria> findAllByProducto(Integer idProd, String estado);
 
 	RelProductoCategoria findActualByDupla(Short idCat, Integer idProd);
 
 	Date findMinDate(Integer idProd);
+
 }

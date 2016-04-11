@@ -17,6 +17,7 @@ import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoService;
+import com.soutech.frigento.util.Constantes;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {	
@@ -78,9 +79,11 @@ public class ProductoServiceImpl implements ProductoService {
 			logger.info("El producto contiene relaciones con ProductoCosto. Se procede a su baja logica.");
 			productoCostoDao.delete(prodCosto);
 		}
-		RelProductoCategoria relProdCategoria = relProductoCategoriaDao.findRelacionActual(producto.getId());
-		if(relProdCategoria != null){
+		List<RelProductoCategoria> relProdCats = relProductoCategoriaDao.findAllByProducto(producto.getId(), Constantes.ESTADO_REL_VIGENTE);
+		if(!relProdCats.isEmpty()){
 			logger.info("El producto contiene relaciones con RelProductoCategoria. Se procede a su baja logica.");
+		}
+		for (RelProductoCategoria relProdCategoria : relProdCats) {
 			relProductoCategoriaDao.delete(relProdCategoria);
 		}
 	}
