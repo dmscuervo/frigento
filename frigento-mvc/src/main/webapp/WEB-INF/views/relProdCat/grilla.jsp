@@ -11,6 +11,28 @@
 		                     ]
 		    }); 
 		}
+		
+		$('#idBtConfirmar').hide();
+		$('#idBtAnular').hide();
+		
+		$('#idSelEstado').on('change', function(){
+	    	var estado = $("#idSelEstado").val();
+	    	loadInBody('relProdCat/${categoria.id}?listar=&estado='+estado);
+	    });
+	    
+	    if('${estadoSel}'=='V'){
+	    	$('#idSelEstado option[value="V"]').prop('selected', true);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', false);
+	    	$('#idSelEstado option[value=""]').prop('selected', false);
+	    }else if('${estadoSel}'=='NV'){
+	    	$('#idSelEstado option[value="V"]').prop('selected', false);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', true);
+	    	$('#idSelEstado option[value=""]').prop('selected', false);
+	    }else if('${estadoSel}'==''){
+	    	$('#idSelEstado option[value="V"]').prop('selected', false);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', false);
+	    	$('#idSelEstado option[value=""]').prop('selected', true);	
+	    }
 	});
 	
 	$('#idGrilla tbody').on( 'click', 'tr', function () {
@@ -37,6 +59,10 @@
             type: 'POST',
             success: function(result) {
             	$('#page-wrapper').html(result);
+            	//Controles
+            	$('#idSelEstado').attr('disabled', true);
+            	$('#idBtConfirmar').show();
+            	$('#idBtAnular').show();
             }
         });
 	}
@@ -51,7 +77,7 @@
 	${msgRespuesta}
 </p>
 <div class='row'>
-	<div class='col-sm-4'>
+	<div class='col-sm-3'>
 		<div class="form-group">
 		<c:if test="${not empty codProductosMap}">
 			<fmt:message key="relProdCat.grilla.agregar.producto" />
@@ -59,19 +85,37 @@
 		</c:if>			
 		</div>
 	</div>
-	<div class='col-sm-4'>
+	<div class='col-sm-1'>
 		<div class="form-group">
-			<input type="button" value='<fmt:message key="boton.confirmar" />' onclick="loadInBody('relProdCat?confirmar')">
+			<input type="button" id="idBtConfirmar" value='<fmt:message key="boton.confirmar" />' onclick="loadInBody('relProdCat?confirmar')">
+		</div>
+	</div>
+	<div class='col-sm-1'>
+		<div class="form-group">
+			<input type="button" id="idBtAnular" value='<fmt:message key="boton.cancelar" />' onclick="loadInBody('relProdCat/${categoria.id}?listar=&estado=V')">
+		</div>
+	</div>
+     <div class='col-sm-4'>
+     	<div class="form-group">
+			<label class="col-sm-6 control-label" for="idCod" style="white-space: nowrap">
+				<fmt:message key="relProdCat.estado" />
+			</label>
+     		<select id="idSelEstado">
+				<option value="V" ><fmt:message key="estado.rel.vigente" /></option>
+				<option value="NV" ><fmt:message key="estado.rel.no.vigente" /></option>
+				<option value="" ><fmt:message key="combos.todos" /></option>
+        	</select>
 		</div>
 	</div>
 </div>
 <table id="idGrilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
 	<thead>
         <tr>
-            <th>Producto</th>
-            <th>Incremento (%)</th>
-            <th>Precio</th>
-            <th>F. Desde</th>
+            <th><fmt:message key="relProdCat.producto" /></th>
+            <th><fmt:message key="relProdCat.incremento" /></th>
+            <th><fmt:message key="relProdCat.precio" /></th>
+            <th><fmt:message key="relProdCat.fechaDesde" /></th>
+            <th><fmt:message key="relProdCat.fechaHasta" /></th>
             <th></th>
         </tr>
     </thead>
@@ -83,10 +127,18 @@
 		    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
 		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm"/></td>
 		    <td style="white-space: nowrap;">
+		    	<c:choose>
+		    		<c:when test="${not empty prodCat.fechaHasta}"><fmt:formatDate value="${prodCat.fechaHasta}" pattern="dd/MM/yyyy HH:mm"/></c:when>
+		    		<c:otherwise><fmt:message key="estado.rel.vigente" /></c:otherwise>
+		    	</c:choose>
+    		</td>
+		    <td style="white-space: nowrap;">
 		    	<c:if test="${empty prodCat.id}">
 		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
 		    	</c:if>
+		    	<c:if test="${empty prodCat.fechaHasta}">
 		    	<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
+		    	</c:if>
 		    </td>
 		</tr>
 		</c:forEach>

@@ -31,7 +31,6 @@ import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
-import com.soutech.frigento.util.Constantes;
 
 @Controller
 @RequestMapping(value="/producto")
@@ -39,7 +38,6 @@ public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
     private final String BUSQUEDA_DEFAULT = "producto?estado=A&sortFieldName=descripcion&sortOrder=asc";
-    private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -107,7 +105,8 @@ public class ProductoController extends GenericController {
     	Date fechaHastaMin2 = productoCostoService.obtenerMinFechaHasta(id);
     	Date fechaHastaMin3 = relPedidoProductoService.obtenerMinFechaPedido(id);
     	//Me quedo con la mas vieja
-    	String fechaMin = sdf_desde_hasta.format(new Date());
+    	Date fechaMinD = new Date();
+    	//Inicializo valores en caso de nulos
     	if(fechaHastaMin != null){
     		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : null;
     		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : null;
@@ -119,12 +118,11 @@ public class ProductoController extends GenericController {
     		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : null;
     	}
     	if(fechaHastaMin != null){
-    		Date fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;
+    		fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;
     		fechaMinD = fechaMinD.before(fechaHastaMin3) ? fechaMinD : fechaHastaMin3;
-    		fechaMin = sdf_desde_hasta.format(fechaMinD);
     	}
     	
-    	uiModel.addAttribute("maxDateAlta", fechaMin);
+    	uiModel.addAttribute("maxDateAlta", fechaMinD.getTime());
     	Date fechaDesdeMin = productoCostoService.obtenerMinFechaDesde(id);
     	Producto prod = productoService.obtenerProducto(id);
     	prod.setFechaAlta(fechaDesdeMin);
@@ -172,7 +170,7 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/activar", method = RequestMethod.POST, produces = "text/html")
     public String activar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	productoService.reactivarProducto(productoForm);
+    	productoService.reactivarProducto(productoService.obtenerProducto(productoForm.getId()));
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.activar.ok", productoForm.getDescripcion())));
     }
     

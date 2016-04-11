@@ -67,9 +67,15 @@
     	var bodyBlock=false;
     	
     	function loadInBody(path){
+    		if(!bodyBlock){
+				blockControl($('#wrapper'));
+				bodyBlock = true;				
+			}
     		var url = '${pathBase}' + path;
-    		console.log(url);
     		$('#page-wrapper').load(url, function(data){
+    			//Desbloqueo pantalla
+            	$('#wrapper').unblock();
+    			bodyBlock = false;
     			//En caso mobile, collapsa el menu luego de elegir una opcion
     			$('.sidebar-nav').attr('class', 'sidebar-nav navbar-collapse collapse');
     		});

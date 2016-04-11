@@ -59,6 +59,10 @@
 	            	$('#idModalAlta').on('hidden.bs.modal', function () {
 	            		//Cargo contenido
 	                	$('#page-wrapper').html(result);
+	                	//Controles
+	                	$('#idSelEstado').attr('disabled', true);
+	                	$('#idBtConfirmar').show();
+	                	$('#idBtAnular').show();
 	    			});
 	    			$('#idModalAlta').modal('hide');
             	}
@@ -84,7 +88,7 @@
 			        <div class='col-sm-4'>    
 						<div class="form-group" >
 							<label class="col-sm-2 control-label" for="idCod" style="white-space: nowrap;">
-								<fmt:message key="relProdCat.producto.codigo" />
+								<fmt:message key="relProdCat.producto" />
 							</label>
 						</div>
 			        </div>

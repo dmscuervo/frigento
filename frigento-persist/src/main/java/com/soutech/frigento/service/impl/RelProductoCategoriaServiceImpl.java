@@ -18,6 +18,7 @@ import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.Utils;
 
 @Service
@@ -39,8 +40,8 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
     RelVentaProductoDao relVentaProductoDao;
 	
 	@Override
-	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat) {
-		return relProductoCategoriaDao.findAllByCategoria(idCat);
+	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, String estado) {
+		return relProductoCategoriaDao.findAllByCategoria(idCat, estado);
 	}
 	
 	@Override
@@ -55,13 +56,13 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.error");
 		try{
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
-			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId());
+			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
 			for (RelProductoCategoria relProdCatActual : relacionesActual) {
 				Short idCat = relProdCatActual.getCategoria().getId();
 				Integer idProd = relProdCatActual.getProducto().getId();
 				Boolean prodCatEncontrado = Boolean.FALSE;
 				for (RelProductoCategoria relProdCatNuevo : relaciones) {
-					Producto producto = productoDao.findByCodigo(relProdCatActual.getProducto().getCodigo());
+					Producto producto = productoDao.findByCodigo(relProdCatNuevo.getProducto().getCodigo());
 					Short idCatNuevo = relProdCatNuevo.getCategoria().getId();
 					Integer idProdNuevo = producto.getId();
 					if(idCat.equals(idCatNuevo) && idProd.equals(idProdNuevo)){

@@ -39,7 +39,6 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 			</div>
 				<form:hidden path="id" />
-				<form:hidden path="descripcion" />
 			</form:form>
 		</div>
 		<!-- /.modal-content -->

@@ -80,14 +80,13 @@ public class RelProductoCategoriaController extends GenericController {
     	rpc.setCategoria(cat);
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	//En caso de haber realizado un alta nuevo, vuelvo a dejar la misma fecha elegida
+    	rpc.setFechaDesde(new Date());
     	if(lista != null && !lista.isEmpty()){
-    		rpc.setFechaDesde(lista.get(0).getFechaDesde());
-    	}else{
     		for (RelProductoCategoria relProdCat : lista) {
-				if(relProdCat.getId() != null){
-					rpc.setFechaDesde(new Date());
-				}
-			}
+    			if(relProdCat.getId() == null){
+    				rpc.setFechaDesde(relProdCat.getFechaDesde());
+    			}
+    		}
     	}
     	uiModel.addAttribute("relProdCatForm", rpc);
         return "relProdCat/alta";
@@ -185,9 +184,13 @@ public class RelProductoCategoriaController extends GenericController {
     }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String listar(@PathVariable("id") Short idCat, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
+    public String listar(@PathVariable("id") Short idCat, @RequestParam(value = "estado", required = true) String estado, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	Categoria categoria = categoriaService.obtenerCategoria(idCat);
-        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat);
+    	String estadoBusqueda = null;
+    	if(!estado.equals("")){
+    		estadoBusqueda = estado;
+    	}
+        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda);
 		uiModel.addAttribute("productosCategoria", relProdCats);
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         Map<String, String> codDescripcionMap = new TreeMap<String, String>();
@@ -215,6 +218,7 @@ public class RelProductoCategoriaController extends GenericController {
         uiModel.addAttribute("codProductosMasterMap", codDescripcionMap);
         uiModel.addAttribute("codCostoJson", json);
         uiModel.addAttribute("categoria", categoria);
+        uiModel.addAttribute("estadoSel", estado);
         if(informar != null){
         	uiModel.addAttribute("informar", informar);
         }

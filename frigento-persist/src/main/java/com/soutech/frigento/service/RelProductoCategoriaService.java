@@ -9,7 +9,7 @@ import com.soutech.frigento.model.RelProductoCategoria;
 
 public interface RelProductoCategoriaService {
 
-	List<RelProductoCategoria> obtenerProductosCategoria(Short idCat);
+	List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, String estado);
 
 	void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones) throws FechaDesdeException;
 

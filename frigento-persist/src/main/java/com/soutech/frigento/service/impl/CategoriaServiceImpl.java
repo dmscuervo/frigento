@@ -13,6 +13,7 @@ import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.service.CategoriaService;
+import com.soutech.frigento.util.Constantes;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
@@ -70,7 +71,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 			throw new EntityExistException("usuario", new Object[]{usuariosStr.toString()});
 		}
 		
-		List<RelProductoCategoria> relaciones = relProductoCategoriaDao.findAllByCategoria(categoria.getId());
+		List<RelProductoCategoria> relaciones = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
 		if(relaciones != null && !relaciones.isEmpty()){
 			for (RelProductoCategoria relProductoCategoria : relaciones) {
 				relProductoCategoriaDao.delete(relProductoCategoria);

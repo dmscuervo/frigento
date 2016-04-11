@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.model.RelProductoCategoria;
+import com.soutech.frigento.util.Constantes;
 
 @Repository
 @Transactional(readOnly=true)
@@ -17,10 +18,15 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RelProductoCategoria> findAllByCategoria(Short idCat) {
+	public List<RelProductoCategoria> findAllByCategoria(Short idCat, String estado) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" r where r.categoria.id = :catId");
+		if(estado != null && estado.equals(Constantes.ESTADO_REL_VIGENTE)){
+			hql.append(" and r.fechaHasta is null");
+		}else if(estado != null && estado.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
+			hql.append(" and r.fechaHasta is not null");
+		}
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("catId", idCat);
 		return query.list();

@@ -38,9 +38,7 @@
      </div>
      <div class='col-sm-4'>
      	<div class="form-group">
-     		<c:set var="activo" value="A" />
-     		<c:set var="inactivo" value="I" />
-			<select id="idSelEstado">
+     		<select id="idSelEstado">
 				<option value="A" ><fmt:message key="estado.activos" /></option>
 				<option value="I" ><fmt:message key="estado.inactivos" /></option>
         	</select>

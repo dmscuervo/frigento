@@ -1,5 +1,6 @@
 package com.soutech.frigento.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -85,7 +86,13 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
+	@Transactional
 	public void reactivarProducto(Producto producto) {
+		ProductoCosto rpc = new ProductoCosto();
+		rpc.setCosto(producto.getCostoActual());
+		rpc.setFechaDesde(new Date());
+		rpc.setProducto(producto);
+		productoCostoDao.save(rpc);
 		controlStockProducto.reactivarProductoStock(producto.getId());
 	}
 

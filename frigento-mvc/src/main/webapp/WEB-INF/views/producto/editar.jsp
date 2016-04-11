@@ -6,10 +6,11 @@
 	
 	$(document).ready(function(){
 		$('#datetimepickerProdEdit').datetimepicker({
-			maxDate: '${maxDateAlta}',
+			maxDate: ${maxDateAlta},
 			locale: 'es'
             //format: 'DD/MM/YYYY HH:mm:ss'
         });
+		
 	});
 </script>
 
