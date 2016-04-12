@@ -1,10 +1,14 @@
 package com.soutech.frigento.service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.soutech.frigento.exception.EntityExistException;
+import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.RelProductoCategoria;
 
 public interface ProductoService {
 
@@ -19,5 +23,8 @@ public interface ProductoService {
 	void eliminarProducto(Producto producto);
 
 	void reactivarProducto(Producto producto);
+
+	void asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo,
+			BigDecimal[] incrementos) throws FechaDesdeException;
 
 }

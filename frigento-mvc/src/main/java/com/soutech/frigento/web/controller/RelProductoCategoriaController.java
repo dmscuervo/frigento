@@ -1,6 +1,7 @@
 package com.soutech.frigento.web.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -196,6 +197,11 @@ public class RelProductoCategoriaController extends GenericController {
         List<Integer> productosYaRelacionados = new ArrayList<Integer>();
         for (RelProductoCategoria relProdCat : relProdCats) {
         	productosYaRelacionados.add(relProdCat.getProducto().getId());
+			//Calculo precio
+        	BigDecimal costoActual = relProdCat.getProducto().getCostoActual();
+        	BigDecimal factor = relProdCat.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
+        	BigDecimal precioCalc = costoActual.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+        	relProdCat.setPrecioCalculado(precioCalc);
         }
         for (Producto producto : productos) {
         	if(!productosYaRelacionados.contains(producto.getId())){

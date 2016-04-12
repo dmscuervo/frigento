@@ -1,5 +1,6 @@
 package com.soutech.frigento.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
 import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.exception.EntityExistException;
+import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
@@ -97,6 +99,53 @@ public class ProductoServiceImpl implements ProductoService {
 		rpc.setProducto(producto);
 		productoCostoDao.save(rpc);
 		controlStockProducto.reactivarProductoStock(producto.getId());
+	}
+
+	@Override
+	@Transactional
+	public void asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo, BigDecimal[] incrementos) throws FechaDesdeException {
+		for (int i = 0; i < relProdCats.size(); i++) {
+			RelProductoCategoria relProdCat = relProductoCategoriaDao.findById(relProdCats.get(i).getId());
+			Producto producto = productoDao.findById(relProdCat.getProducto().getId());
+			if(!producto.getCostoActual().equals(costo)){
+				//Hubo cambio de costo
+				//Primero Controlo la fecha desde
+				ProductoCosto prodCostoActual = productoCostoDao.findCostoActual(producto.getId());
+				if(fechaDesde.before(prodCostoActual.getFechaDesde())){
+					throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{prodCostoActual.getFechaDesde()});
+				}
+				producto.setCostoActual(costo);
+				producto.setFechaAlta(fechaDesde);
+				producto.setStockControlado(Boolean.TRUE);//No necesito control de stock
+				productoDao.update(producto);
+				//Finalizo la relacion actual y creo una nueva
+				prodCostoActual.setFechaHasta(fechaDesde);
+				productoCostoDao.update(prodCostoActual);
+				
+				ProductoCosto rpc = new ProductoCosto();
+				rpc.setCosto(producto.getCostoActual());
+				rpc.setFechaDesde(producto.getFechaAlta());
+				rpc.setProducto(producto);
+				productoCostoDao.save(rpc);
+			}
+			//Ahora me fijo si cambiaron los incrementos de las categorias
+			if(!relProdCat.getIncremento().equals(incrementos[i])){
+				//Hubo cambios de incremento en categorias
+				//Primero Controlo la fecha desde
+				if(fechaDesde.before(relProdCat.getFechaDesde())){
+					throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{relProdCat.getFechaDesde()});
+				}
+				relProdCat.setFechaHasta(fechaDesde);
+				relProductoCategoriaDao.update(relProdCat);
+				
+				RelProductoCategoria rpc = new RelProductoCategoria();
+				rpc.setCategoria(relProdCat.getCategoria());
+				rpc.setProducto(relProdCat.getProducto());
+				rpc.setIncremento(incrementos[i]);
+				rpc.setFechaDesde(fechaDesde);
+				relProductoCategoriaDao.save(rpc);
+			}
+		}
 	}
 
 }
