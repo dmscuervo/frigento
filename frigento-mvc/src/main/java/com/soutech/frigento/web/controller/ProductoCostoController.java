@@ -79,38 +79,38 @@ public class ProductoCostoController extends GenericController {
 //    	//En caso de haber realizado un alta nuevo, vuelvo a dejar la misma fecha elegida
 //    	rpc.setFechaDesde(new Date());
 //    	if(lista != null && !lista.isEmpty()){
-//    		for (RelProductoCategoria relProdCat : lista) {
-//    			if(relProdCat.getId() == null){
-//    				rpc.setFechaDesde(relProdCat.getFechaDesde());
+//    		for (RelProductoCategoria prodCosto : lista) {
+//    			if(prodCosto.getId() == null){
+//    				rpc.setFechaDesde(prodCosto.getFechaDesde());
 //    			}
 //    		}
 //    	}
-//    	uiModel.addAttribute("relProdCatForm", rpc);
-//        return "relProdCat/alta";
+//    	uiModel.addAttribute("prodCostoForm", rpc);
+//        return "prodCosto/alta";
 //    }
 //    
 //    @SuppressWarnings("unchecked")
 //	@RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
-//    public String alta(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
+//    public String alta(@Valid @ModelAttribute("prodCostoForm") RelProductoCategoria prodCostoForm, BindingResult bindingResult, Model uiModel) {
 //    	if (bindingResult.hasErrors()) {
 //    		RelProdCatErroresView errorView = new RelProdCatErroresView();
 //    		ProductoCosto pc = null;
-//    		if(relProdCatForm.getProducto().getId() != null){
-//    			pc = productoCostoService.obtenerActual(relProdCatForm.getProducto().getId());
+//    		if(prodCostoForm.getProducto().getId() != null){
+//    			pc = productoCostoService.obtenerActual(prodCostoForm.getProducto().getId());
 //    		}
-//    		if(relProdCatForm.getFechaDesde() != null && pc != null && relProdCatForm.getFechaDesde().before(pc.getFechaDesde())){
-//    			errorView.setFechaDesde(getMessage("relProdCatForm.fechaDesde.anterior", sdf_desde_hasta.format(pc.getFechaDesde())));
+//    		if(prodCostoForm.getFechaDesde() != null && pc != null && prodCostoForm.getFechaDesde().before(pc.getFechaDesde())){
+//    			errorView.setFechaDesde(getMessage("prodCostoForm.fechaDesde.anterior", sdf_desde_hasta.format(pc.getFechaDesde())));
 //    		}
 //    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
 //    		uiModel.addAttribute("messageAjax", json);
 //        	return "ajax/value";
 //        }
 //    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-//    	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()));;
+//    	prodCostoForm.getProducto().setDescripcion(codDescripcionMap.get(prodCostoForm.getProducto().getCodigo()));;
 //        List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
-//        lista.add(relProdCatForm);
-//        codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
-//        return "relProdCat/grilla";
+//        lista.add(prodCostoForm);
+//        codDescripcionMap.remove(prodCostoForm.getProducto().getCodigo());
+//        return "prodCosto/grilla";
 //    }
 //    
 //    @SuppressWarnings("unchecked")
@@ -119,13 +119,13 @@ public class ProductoCostoController extends GenericController {
 //    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
 //    	RelProductoCategoria rpc = lista.get(index.intValue());
 //    	rpc.setIndiceLista(index);
-//    	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
-//        return "relProdCat/editar";
+//    	uiModel.addAttribute("prodCostoForm", lista.get(index.intValue()));
+//        return "prodCosto/editar";
 //    }
 //    
 //    @SuppressWarnings("unchecked")
 //	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
-//    public String edit(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
+//    public String edit(@Valid @ModelAttribute("prodCostoForm") RelProductoCategoria prodCostoForm, BindingResult bindingResult, Model uiModel) {
 //    	if (bindingResult.hasErrors()) {
 //    		RelProdCatErroresView errorView = new RelProdCatErroresView();
 //    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
@@ -134,11 +134,11 @@ public class ProductoCostoController extends GenericController {
 //        }
 //    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
 //    	Map<String, String> codProductosMasterMap = (Map<String, String>) uiModel.asMap().get("codProductosMasterMap");
-//    	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
+//    	prodCostoForm.getProducto().setDescripcion(codProductosMasterMap.get(prodCostoForm.getProducto().getCodigo()));;
 //        List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
 //        //Cambio el producto
-//        String codProdAnt = lista.get(relProdCatForm.getIndiceLista()).getProducto().getCodigo();
-//        String codProd = relProdCatForm.getProducto().getCodigo();
+//        String codProdAnt = lista.get(prodCostoForm.getIndiceLista()).getProducto().getCodigo();
+//        String codProd = prodCostoForm.getProducto().getCodigo();
 //        if(!codProd.equals(codProdAnt)){
 //        	//Actualizo
 //        	codDescripcionMap = new HashMap<String, String>(codProductosMasterMap);
@@ -147,8 +147,8 @@ public class ProductoCostoController extends GenericController {
 //			}
 //        	uiModel.addAttribute("codProductosMap", codDescripcionMap);
 //        }
-//        lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
-//        return "relProdCat/grilla";
+//        lista.set(prodCostoForm.getIndiceLista(), prodCostoForm);
+//        return "prodCosto/grilla";
 //    }
 //    
 //    @SuppressWarnings("unchecked")
@@ -160,7 +160,7 @@ public class ProductoCostoController extends GenericController {
 //    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
 //    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
 //    	lista.remove(index.intValue());
-//        return "relProdCat/grilla";
+//        return "prodCosto/grilla";
 //    }
     
     @SuppressWarnings("unchecked")
@@ -174,20 +174,22 @@ public class ProductoCostoController extends GenericController {
 			String key = e.getKeyMessage();
 			logger.info(getMessage(key, e.getArgs()));
 			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
-			return "relProdCat/grilla";
+			return "prodCosto/grilla";
 		}
-    	httpServletRequest.setAttribute("msgRespuesta", getMessage("relProdCat.confirmar.ok"));
-    	return "relProdCat/grilla";
+    	httpServletRequest.setAttribute("msgRespuesta", getMessage("prodCosto.confirmar.ok"));
+    	return "prodCosto/grilla";
     }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String listar(@PathVariable("id") Integer idProd, @RequestParam(value = "estado", required = false) String estado, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerCategoriasProducto(idProd, estado);
-    	
+    	Producto producto = productoService.obtenerProducto(idProd);
+    	uiModel.addAttribute("productosCategoria", relProdCats);
+    	uiModel.addAttribute("producto", producto);
     	if(informar != null){
         	uiModel.addAttribute("informar", informar);
         }
-        return "relProdCat/grilla";
+        return "prodCosto/grilla";
     }
     
 }
