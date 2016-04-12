@@ -16,4 +16,10 @@ public class PedidoServiceImpl implements PedidoService {
 	@Autowired
     PedidoDao pedidoDao;
 
+	@Override
+	public void generarPedido(Pedido pedidoForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

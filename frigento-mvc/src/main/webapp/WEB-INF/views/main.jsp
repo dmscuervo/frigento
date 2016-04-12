@@ -256,7 +256,15 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="forms.html"><i class="fa fa-truck fa-fw"></i> <fmt:message key="menu.pedido"/></a>
+                            <a href="forms.html"><i class="fa fa-truck fa-fw"></i> <fmt:message key="menu.pedido"/><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="javascript:loadInBody('pedido?alta')"><fmt:message key="menu.pedido.generar"/></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:loadInBody('pedido?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-shopping-cart fa-fw"></i> <fmt:message key="menu.venta"/><span class="fa arrow"></span></a>

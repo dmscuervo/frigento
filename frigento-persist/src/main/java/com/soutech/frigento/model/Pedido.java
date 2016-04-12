@@ -29,6 +29,12 @@ public class Pedido implements Serializable {
 
 	private static final long serialVersionUID = -715466677393880427L;
 
+	@Id
+	@SequenceGenerator(name = "pedidoGen", sequenceName = "SEQ_PEDIDO")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "pedidoGen")
+	@Column(name = "ID_PEDIDO")
+	private Integer id;
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_ESTADO")
@@ -37,27 +43,27 @@ public class Pedido implements Serializable {
 	@NotNull
 	@Column(name = "FECHA")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fecha;
 
 	@NotNull
 	@Column(name = "COSTO")
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private BigDecimal costo;
 
 	@Column(name = "F_ENTREGAR")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaAEntregar;
 
 	@Column(name = "F_ENTREGADO")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaEntregado;
 
 	@Column(name = "F_ANULADO")
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaAnulado;
 
 	public Estado getEstado() {
@@ -107,12 +113,6 @@ public class Pedido implements Serializable {
 	public void setFechaAnulado(Date fechaAnulado) {
 		this.fechaAnulado = fechaAnulado;
 	}
-
-	@Id
-	@SequenceGenerator(name = "pedidoGen", sequenceName = "SEQ_PEDIDO")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "pedidoGen")
-	@Column(name = "ID_PEDIDO")
-	private Integer id;
 
 	public Integer getId() {
 		return this.id;

@@ -3,7 +3,11 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-	    $('#idGrillaCat').DataTable();
+	    $('#idGrillaCat').DataTable(
+    		"columnDefs": [
+	                       { "orderable": false, "targets": -1 }
+	                     ]
+   		);
 	    if('${informar}' != null){
 	    	$('#idModalMensaje').attr('style', 'visible');
 	    }
