@@ -37,7 +37,7 @@ import com.soutech.frigento.service.RelProductoCategoriaService;
 public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    private final String BUSQUEDA_DEFAULT = "producto?estado=A&sortFieldName=descripcion&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "producto?estado=A&sortFieldName=descripcion&sortOrder=asc";
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -108,14 +108,14 @@ public class ProductoController extends GenericController {
     	Date fechaMinD = new Date();
     	//Inicializo valores en caso de nulos
     	if(fechaHastaMin != null){
-    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : null;
-    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : null;
+    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : fechaHastaMin2;
+    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : fechaHastaMin3;
     	}else if(fechaHastaMin2 != null){
-    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin2 : null;
-    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin2 : null;
+    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin2 : fechaHastaMin;
+    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin2 : fechaHastaMin3;
     	}else if(fechaHastaMin3 != null){
-    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin3 : null;
-    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : null;
+    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin3 : fechaHastaMin;
+    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : fechaHastaMin2;
     	}
     	if(fechaHastaMin != null){
     		fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;

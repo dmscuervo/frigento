@@ -24,6 +24,18 @@ public class ErrorJSONHandler {
 	Logger log = Logger.getLogger(this.getClass());
 	@Autowired
 	private MessageSource messageSource;
+	
+	public String getMensajeGenericoJSON(String mensaje){
+		ObjectMapper mapper = new ObjectMapper();
+		String json = null;
+		try {
+			json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(new MensajeGenerico(mensaje));
+		} catch (JsonProcessingException e) {
+			log.info("No se pudo convertir a json.");
+			log.error(PrinterStack.getStackTraceAsString(e));
+		}
+		return json;
+	}
 
 	public String getJSON(Object errorView, BindingResult bindingResult){
 		String json = "";
@@ -73,4 +85,19 @@ public class ErrorJSONHandler {
 			log.error("No se establecio ningun valor sobre los campos definidos. No se visualizaran errores en la pantalla.");
 		}
 	}
+	
+	class MensajeGenerico{
+		
+		private String mensajeGenerico;
+		
+		MensajeGenerico(String mensaje){
+			this.mensajeGenerico = mensaje;
+		}
+
+		public String getMensajeGenerico() {
+			return mensajeGenerico;
+		}
+		
+	}
+
 }

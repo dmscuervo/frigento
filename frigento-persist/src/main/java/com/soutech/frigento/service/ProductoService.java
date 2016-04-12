@@ -24,7 +24,7 @@ public interface ProductoService {
 
 	void reactivarProducto(Producto producto);
 
-	void asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo,
+	boolean asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo,
 			BigDecimal[] incrementos) throws FechaDesdeException;
 
 }

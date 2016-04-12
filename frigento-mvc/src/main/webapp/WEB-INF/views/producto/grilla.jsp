@@ -65,14 +65,14 @@
         		<td>${prod.stock}</td>
         		<td>${prod.pesoCaja}</td>
         		<td colspan="2">
-        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
         			<c:if test="${estadoSel eq 'A'}">
+	        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
         				<i class="fa fa-trash" onclick="confirmDelete('producto/${prod.id}?borrar')"></i>
+	        			<i class="fa fa-usd" onclick="loadInBody('prodCosto/${prod.id}?listar=&estado=V')"></i>
         			</c:if>
         			<c:if test="${estadoSel eq 'I'}">
         				<i class="fa fa-check-square-o" onclick="confirmActivar('producto/${prod.id}?activar')"></i>
         			</c:if>
-        			<i class="fa fa-usd" onclick="loadInBody('prodCosto/${prod.id}?listar=&estado=V')"></i>
         			<%-- 
         			<i class="fa fa-trash" onclick="confirmDelete('${prod.id}')"></i>
 			        <input type="hidden" id="msg-${prod.id}" value="<fmt:message key='producto.borrar.confirm'><fmt:param value='${prod.descripcion}'/></fmt:message>" />

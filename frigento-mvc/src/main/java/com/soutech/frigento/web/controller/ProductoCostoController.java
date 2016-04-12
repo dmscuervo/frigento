@@ -1,6 +1,7 @@
 package com.soutech.frigento.web.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,24 +44,30 @@ public class ProductoCostoController extends GenericController {
     
     @Autowired
     private RelProductoCategoriaService relProductoCategoriaService;
-    
     @Autowired
     private ProductoService productoService;
+    
 
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/confirmar", method = RequestMethod.POST, produces = "text/html")
     public String alta(@ModelAttribute("prodCostoForm") PrecioDTO prodCostoForm, Model uiModel, HttpServletRequest httpServletRequest) {
     	List<RelProductoCategoria> relProdCats = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	boolean huboCambios;
     	try{
-    		productoService.asignarNuevoPrecio(relProdCats, prodCostoForm.getFechaDesde(), prodCostoForm.getCosto(), prodCostoForm.getIncrementos());
+    		huboCambios = productoService.asignarNuevoPrecio(relProdCats, prodCostoForm.getFechaDesde(), prodCostoForm.getCosto(), prodCostoForm.getIncrementos());
     	} catch (FechaDesdeException e) {
 			String key = e.getKeyMessage();
 			logger.info(getMessage(key, e.getArgs()));
 			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
 			return "prodCosto/grilla";
 		}
-    	httpServletRequest.setAttribute("msgRespuesta", getMessage("prodCosto.confirmar.ok"));
-    	return "prodCosto/grilla";
+    	String mensaje;
+    	if(huboCambios){
+    		mensaje = getMessage("prodCosto.confirmar.ok");
+    	}else{
+    		mensaje = getMessage("prodCosto.confirmar.sin.cambios");
+    	}
+    	return "redirect:/".concat(ProductoController.BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
  
     @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
@@ -70,18 +77,21 @@ public class ProductoCostoController extends GenericController {
     	uiModel.addAttribute("productosCategoria", relProdCats);
     	uiModel.addAttribute("producto", producto);
     	if(informar != null){
-        	uiModel.addAttribute("informar", informar);
+    		uiModel.addAttribute("informar", informar);
         }
     	
     	PrecioDTO precio = new PrecioDTO();
+    	precio.setProdId(idProd);
     	precio.setFechaDesde(new Date());
     	precio.setCosto(producto.getCostoActual());
     	precio.setIncrementos(new BigDecimal[relProdCats.size()]);
+    	precio.setPrecioCalculado(new BigDecimal[relProdCats.size()]);
     	//precio.setIncrementos(new ArrayList<BigDecimal>());;
     	for (int i = 0; i < relProdCats.size(); i++) {
     		RelProductoCategoria relProdCat = relProdCats.get(i); 
 			precio.getIncrementos()[i] = relProdCat.getIncremento();
-    		//precio.getIncrementos().add(relProdCat.getIncremento());
+			BigDecimal factor = relProdCat.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
+    		precio.getPrecioCalculado()[i] = producto.getCostoActual().multiply(factor).setScale(2, RoundingMode.HALF_UP);
 		}
 		uiModel.addAttribute("prodCostoForm", precio );
         return "prodCosto/grilla";

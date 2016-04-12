@@ -103,7 +103,8 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	@Transactional
-	public void asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo, BigDecimal[] incrementos) throws FechaDesdeException {
+	public boolean asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo, BigDecimal[] incrementos) throws FechaDesdeException {
+		boolean huboCambios = false;
 		for (int i = 0; i < relProdCats.size(); i++) {
 			RelProductoCategoria relProdCat = relProductoCategoriaDao.findById(relProdCats.get(i).getId());
 			Producto producto = productoDao.findById(relProdCat.getProducto().getId());
@@ -127,6 +128,7 @@ public class ProductoServiceImpl implements ProductoService {
 				rpc.setFechaDesde(producto.getFechaAlta());
 				rpc.setProducto(producto);
 				productoCostoDao.save(rpc);
+				huboCambios = true;
 			}
 			//Ahora me fijo si cambiaron los incrementos de las categorias
 			if(!relProdCat.getIncremento().equals(incrementos[i])){
@@ -144,8 +146,9 @@ public class ProductoServiceImpl implements ProductoService {
 				rpc.setIncremento(incrementos[i]);
 				rpc.setFechaDesde(fechaDesde);
 				relProductoCategoriaDao.save(rpc);
+				huboCambios = true;
 			}
 		}
+		return huboCambios;
 	}
-
 }
