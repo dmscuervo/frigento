@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.soutech.frigento.model.ProductoCosto;
-
 public class PedidoDTO implements Serializable {
 
 	private static final long serialVersionUID = -1089682630107962323L;

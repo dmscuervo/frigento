@@ -13,6 +13,7 @@ public class ItemDTO implements Serializable {
 	@NotNull
 	private Short cantidad;
 
+	@NotNull
 	private ProductoCosto productoCosto;
 	
 	public Short getCantidad() {

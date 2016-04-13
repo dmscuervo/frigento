@@ -44,8 +44,10 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoDao.save(pedido);
 			//Guardo las relaciones
 			for (RelPedidoProducto rpp : pedido.getItemsView()) {
-				rpp.setPedido(pedido);
-				relPedidoProductoDao.save(rpp);
+				if(rpp.getCantidad() != (short)0){
+					rpp.setPedido(pedido);
+					relPedidoProductoDao.save(rpp);
+				}
 			}
 			
 		}finally{

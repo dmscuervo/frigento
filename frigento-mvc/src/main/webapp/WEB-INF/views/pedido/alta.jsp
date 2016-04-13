@@ -135,9 +135,10 @@
 			        </thead>
 			        <tbody>
 			        <c:forEach var="item" items="${pedidoForm.items}" varStatus="status">
-			        	<form:hidden path="items[${status.index}].productoCosto"/>
 			        	<tr>
-			        		<td><form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" /></td>
+			        		<td>
+			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" /><form:hidden path="items[${status.index}].productoCosto.id"/><form:hidden path="items[${status.index}].productoCosto.costo"/>
+			        		</td>
 			        		<td>${item.productoCosto.producto.codigo} - ${item.productoCosto.producto.descripcion}</td>
 			        	</tr>
 			        </c:forEach>
