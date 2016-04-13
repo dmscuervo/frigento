@@ -8,7 +8,6 @@
 			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'
-            //format: 'DD/MM/YYYY HH:mm:ss'
         });
 	});
 </script>

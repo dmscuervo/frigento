@@ -28,6 +28,7 @@
         <thead>
             <tr>
                 <th><fmt:message key="pedido.id" /></th>
+                <th><fmt:message key="pedido.fecha" /></th>
                 <th><fmt:message key="pedido.costo" /></th>
                 <th><fmt:message key="pedido.estado" /></th>
                 <th><fmt:message key="pedido.fecha.entregar" /></th>
@@ -38,9 +39,10 @@
         <c:forEach var="ped" items="${pedidos}">
         	<tr>
         		<td style="white-space: nowrap;">${ped.id}</td>
+        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
         		<td style="white-space: nowrap;">${ped.costo}</td>
         		<td style="white-space: nowrap;">${ped.estado.descripcion}</td>
-        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm"/></td>
+        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
         		<td style="white-space: nowrap;">
         			<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}/detalle')"></i>
         			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">

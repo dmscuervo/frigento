@@ -24,6 +24,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.soutech.frigento.dto.ItemDTO;
+
 @Entity
 @Table(name = "PEDIDO")
 
@@ -69,7 +71,7 @@ public class Pedido implements Serializable {
 	private Date fechaAnulado;
 	
 	@Transient
-	private List<RelPedidoProducto> itemsView;
+	private List<ItemDTO> items;
 
 	public Estado getEstado() {
 		return this.estado;
@@ -126,13 +128,13 @@ public class Pedido implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	public List<RelPedidoProducto> getItemsView() {
-		return itemsView;
+
+	public List<ItemDTO> getItems() {
+		return items;
 	}
 
-	public void setItemsView(List<RelPedidoProducto> itemsView) {
-		this.itemsView = itemsView;
+	public void setItems(List<ItemDTO> items) {
+		this.items = items;
 	}
 
 	public String toString() {

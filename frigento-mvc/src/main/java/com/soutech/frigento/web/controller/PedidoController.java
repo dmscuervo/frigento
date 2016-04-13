@@ -1,5 +1,6 @@
 package com.soutech.frigento.web.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +12,6 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,28 +22,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.soutech.frigento.dto.ItemDTO;
+import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.ProductoCosto;
-import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.service.EstadoService;
 import com.soutech.frigento.service.PedidoService;
 import com.soutech.frigento.service.ProductoCostoService;
-import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
-import com.soutech.frigento.web.dto.ItemDTO;
-import com.soutech.frigento.web.dto.PedidoDTO;
+import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
 @RequestMapping(value="/pedido")
 public class PedidoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "pedido?estados[]="+Constantes.ESTADO_PEDIDO_PENDIENTE+"&estados[]="+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=pedido.id&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "pedido?estados="+Constantes.ESTADO_PEDIDO_PENDIENTE+","+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=id&sortOrder=asc";
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), true));   
+         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS"), true));   
     }
     
     @Autowired
@@ -51,21 +50,22 @@ public class PedidoController extends GenericController {
     @Autowired
     private EstadoService estadoService;
     @Autowired
-    private RelPedidoProductoService relPedidoProductoService;
-    @Autowired
     private ProductoCostoService productoCostoService;
     
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
     	List<ProductoCosto> productosCostos = productoCostoService.obtenerProductosCosto(Constantes.ESTADO_REL_VIGENTE, "producto.descripcion", "asc");
     	List<Estado> estados = estadoService.obtenerEstadosPedido();
-    	PedidoDTO pedido = new PedidoDTO();
+    	Pedido pedido = new Pedido();
     	pedido.setFecha(new Date());
     	pedido.setItems(new ArrayList<ItemDTO>(productosCostos.size()));
+    	pedido.setEstado(estados.get(0));
+    	//Lo inicializo para que no falle la validación
+    	pedido.setCosto(BigDecimal.ZERO);
     	for (ProductoCosto prodCosto : productosCostos) {
     		ItemDTO item = new ItemDTO();
     		item.setCantidad((short)0);
-    		item.setProductoCosto(prodCosto);
+    		item.setProducto(prodCosto.getProducto());
     		pedido.getItems().add(item);
 		}
 		uiModel.addAttribute("pedidoForm", pedido);
@@ -74,34 +74,36 @@ public class PedidoController extends GenericController {
     }
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
-    public String alta(@Valid @ModelAttribute("pedidoForm") PedidoDTO pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String alta(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	if (bindingResult.hasErrors()) {
         	return "pedido/alta";
         }
 
-    	Pedido pedido = new Pedido();
-    	pedido.setFecha(pedidoForm.getFecha());
-    	pedido.setFechaEntregado(pedidoForm.getFechaEntregar());
-    	Estado estado = new Estado();
-    	estado.setId(pedidoForm.getEstadoId());
-    	pedido.setEstado(estado);
-    	pedido.setItemsView(new ArrayList<RelPedidoProducto>());
-    	for (ItemDTO item : pedidoForm.getItems()) {
-    		RelPedidoProducto rpp = new RelPedidoProducto();
-    		rpp.setCantidad(item.getCantidad().floatValue());
-			rpp.setProductoCosto(item.getProductoCosto());
-			pedido.getItemsView().add(rpp);
+    	String mensaje;
+    	boolean ok = false;
+		try {
+			ok = pedidoService.generarPedido(pedidoForm);
+		} catch (ProductoSinCostoException e) {
+			mensaje = getMessage(e.getKeyMessage(), e.getArgs());
+			httpServletRequest.setAttribute("msgError", mensaje);
+			return "pedido/alta";
 		}
+    	if(ok){
+    		mensaje = getMessage("pedido.confirmar.ok");
+    	}else{
+    		mensaje = getMessage("pedido.confirmar.sin.cambios");
+    		httpServletRequest.setAttribute("msgError", mensaje);
+    		return "pedido/alta";
+    	}
     	
-    	pedidoService.generarPedido(pedido);
 		uiModel.asMap().clear();
 
-        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.alta.ok")));
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
     
     @RequestMapping(produces = "text/html")
     public String listar(@RequestParam(value = "estados", required = true) Short estadoPedido[], @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
-    	httpServletRequest.setAttribute("pedidos", relPedidoProductoService.obtenerPedidos(estadoPedido, sortFieldName, sortOrder));
+    	httpServletRequest.setAttribute("pedidos", pedidoService.obtenerPedidos(estadoPedido, sortFieldName, sortOrder));
     	httpServletRequest.setAttribute("estadoSel", estadoPedido);
         if(informar != null){
         	httpServletRequest.setAttribute("informar", informar);

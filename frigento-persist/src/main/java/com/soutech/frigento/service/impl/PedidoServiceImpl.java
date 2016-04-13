@@ -2,14 +2,21 @@ package com.soutech.frigento.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.concurrence.ControlPedidoVsCostoProducto;
 import com.soutech.frigento.dao.PedidoDao;
+import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.RelPedidoProductoDao;
+import com.soutech.frigento.dto.ItemDTO;
+import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Pedido;
+import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.service.PedidoService;
 
@@ -19,21 +26,33 @@ public class PedidoServiceImpl implements PedidoService {
 	@Autowired
     PedidoDao pedidoDao;
 	@Autowired
+    ProductoCostoDao ProductoCostoDao;
+	@Autowired
     RelPedidoProductoDao relPedidoProductoDao;
 	
 	@Override
-	public boolean generarPedido(Pedido pedido) {
+	@Transactional
+	public boolean generarPedido(Pedido pedido) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
 			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=descripcion&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
 			BigDecimal costoTotal = BigDecimal.ZERO;
-			for (RelPedidoProducto rpp : pedido.getItemsView()) {
-				if(rpp.getCantidad() != (short)0){
+			List<RelPedidoProducto> relaciones = new ArrayList<RelPedidoProducto>();
+			for (ItemDTO item : pedido.getItems()) {
+				if(item.getCantidad() != (short)0){
 					hayPedido = Boolean.TRUE;
-					//Establezco costo del producto a nivel detalle del pedido
-					rpp.setCosto(rpp.getProductoCosto().getCosto());
+					RelPedidoProducto rpp = new RelPedidoProducto();
+					ProductoCosto productoCosto = ProductoCostoDao.findByProductoFecha(item.getProducto().getId(), pedido.getFecha());
+					if(productoCosto == null){
+						Object[] args = new Object[]{item.getProducto().getCodigo(), pedido.getFecha()};
+						throw new ProductoSinCostoException("pedido.confirmar.producto.sin.costo", args);
+					}
+					rpp.setProductoCosto(productoCosto);
+					rpp.setCosto(productoCosto.getCosto());
+					rpp.setCantidad(item.getCantidad().floatValue());
+					relaciones.add(rpp);
 					//Voy calculando el costo total del pedido
-					costoTotal = costoTotal.add(rpp.getProductoCosto().getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
+					costoTotal = costoTotal.add(productoCosto.getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
 				}
 			}
 			if(!hayPedido){
@@ -43,11 +62,9 @@ public class PedidoServiceImpl implements PedidoService {
 			pedido.setCosto(costoTotal);
 			pedidoDao.save(pedido);
 			//Guardo las relaciones
-			for (RelPedidoProducto rpp : pedido.getItemsView()) {
-				if(rpp.getCantidad() != (short)0){
-					rpp.setPedido(pedido);
-					relPedidoProductoDao.save(rpp);
-				}
+			for (RelPedidoProducto rpp : relaciones) {
+				rpp.setPedido(pedido);
+				relPedidoProductoDao.save(rpp);
 			}
 			
 		}finally{
@@ -57,4 +74,10 @@ public class PedidoServiceImpl implements PedidoService {
 		return hayPedido;
 	}
 
+	@Override
+	public List<Pedido> obtenerPedidos(Short[] estado, String sortFieldName, String sortOrder) {
+		return pedidoDao.findAll(estado, sortFieldName, sortOrder);
+	}
+
+	
 }

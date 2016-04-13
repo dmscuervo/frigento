@@ -1,10 +1,10 @@
-package com.soutech.frigento.web.dto;
+package com.soutech.frigento.dto;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import com.soutech.frigento.model.ProductoCosto;
+import com.soutech.frigento.model.Producto;
 
 public class ItemDTO implements Serializable {
 
@@ -14,7 +14,7 @@ public class ItemDTO implements Serializable {
 	private Short cantidad;
 
 	@NotNull
-	private ProductoCosto productoCosto;
+	private Producto producto;
 	
 	public Short getCantidad() {
 		return cantidad;
@@ -22,10 +22,11 @@ public class ItemDTO implements Serializable {
 	public void setCantidad(Short cantidad) {
 		this.cantidad = cantidad;
 	}
-	public ProductoCosto getProductoCosto() {
-		return productoCosto;
+	public Producto getProducto() {
+		return producto;
 	}
-	public void setProductoCosto(ProductoCosto productoCosto) {
-		this.productoCosto = productoCosto;
+	public void setProducto(Producto producto) {
+		this.producto = producto;
 	}
+	
 }

@@ -125,10 +125,10 @@
 			<td style="white-space: nowrap;">${prodCat.producto.codigo} - ${prodCat.producto.descripcion}</td>
 		    <td style="white-space: nowrap;">${prodCat.incremento}</td>
 		    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
-		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm"/></td>
+		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
 		    <td style="white-space: nowrap;">
 		    	<c:choose>
-		    		<c:when test="${not empty prodCat.fechaHasta}"><fmt:formatDate value="${prodCat.fechaHasta}" pattern="dd/MM/yyyy HH:mm"/></c:when>
+		    		<c:when test="${not empty prodCat.fechaHasta}"><fmt:formatDate value="${prodCat.fechaHasta}" pattern="dd/MM/yyyy HH:mm:ss"/></c:when>
 		    		<c:otherwise><fmt:message key="estado.rel.vigente" /></c:otherwise>
 		    	</c:choose>
     		</td>

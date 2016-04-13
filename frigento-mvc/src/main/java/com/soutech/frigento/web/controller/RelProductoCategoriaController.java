@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,6 +41,7 @@ import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.web.validator.ErrorJSONHandler;
+import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 
 @Controller
@@ -54,7 +54,7 @@ public class RelProductoCategoriaController extends GenericController {
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   
+         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   
     }
     
     @Autowired

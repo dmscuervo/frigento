@@ -8,7 +8,6 @@
 		$('#datetimepickerProdEdit').datetimepicker({
 			maxDate: ${maxDateAlta},
 			locale: 'es'
-            //format: 'DD/MM/YYYY HH:mm:ss'
         });
 		
 	});

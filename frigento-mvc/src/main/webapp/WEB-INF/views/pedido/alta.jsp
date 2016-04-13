@@ -52,9 +52,12 @@
 	<h3>
 		<fmt:message key="pedido.alta.title" />
 	</h3>
-	<br />
+	<p class="form-validate">
+		${msgError}
+	</p>
 	<c:url var="urlAlta" value="/pedido/alta" />
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm">
+	<form:hidden path="costo"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -89,14 +92,14 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-       			<form:select path="estadoId" cssClass="form-control" id="idEstado" >
+       			<form:select path="estado.id" cssClass="form-control" id="idEstado" >
        				<form:options items="${estadoList}" itemValue="id" itemLabel="descripcion" />
         		</form:select>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="estadoId" cssClass="form-validate" />
+				<form:errors path="estado.id" cssClass="form-validate" />
 			</div>
         </div>
     </div>
@@ -111,7 +114,7 @@
         <div class='col-sm-4'>
         	<div class="form-group">
              			<div class='input-group date' id='datetimepickerPedidoFecha'>
-             				<form:input path="fechaEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
+             				<form:input path="fechaAEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
                 				<span class="input-group-addon">
                      			<span class="glyphicon glyphicon-calendar"></span>
                  			</span>
@@ -120,7 +123,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="fechaEntregar" cssClass="form-validate" />
+				<form:errors path="fechaAEntregar" cssClass="form-validate" />
 			</div>
         </div>
     </div>
@@ -137,9 +140,12 @@
 			        <c:forEach var="item" items="${pedidoForm.items}" varStatus="status">
 			        	<tr>
 			        		<td>
-			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" /><form:hidden path="items[${status.index}].productoCosto.id"/><form:hidden path="items[${status.index}].productoCosto.costo"/>
+			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" />
+			        			<form:hidden path="items[${status.index}].producto.id"/>
+			        			<form:hidden path="items[${status.index}].producto.codigo"/>
+			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 			        		</td>
-			        		<td>${item.productoCosto.producto.codigo} - ${item.productoCosto.producto.descripcion}</td>
+			        		<td>${item.producto.codigo} - ${item.producto.descripcion}</td>
 			        	</tr>
 			        </c:forEach>
 			        </tbody>

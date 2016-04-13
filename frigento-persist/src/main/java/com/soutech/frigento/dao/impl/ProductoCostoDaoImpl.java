@@ -56,7 +56,7 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		hql.append(ProductoCosto.class.getCanonicalName());
 		hql.append(" pc where pc.producto.id = :idProd ");
 		hql.append("and pc.fechaDesde <= :fecha ");
-		hql.append("and (pc.fechaHasta is null or pc.fechaHasta > :fecha ");
+		hql.append("and (pc.fechaHasta is null or pc.fechaHasta > :fecha)");
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("idProd", idProd);
 		query.setParameter("fecha", fecha);
