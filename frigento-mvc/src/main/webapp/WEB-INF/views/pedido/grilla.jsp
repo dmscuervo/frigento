@@ -44,11 +44,11 @@
         		<td style="white-space: nowrap;">${ped.estado.descripcion}</td>
         		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
         		<td style="white-space: nowrap;">
-        			<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}/detalle')"></i>
+        			<i class="fa fa-list-ol" onclick="loadInBody('pedido/${ped.id}/detalle')"></i>&nbsp;&nbsp;
         			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">
-        				<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>
-        				<i class="fa fa-trash" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>
-        				<i class="fa fa-trash" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
+        				<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>&nbsp;&nbsp;
+        				<i class="fa fa-check" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>&nbsp;&nbsp;
+        				<i class="fa fa-times" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
         			</c:if>
 				</td>
         	</tr>
