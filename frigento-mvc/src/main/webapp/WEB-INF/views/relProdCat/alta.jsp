@@ -6,6 +6,7 @@
 
 	$(document).ready(function(){
 		$('#datetimepickerRPCAlta').datetimepicker({
+			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'
         });
@@ -154,7 +155,7 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
                 			<div class='input-group date' id='datetimepickerRPCAlta'>
-                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" />
+                				<form:input path="fechaDesde" cssClass="form-control" id="idFechaDesde" readonly="true" />
                    				<span class="input-group-addon">
                         			<span class="glyphicon glyphicon-calendar"></span>
                     			</span>

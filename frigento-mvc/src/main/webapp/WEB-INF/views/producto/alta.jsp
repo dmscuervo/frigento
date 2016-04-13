@@ -5,6 +5,7 @@
 	
 	$(document).ready(function(){
 		$('#datetimepickerProdAlta').datetimepicker({
+			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'
             //format: 'DD/MM/YYYY HH:mm:ss'
@@ -30,7 +31,7 @@
         <div class='col-sm-4'>
         	<div class="form-group">
         		<div class='input-group date' id='datetimepickerProdAlta'>
-     				<form:input path="fechaAlta" cssClass="form-control" id="idFechaAlta" />
+     				<form:input path="fechaAlta" cssClass="form-control" id="idFechaAlta" readonly="true" />
         				<span class="input-group-addon">
              			<span class="glyphicon glyphicon-calendar"></span>
          			</span>

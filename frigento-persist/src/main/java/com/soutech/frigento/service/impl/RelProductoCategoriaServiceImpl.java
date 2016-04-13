@@ -53,7 +53,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	@Transactional
 	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones) throws FechaDesdeException {
 		//Aplico control de concurrencia entre ventas y cambio de precios
-		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.error");
+		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
 			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE);

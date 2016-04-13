@@ -3,6 +3,7 @@ package com.soutech.frigento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -65,6 +67,9 @@ public class Pedido implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaAnulado;
+	
+	@Transient
+	private List<RelPedidoProducto> itemsView;
 
 	public Estado getEstado() {
 		return this.estado;
@@ -120,6 +125,14 @@ public class Pedido implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public List<RelPedidoProducto> getItemsView() {
+		return itemsView;
+	}
+
+	public void setItemsView(List<RelPedidoProducto> itemsView) {
+		this.itemsView = itemsView;
 	}
 
 	public String toString() {

@@ -3,11 +3,13 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-	    $('#idGrillaCat').DataTable(
-    		"columnDefs": [
-	                       { "orderable": false, "targets": -1 }
-	                     ]
-   		);
+		if(!$.fn.DataTable.isDataTable('#idGrillaProd')){
+		    $('#idGrillaProd').DataTable({
+	    		"columnDefs": [
+		                       { "orderable": false, "targets": -1 }
+		                     ]
+			});
+		}
 	    if('${informar}' != null){
 	    	$('#idModalMensaje').attr('style', 'visible');
 	    }
@@ -49,7 +51,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
+<table id="idGrillaProd" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
         <thead>
             <tr>
                 <th><fmt:message key="producto.codigo" /></th>

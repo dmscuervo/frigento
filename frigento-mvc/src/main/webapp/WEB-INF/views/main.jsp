@@ -262,7 +262,7 @@
                                     <a href="javascript:loadInBody('pedido?alta')"><fmt:message key="menu.pedido.generar"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('pedido?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
+                                    <a href="javascript:loadInBody('pedido?estados=1,2&sortFieldName=pedido.id&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
                                 </li>
                             </ul>
                         </li>

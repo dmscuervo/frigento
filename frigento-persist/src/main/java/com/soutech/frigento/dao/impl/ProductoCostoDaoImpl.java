@@ -2,6 +2,7 @@ package com.soutech.frigento.dao.impl;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.model.ProductoCosto;
+import com.soutech.frigento.util.Constantes;
 
 @Repository
 @Transactional(readOnly=true)
@@ -70,6 +72,27 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		query.setParameter("idProd", idProd);
 		return (Date) query.uniqueResult();
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductoCosto> findAll(String estadoRel, String sortFieldName, String sortOrder) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc ");
+		hql.append(" where pc.fechaHasta is ");
+		if(estadoRel.equals(Constantes.ESTADO_REL_VIGENTE)){
+			hql.append("null ");
+		}else if(estadoRel.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
+			hql.append("not null ");
+		}
+		if(sortFieldName != null){
+			hql.append("order by pc.");
+			hql.append(sortFieldName);
+			hql.append(" ");
+			hql.append(sortOrder);
+		}
+		Query query = getSession().createQuery(hql.toString());
+		return query.list();
+	}
 	
 }

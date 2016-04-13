@@ -1,5 +1,6 @@
 package com.soutech.frigento.model;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,12 @@ public class RelPedidoProducto implements Serializable {
 
     private static final long serialVersionUID = -4581120924863075425L;
 
+    @Id
+    @SequenceGenerator(name = "relPedidoProductoGen", sequenceName = "SEQ_REL_PED_PROD")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "relPedidoProductoGen")
+    @Column(name = "ID_REL_PEDIDO_PROD")
+    private Long id;
+
 	@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_PEDIDO")
@@ -35,6 +42,10 @@ public class RelPedidoProducto implements Serializable {
     @NotNull
     @Column(name = "CANTIDAD")
     private Float cantidad;
+    
+    @NotNull
+    @Column(name = "COSTO")
+    private BigDecimal costo;
 
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -64,11 +75,13 @@ public class RelPedidoProducto implements Serializable {
         this.cantidad = cantidad;
     }
 
-	@Id
-    @SequenceGenerator(name = "relPedidoProductoGen", sequenceName = "SEQ_REL_PED_PROD")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "relPedidoProductoGen")
-    @Column(name = "ID_REL_PEDIDO_PROD")
-    private Long id;
+	public BigDecimal getCosto() {
+		return costo;
+	}
+
+	public void setCosto(BigDecimal costo) {
+		this.costo = costo;
+	}
 
 	public Long getId() {
         return this.id;

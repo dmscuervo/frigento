@@ -7,26 +7,34 @@
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
 		    $('#idGrillaItems').DataTable({
-		    	"paging": false
+		    	scrollY:        200,
+		        scrollCollapse: true,
+		        paging: false,
+		    	order: [[ 1, "asc" ]],
+		    	columnDefs: [
+		                       { "orderable": false, "targets": 0 }
+		                     ]
 		    }); 
 		}
 		
 		$('#datetimepickerPedidoFecha').datetimepicker({
+			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'
 	    });
 		
 		$('#datetimepickerPedidoFechaEntrega').datetimepicker({
+			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'
 	    });
 		
 		//Aplico restricciones
-		/* $('#idIncremento').keyup(function(){
+		$("[id^=idCantidad-]").keyup(function(){
 			var value=$(this).val();
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
-		}); */
+		});
 		
 		/* $('#idCod').on('change', function(){
 			calcularPrecio();
@@ -58,7 +66,7 @@
         <div class='col-sm-4'>
         	<div class="form-group">
        			<div class='input-group date' id='datetimepickerPedidoFecha'>
-       				<form:input path="fecha" cssClass="form-control" id="idFecha" />
+       				<form:input path="fecha" cssClass="form-control" id="idFecha" readonly="true"/>
           				<span class="input-group-addon">
                			<span class="glyphicon glyphicon-calendar"></span>
            			</span>
@@ -81,7 +89,8 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-       			<form:select path="estadoId" items="${estadoList}" cssClass="form-control" id="idEstado">
+       			<form:select path="estadoId" cssClass="form-control" id="idEstado" >
+       				<form:options items="${estadoList}" itemValue="id" itemLabel="descripcion" />
         		</form:select>
 			</div>
         </div>
@@ -102,7 +111,7 @@
         <div class='col-sm-4'>
         	<div class="form-group">
              			<div class='input-group date' id='datetimepickerPedidoFecha'>
-             				<form:input path="fechaEntregar" cssClass="form-control" id="idFechaEntregar" />
+             				<form:input path="fechaEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
                 				<span class="input-group-addon">
                      			<span class="glyphicon glyphicon-calendar"></span>
                  			</span>
@@ -120,15 +129,16 @@
 			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
 			        <thead>
 			            <tr>
-			                <th><fmt:message key="pedido.item.cantidad.kilo" /></th>
+			                <th><fmt:message key="pedido.item.cantidad.caja" /></th>
 			                <th><fmt:message key="pedido.item.producto" /></th>
 			            </tr>
 			        </thead>
 			        <tbody>
 			        <c:forEach var="item" items="${pedidoForm.items}" varStatus="status">
+			        	<form:hidden path="items[${status.index}].productoCosto"/>
 			        	<tr>
-			        		<td><form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad" placeholder="${item.cantidad}" /></td>
-			        		<td>${item.producto}</td>
+			        		<td><form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" /></td>
+			        		<td>${item.productoCosto.producto.codigo} - ${item.productoCosto.producto.descripcion}</td>
 			        	</tr>
 			        </c:forEach>
 			        </tbody>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.soutech.frigento.concurrence.ControlPedidoVsCostoProducto;
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
 import com.soutech.frigento.dao.RelProductoCategoriaDao;
@@ -84,7 +85,7 @@ public class ProductoServiceImpl implements ProductoService {
 		List<RelProductoCategoria> relProdCats = relProductoCategoriaDao.findAllByProducto(producto.getId(), Constantes.ESTADO_REL_VIGENTE);
 		if(!relProdCats.isEmpty()){
 			logger.info("El producto contiene relaciones con RelProductoCategoria. Se procede a su baja logica.");
-		}
+			}
 		for (RelProductoCategoria relProdCategoria : relProdCats) {
 			relProductoCategoriaDao.delete(relProdCategoria);
 		}
@@ -105,49 +106,57 @@ public class ProductoServiceImpl implements ProductoService {
 	@Transactional
 	public boolean asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo, BigDecimal[] incrementos) throws FechaDesdeException {
 		boolean huboCambios = false;
-		for (int i = 0; i < relProdCats.size(); i++) {
-			RelProductoCategoria relProdCat = relProductoCategoriaDao.findById(relProdCats.get(i).getId());
-			Producto producto = productoDao.findById(relProdCat.getProducto().getId());
-			if(!producto.getCostoActual().equals(costo)){
-				//Hubo cambio de costo
-				//Primero Controlo la fecha desde
-				ProductoCosto prodCostoActual = productoCostoDao.findCostoActual(producto.getId());
-				if(fechaDesde.before(prodCostoActual.getFechaDesde())){
-					throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{prodCostoActual.getFechaDesde()});
+		try{
+			for (int i = 0; i < relProdCats.size(); i++) {
+				RelProductoCategoria relProdCat = relProductoCategoriaDao.findById(relProdCats.get(i).getId());
+				Producto producto = productoDao.findById(relProdCat.getProducto().getId());
+				if(i == 0){
+					ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("prodCosto/").concat(String.valueOf(relProdCat.getProducto().getId())).concat("?estado=A"), "prodCosto.concurrencia.pedido.error");
 				}
-				producto.setCostoActual(costo);
-				producto.setFechaAlta(fechaDesde);
-				producto.setStockControlado(Boolean.TRUE);//No necesito control de stock
-				productoDao.update(producto);
-				//Finalizo la relacion actual y creo una nueva
-				prodCostoActual.setFechaHasta(fechaDesde);
-				productoCostoDao.update(prodCostoActual);
-				
-				ProductoCosto rpc = new ProductoCosto();
-				rpc.setCosto(producto.getCostoActual());
-				rpc.setFechaDesde(producto.getFechaAlta());
-				rpc.setProducto(producto);
-				productoCostoDao.save(rpc);
-				huboCambios = true;
-			}
-			//Ahora me fijo si cambiaron los incrementos de las categorias
-			if(!relProdCat.getIncremento().equals(incrementos[i])){
-				//Hubo cambios de incremento en categorias
-				//Primero Controlo la fecha desde
-				if(fechaDesde.before(relProdCat.getFechaDesde())){
-					throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{relProdCat.getFechaDesde()});
+				if(!producto.getCostoActual().equals(costo)){
+					//Hubo cambio de costo
+					//Primero Controlo la fecha desde
+					ProductoCosto prodCostoActual = productoCostoDao.findCostoActual(producto.getId());
+					if(fechaDesde.before(prodCostoActual.getFechaDesde())){
+						throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{prodCostoActual.getFechaDesde()});
+					}
+					producto.setCostoActual(costo);
+					producto.setFechaAlta(fechaDesde);
+					producto.setStockControlado(Boolean.TRUE);//No necesito control de stock
+					productoDao.update(producto);
+					//Finalizo la relacion actual y creo una nueva
+					prodCostoActual.setFechaHasta(fechaDesde);
+					productoCostoDao.update(prodCostoActual);
+					
+					ProductoCosto rpc = new ProductoCosto();
+					rpc.setCosto(producto.getCostoActual());
+					rpc.setFechaDesde(producto.getFechaAlta());
+					rpc.setProducto(producto);
+					productoCostoDao.save(rpc);
+					huboCambios = true;
 				}
-				relProdCat.setFechaHasta(fechaDesde);
-				relProductoCategoriaDao.update(relProdCat);
-				
-				RelProductoCategoria rpc = new RelProductoCategoria();
-				rpc.setCategoria(relProdCat.getCategoria());
-				rpc.setProducto(relProdCat.getProducto());
-				rpc.setIncremento(incrementos[i]);
-				rpc.setFechaDesde(fechaDesde);
-				relProductoCategoriaDao.save(rpc);
-				huboCambios = true;
+				//Ahora me fijo si cambiaron los incrementos de las categorias
+				if(!relProdCat.getIncremento().equals(incrementos[i])){
+					//Hubo cambios de incremento en categorias
+					//Primero Controlo la fecha desde
+					if(fechaDesde.before(relProdCat.getFechaDesde())){
+						throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{relProdCat.getFechaDesde()});
+					}
+					relProdCat.setFechaHasta(fechaDesde);
+					relProductoCategoriaDao.update(relProdCat);
+					
+					RelProductoCategoria rpc = new RelProductoCategoria();
+					rpc.setCategoria(relProdCat.getCategoria());
+					rpc.setProducto(relProdCat.getProducto());
+					rpc.setIncremento(incrementos[i]);
+					rpc.setFechaDesde(fechaDesde);
+					relProductoCategoriaDao.save(rpc);
+					huboCambios = true;
+				}
 			}
+		}finally{
+			//Quito control
+			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.FALSE);
 		}
 		return huboCambios;
 	}

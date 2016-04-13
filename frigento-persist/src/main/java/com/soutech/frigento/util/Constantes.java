@@ -9,4 +9,9 @@ public class Constantes {
 	public static final String ESTADO_REL_NO_VIGENTE = "NV";
 	
 	public static final String FORMATO_FECHA_DESDE_HASTA = "dd/MM/yyyy HH:mm";
+	
+	public static final String ESTADO_PEDIDO_PENDIENTE = "1";
+	public static final String ESTADO_PEDIDO_CONFIRMADO = "2";
+	public static final String ESTADO_PEDIDO_ENTREGADO = "3";
+	public static final String ESTADO_PEDIDO_ANULADO = "4";
 }

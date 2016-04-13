@@ -3,8 +3,8 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		if(!$.fn.DataTable.isDataTable('#idGrilla')){
-		    $('#idGrilla').DataTable({
+		if(!$.fn.DataTable.isDataTable('#idGrillaRPCa')){
+		    $('#idGrillaRPCa').DataTable({
 		    	"paging": false,
 		        "columnDefs": [
 		                       { "orderable": false, "targets": -1 }
@@ -35,7 +35,7 @@
 	    }
 	});
 	
-	$('#idGrilla tbody').on( 'click', 'tr', function () {
+	$('#idGrillaRPCa tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
         }
@@ -108,7 +108,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaRPCa" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
 	<thead>
         <tr>
             <th><fmt:message key="relProdCat.producto" /></th>

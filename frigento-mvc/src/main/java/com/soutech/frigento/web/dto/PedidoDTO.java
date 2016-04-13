@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.soutech.frigento.model.annotattions.Numeric;
+import com.soutech.frigento.model.ProductoCosto;
 
 public class PedidoDTO implements Serializable {
 
@@ -21,12 +21,11 @@ public class PedidoDTO implements Serializable {
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fecha;
 	
-	@NotNull
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaEntregar;
 	
 	@NotNull
-	private List<Item> items;
+	private List<ItemDTO> items;
 	
 	public Short getEstadoId() {
 		return estadoId;
@@ -52,33 +51,12 @@ public class PedidoDTO implements Serializable {
 		this.fecha = fecha;
 	}
 
-	public List<Item> getItems() {
+	public List<ItemDTO> getItems() {
 		return items;
 	}
 
-	public void setItems(List<Item> items) {
+	public void setItems(List<ItemDTO> items) {
 		this.items = items;
 	}
 	
-	public class Item{
-		
-		@NotNull
-		private Float cantidad;
-		@Numeric(regexp = Numeric.decimal_positivo)
-		private String producto;
-		
-		public Float getCantidad() {
-			return cantidad;
-		}
-		public void setCantidad(Float cantidad) {
-			this.cantidad = cantidad;
-		}
-		public String getProducto() {
-			return producto;
-		}
-		public void setProducto(String producto) {
-			this.producto = producto;
-		}
-		
-	}
 }

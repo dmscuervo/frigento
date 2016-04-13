@@ -33,7 +33,7 @@ public class Producto implements Serializable {
     @Column(name = "ID_PRODUCTO")
     private Integer id;
 
-   @NotNull
+    @NotNull
     @NotEmpty
     @Column(name = "CODIGO")
     @Size(max = 15)
@@ -67,6 +67,7 @@ public class Producto implements Serializable {
     @Column(name = "IMAGEN")
     private Blob imagen;
 
+    @NotNull
     @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "PESO_CAJA")
     private Float pesoCaja;

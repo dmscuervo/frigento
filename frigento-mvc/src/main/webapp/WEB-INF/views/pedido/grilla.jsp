@@ -3,7 +3,14 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-	    $('#idGrillaCat').DataTable();
+		if(!$.fn.DataTable.isDataTable('#idGrillaPed')){
+	    	$('#idGrillaPed').DataTable({
+	    		columnDefs: [
+		                       { orderable: false, targets: -1 }
+		                     ]
+	    	});
+		}
+	    
 	    if('${informar}' != null){
 	    	$('#idModalMensaje').attr('style', 'visible');
 	    }
@@ -12,30 +19,35 @@
 </script>
 
 <h3>
-	<fmt:message key="categoria.grilla.title" />
+	<fmt:message key="pedido.grilla.title" />
 </h3>
 <p class="form-validate">
 	${msgError}
 </p>
-<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaPed" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
         <thead>
             <tr>
-                <th><fmt:message key="categoria.descripcion" /></th>
-                <th><fmt:message key="categoria.grilla.acciones" /></th>
+                <th><fmt:message key="pedido.id" /></th>
+                <th><fmt:message key="pedido.costo" /></th>
+                <th><fmt:message key="pedido.estado" /></th>
+                <th><fmt:message key="pedido.fecha.entregar" /></th>
+                <th><fmt:message key="pedido.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
-        <c:forEach var="cat" items="${categorias}">
+        <c:forEach var="ped" items="${pedidos}">
         	<tr>
-        		<td>${cat.descripcion}</td>
-        		<td>
-        			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
-        			<i class="fa fa-trash" onclick="confirmDelete('categoria/${cat.id}?borrar')"></i>
-        			<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar=&estado=V')"></i>
-        			<%-- 
-        			<i class="fa fa-trash" onclick="confirmDelete('${cat.id}')"></i>
-			        <input type="hidden" id="msg-${cat.id}" value="<fmt:message key='categoria.borrar.confirm'><fmt:param value='${cat.descripcion}'/></fmt:message>" />
-			        --%>
+        		<td style="white-space: nowrap;">${ped.id}</td>
+        		<td style="white-space: nowrap;">${ped.costo}</td>
+        		<td style="white-space: nowrap;">${ped.estado.descripcion}</td>
+        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm"/></td>
+        		<td style="white-space: nowrap;">
+        			<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}/detalle')"></i>
+        			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">
+        				<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>
+        				<i class="fa fa-trash" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>
+        				<i class="fa fa-trash" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
+        			</c:if>
 				</td>
         	</tr>
         </c:forEach>

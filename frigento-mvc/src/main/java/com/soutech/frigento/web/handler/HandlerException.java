@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.soutech.frigento.exception.ControlConcurrenciaExcepcion;
 import com.soutech.frigento.util.PrinterStack;
@@ -25,6 +28,13 @@ public class HandlerException {
     public String handleControlConcurrenciaException(HttpServletRequest request, ControlConcurrenciaExcepcion ex){
 		logger.info("Control de concurrencia aplicado.");
 		return ex.getPath().concat("&informar=".concat(messageSource.getMessage(ex.getKeyMessage(), null, Locale.getDefault())));
+	}
+	
+
+	@ExceptionHandler(HttpSessionRequiredException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason="The session has expired")
+	public String handleSessionExpired(){		
+	  return "sessionExpired";
 	}
 	
     @ExceptionHandler(Exception.class)

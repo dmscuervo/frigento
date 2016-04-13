@@ -37,6 +37,10 @@ public class ProductoCostoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
     
+    public static String BUSQUEDA_DEFAULT(Integer idProd){
+		return "prodCosto/"+idProd+"?estado=A";
+    }
+    
     @InitBinder
     public void initBinder(WebDataBinder binder){
          binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   

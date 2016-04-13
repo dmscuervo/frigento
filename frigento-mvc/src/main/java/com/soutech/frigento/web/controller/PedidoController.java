@@ -20,47 +20,52 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
-import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
+import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.service.EstadoService;
 import com.soutech.frigento.service.PedidoService;
-import com.soutech.frigento.service.ProductoService;
+import com.soutech.frigento.service.ProductoCostoService;
+import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.web.dto.ItemDTO;
 import com.soutech.frigento.web.dto.PedidoDTO;
-import com.soutech.frigento.web.dto.PedidoDTO.Item;
 
 @Controller
 @RequestMapping(value="/pedido")
 public class PedidoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "pedido?estado=A&sortFieldName=descripcion&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "pedido?estados[]="+Constantes.ESTADO_PEDIDO_PENDIENTE+"&estados[]="+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=pedido.id&sortOrder=asc";
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   
+         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy HH:mm"), true));   
     }
     
     @Autowired
-    public PedidoService pedidoService;
+    private PedidoService pedidoService;
     @Autowired
-    public EstadoService estadoService;
+    private EstadoService estadoService;
     @Autowired
-    public ProductoService productoService;
+    private RelPedidoProductoService relPedidoProductoService;
+    @Autowired
+    private ProductoCostoService productoCostoService;
     
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
-    	List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
+    	List<ProductoCosto> productosCostos = productoCostoService.obtenerProductosCosto(Constantes.ESTADO_REL_VIGENTE, "producto.descripcion", "asc");
     	List<Estado> estados = estadoService.obtenerEstadosPedido();
     	PedidoDTO pedido = new PedidoDTO();
     	pedido.setFecha(new Date());
-    	pedido.setItems(new ArrayList<PedidoDTO.Item>(productos.size()));
-    	for (Producto producto : productos) {
-    		Item item = pedido.new Item();
-    		item.setCantidad(0f);
-    		item.setProducto(producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
+    	pedido.setItems(new ArrayList<ItemDTO>(productosCostos.size()));
+    	for (ProductoCosto prodCosto : productosCostos) {
+    		ItemDTO item = new ItemDTO();
+    		item.setCantidad((short)0);
+    		item.setProductoCosto(prodCosto);
     		pedido.getItems().add(item);
 		}
 		uiModel.addAttribute("pedidoForm", pedido);
@@ -69,21 +74,39 @@ public class PedidoController extends GenericController {
     }
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
-    public String alta(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	formValidator.validate(pedidoForm, bindingResult);
-        if (bindingResult.hasErrors()) {
+    public String alta(@Valid @ModelAttribute("pedidoForm") PedidoDTO pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	if (bindingResult.hasErrors()) {
         	return "pedido/alta";
         }
-//        try {
-			pedidoService.generarPedido(pedidoForm);
-			uiModel.asMap().clear();
-//		} catch (EntityExistException e) {
-//			String key = "EntityExist.pedidoForm."+e.getField();
-//			bindingResult.rejectValue(e.getField(), key);
-//			logger.info(getMessage(key));
-//			return "pedido/alta";
-//		}
+
+    	Pedido pedido = new Pedido();
+    	pedido.setFecha(pedidoForm.getFecha());
+    	pedido.setFechaEntregado(pedidoForm.getFechaEntregar());
+    	Estado estado = new Estado();
+    	estado.setId(pedidoForm.getEstadoId());
+    	pedido.setEstado(estado);
+    	pedido.setItemsView(new ArrayList<RelPedidoProducto>());
+    	for (ItemDTO item : pedidoForm.getItems()) {
+    		RelPedidoProducto rpp = new RelPedidoProducto();
+    		rpp.setCantidad(item.getCantidad().floatValue());
+			rpp.setProductoCosto(item.getProductoCosto());
+			pedido.getItemsView().add(rpp);
+		}
+    	
+    	pedidoService.generarPedido(pedido);
+		uiModel.asMap().clear();
+
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.alta.ok")));
+    }
+    
+    @RequestMapping(produces = "text/html")
+    public String listar(@RequestParam(value = "estados", required = true) Short estadoPedido[], @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
+    	httpServletRequest.setAttribute("pedidos", relPedidoProductoService.obtenerPedidos(estadoPedido, sortFieldName, sortOrder));
+    	httpServletRequest.setAttribute("estadoSel", estadoPedido);
+        if(informar != null){
+        	httpServletRequest.setAttribute("informar", informar);
+        }
+        return "pedido/grilla";
     }
     
 //    @RequestMapping(value = "/{id}", produces = "text/html")

@@ -3,8 +3,8 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		if(!$.fn.DataTable.isDataTable('#idGrilla')){
-		    $('#idGrilla').DataTable({
+		if(!$.fn.DataTable.isDataTable('#idGrillaRPCo')){
+		    $('#idGrillaRPCo').DataTable({
 		    	"paging": false
 		    }); 
 		}
@@ -121,7 +121,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaRPCo" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
 	<thead>
         <tr>
             <th><fmt:message key="prodCosto.categoria" /></th>

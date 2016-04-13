@@ -4,6 +4,6 @@ import com.soutech.frigento.model.Pedido;
 
 public interface PedidoService {
 
-	void generarPedido(Pedido pedidoForm);
+	boolean generarPedido(Pedido pedido);
 
 }
