@@ -18,21 +18,20 @@
 			
 </script>
 
+<div style="width: 80%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="pedido.grilla.title" />
 </h3>
-<p class="form-validate">
-	${msgError}
-</p>
-<table id="idGrillaPed" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+${msgError}
+<table id="idGrillaPed" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
-                <th><fmt:message key="pedido.id" /></th>
-                <th><fmt:message key="pedido.fecha" /></th>
-                <th><fmt:message key="pedido.costo" /></th>
-                <th><fmt:message key="pedido.estado" /></th>
-                <th><fmt:message key="pedido.fecha.entregar" /></th>
-                <th><fmt:message key="pedido.grilla.acciones" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.id" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.costo" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.estado" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha.entregar" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +43,7 @@
         		<td style="white-space: nowrap;">${ped.estado.descripcion}</td>
         		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
         		<td style="white-space: nowrap;">
-        			<i class="fa fa-list-ol" onclick="loadInBody('pedido/${ped.id}/detalle')"></i>&nbsp;&nbsp;
+        			<i class="fa fa-list-ol" onclick="loadInBody('pedido/${ped.id}?detalle')"></i>&nbsp;&nbsp;
         			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">
         				<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>&nbsp;&nbsp;
         				<i class="fa fa-check" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>&nbsp;&nbsp;
@@ -55,7 +54,7 @@
         </c:forEach>
         </tbody>
 </table>
-
+</div>
 <div id="divVentanaGrilla">
 </div>
 

@@ -9,4 +9,6 @@ public interface RelPedidoProductoDao extends IDao<RelPedidoProducto, Long> {
 	Date findMinFechaPedido(Integer idProd);
 
 	List<RelPedidoProducto> findAll(Short[] estadoPedidoId, String sortFieldName, String sortOrder);
+
+	List<RelPedidoProducto> findAllByPedido(Integer idPedido);
 }

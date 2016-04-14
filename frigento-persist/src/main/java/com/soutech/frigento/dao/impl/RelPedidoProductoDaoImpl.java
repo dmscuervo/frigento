@@ -44,4 +44,16 @@ public class RelPedidoProductoDaoImpl extends AbstractSpringDao<RelPedidoProduct
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelPedidoProducto> findAllByPedido(Integer idPedido) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelPedidoProducto.class.getCanonicalName());
+		hql.append(" rpp ");
+		hql.append("where rpp.pedido.id = :idPed ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idPed", idPedido);
+		return query.list();
+	}
+
 }

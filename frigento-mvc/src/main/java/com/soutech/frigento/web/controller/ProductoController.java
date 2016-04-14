@@ -100,7 +100,7 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
+    public String preEdit(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Date fechaHastaMin = relProductoCategoriaService.obtenerMinFechaDesde(id);
     	Date fechaHastaMin2 = productoCostoService.obtenerMinFechaHasta(id);
     	Date fechaHastaMin3 = relPedidoProductoService.obtenerMinFechaPedido(id);
@@ -125,6 +125,11 @@ public class ProductoController extends GenericController {
     	uiModel.addAttribute("maxDateAlta", fechaMinD.getTime());
     	Date fechaDesdeMin = productoCostoService.obtenerMinFechaDesde(id);
     	Producto prod = productoService.obtenerProducto(id);
+    	if(prod.getFechaBaja() != null){
+        	httpServletRequest.setAttribute("informar", getMessage("producto.editar.estado.error"));
+        	return "pedido/grilla";
+        }
+    	
     	prod.setFechaAlta(fechaDesdeMin);
     	prod.setStockPrevio(prod.getStock());
     	uiModel.addAttribute("productoForm", prod);
@@ -151,9 +156,14 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(params = "borrar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String preDelete(@PathVariable("id") Integer id, Model uiModel) {
-    	uiModel.addAttribute("productoForm", productoService.obtenerProducto(id));
-        return "producto/borrar";
+    public String preDelete(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Producto prod = productoService.obtenerProducto(id);
+    	if(prod.getFechaBaja() != null){
+        	httpServletRequest.setAttribute("informar", getMessage("producto.borrar.estado.error"));
+        	return "pedido/grilla";
+        }
+    	uiModel.addAttribute("productoForm", prod);
+    	return "producto/borrar";
     }
     
     @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
@@ -163,8 +173,13 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(params = "activar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String preActivar(@PathVariable("id") Integer id, Model uiModel) {
-    	uiModel.addAttribute("productoForm", productoService.obtenerProducto(id));
+    public String preActivar(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Producto prod = productoService.obtenerProducto(id);
+    	if(prod.getFechaBaja() == null){
+        	httpServletRequest.setAttribute("informar", getMessage("producto.activar.estado.error"));
+        	return "pedido/grilla";
+        }
+    	uiModel.addAttribute("productoForm", prod);
         return "producto/activar";
     }
     

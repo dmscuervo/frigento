@@ -11,4 +11,8 @@ public interface PedidoService {
 
 	List<Pedido> obtenerPedidos(Short[] estado, String sortFieldName, String sortOrder);
 
+	Pedido obtenerPedido(Integer idPedido);
+
+	boolean actualizarPedido(Pedido pedido) throws ProductoSinCostoException;
+
 }

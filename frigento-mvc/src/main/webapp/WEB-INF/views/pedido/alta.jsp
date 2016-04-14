@@ -8,6 +8,7 @@
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
 		    $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
+		    	scrollX: 		false,
 		        scrollCollapse: true,
 		        paging: false,
 		    	order: [[ 1, "asc" ]],
@@ -25,7 +26,6 @@
 		
 		$('#datetimepickerPedidoFechaEntrega').datetimepicker({
 			ignoreReadonly: true,
-			maxDate: moment(),
 			locale: 'es'
 	    });
 		
@@ -113,7 +113,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-             			<div class='input-group date' id='datetimepickerPedidoFecha'>
+             			<div class='input-group date' id='datetimepickerPedidoFechaEntrega'>
              				<form:input path="fechaAEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
                 				<span class="input-group-addon">
                      			<span class="glyphicon glyphicon-calendar"></span>
@@ -132,20 +132,20 @@
 			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
 			        <thead>
 			            <tr>
-			                <th><fmt:message key="pedido.item.cantidad.caja" /></th>
-			                <th><fmt:message key="pedido.item.producto" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.cantidad.caja" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.producto" /></th>
 			            </tr>
 			        </thead>
 			        <tbody>
 			        <c:forEach var="item" items="${pedidoForm.items}" varStatus="status">
 			        	<tr>
-			        		<td>
+			        		<td style="white-space: nowrap;">
 			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" />
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 			        		</td>
-			        		<td>${item.producto.codigo} - ${item.producto.descripcion}</td>
+			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>
 			        	</tr>
 			        </c:forEach>
 			        </tbody>

@@ -17,6 +17,7 @@
 			
 </script>
 
+<div style="float: left; min-width: 300px">
 <h3>
 	<fmt:message key="categoria.grilla.title" />
 </h3>
@@ -43,6 +44,7 @@
         </c:forEach>
         </tbody>
 </table>
+</div>
 
 <div id="divVentanaGrilla">
 </div>
