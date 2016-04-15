@@ -1,10 +1,17 @@
 package com.soutech.frigento.web.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,6 +42,9 @@ import com.soutech.frigento.service.PedidoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.util.PrinterStack;
+import com.soutech.frigento.util.Utils;
+import com.soutech.frigento.web.reports.ReportManager;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
@@ -58,6 +68,8 @@ public class PedidoController extends GenericController {
     private EstadoService estadoService;
     @Autowired
     private ProductoService productoService;
+    @Autowired
+    private ReportManager reportManager;
     
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
@@ -188,6 +200,46 @@ public class PedidoController extends GenericController {
 		uiModel.asMap().clear();
 
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
+    }
+    
+    @RequestMapping(params = "descargar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String descargar(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
+    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed);
+    	Pedido pedido = relPedProdList.get(0).getPedido();
+    	
+    	Map<String, Object> parameters = new HashMap<String, Object>();
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(pedido.getFecha());
+    	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
+    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
+    	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
+    	parameters.put("nroPedido", Utils.aTextoConCeroIzqSegunCantDigitos(pedido.getId(), 6));
+    	parameters.put("proveedor","Alimax");
+    	parameters.put("domicilio","");
+    	
+    	//El remito permite hasta 21 items
+    	while(relPedProdList.size() % 21 != 0){
+    		RelPedidoProducto rpp = new RelPedidoProducto();
+			relPedProdList.add(rpp );
+    	}
+    	
+		try {
+			ByteArrayOutputStream bytes = reportManager.buildReportToByteArrayOutputStream("remitoConfirmado", parameters, "ireport/", relPedProdList);
+			File file = new File("C:/Users/Familia/remito.pdf");
+			if(!file.exists()){
+				file.createNewFile();
+			}else{
+				file.delete();	
+			}
+			OutputStream outputStream = new FileOutputStream(file); 
+			bytes.writeTo(outputStream);
+			outputStream.flush();
+			outputStream.close();
+			bytes.close();
+		} catch (Exception e) {
+			logger.error(PrinterStack.getStackTraceAsString(e));
+		}
+        return "pedido/grilla";
     }
 //    
 //    @RequestMapping(produces = "text/html")

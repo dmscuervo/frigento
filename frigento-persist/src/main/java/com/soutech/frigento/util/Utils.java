@@ -11,4 +11,12 @@ public class Utils {
 		sdf.setLenient(Boolean.FALSE);
 		return sdf.format(fecha);
 	}
+
+	public static String aTextoConCeroIzqSegunCantDigitos(int i, int digits) {
+		String result = String.valueOf(i);
+		while(result.length() < digits){
+			result = "0".concat(result);
+		}
+		return result;
+	}
 }
