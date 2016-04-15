@@ -76,7 +76,7 @@ public class Encriptador implements PasswordEncoder{
 	}
 	
 	public static void main(String[] args) {
-		String encriptarPassword = Encriptador.encriptarPassword("");
+		String encriptarPassword = Encriptador.encriptarPassword("user");
 		System.out.println(encriptarPassword);
 	}
 

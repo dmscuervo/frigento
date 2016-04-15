@@ -1,4 +1,21 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$('#idModalMensaje').on('hidden.bs.modal', function () {
+			cerrar();
+		});
+		$('#idModalMensaje').modal('show');
+	});
+	
+	function cerrar(){
+		$('#idModalMensaje').modal('hide');
+		window.location.replace('${pathBase}' + "home");
+	}
+
+</script>
+
 <c:url var="urlBack" value="/home" />
 <div class="modal fade" id="idModalMensaje" tabindex="-1" role="dialog">
   <div class="modal-dialog">
@@ -11,7 +28,7 @@
         <p>${msgResult}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="history.go(${urlBack});"><fmt:message key="boton.aceptar"/></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cerrar()"><fmt:message key="boton.aceptar"/></button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

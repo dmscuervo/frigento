@@ -49,7 +49,9 @@ ${msgError}
         				&nbsp;&nbsp;<i class="fa fa-check" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>
         				&nbsp;&nbsp;<i class="fa fa-times" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
         			</c:if>
-        			&nbsp;&nbsp;<i class="fa fa-arrow-circle-down" onclick="loadInBody('pedido/${ped.id}?descargar')"></i>
+        			<c:if test="${ped.estado.id gt 1}">
+        				&nbsp;&nbsp;<a href="pedido/${ped.id}?descargar"><i class="fa fa-arrow-circle-down" ></i></a>
+        			</c:if>
 				</td>
         	</tr>
         </c:forEach>

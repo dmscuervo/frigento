@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
 @RequestMapping(value="/producto")
+@Secured({"ROLE_USER"})
 public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -56,6 +58,7 @@ public class ProductoController extends GenericController {
     @Autowired
     public RelPedidoProductoService relPedidoProductoService;
 
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
     	Producto producto = new Producto();
@@ -99,6 +102,7 @@ public class ProductoController extends GenericController {
         return "producto/grilla";
     }
     
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Date fechaHastaMin = relProductoCategoriaService.obtenerMinFechaDesde(id);
@@ -155,6 +159,7 @@ public class ProductoController extends GenericController {
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.editar.ok", productoForm.getDescripcion())));
     }
     
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "borrar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preDelete(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Producto prod = productoService.obtenerProducto(id);
@@ -172,6 +177,7 @@ public class ProductoController extends GenericController {
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.borrar.ok", productoForm.getDescripcion())));
     }
     
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "activar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preActivar(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Producto prod = productoService.obtenerProducto(id);

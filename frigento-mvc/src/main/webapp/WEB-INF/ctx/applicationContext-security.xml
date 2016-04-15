@@ -7,12 +7,17 @@
     
     <!-- HTTP security configurations -->
     <http auto-config="true" use-expressions="true">
-        <form-login login-page="/login" username-parameter="username" password-parameter="password" authentication-failure-url="/Access_Denied" />
-        <!-- Configure these elements to secure URIs in your application -->
-        <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
-        <intercept-url pattern="/client/**" access="hasRole('ROLE_USER')" />
+        <form-login login-page="/login" username-parameter="username" password-parameter="password" authentication-failure-url="/autenticationFailure" />
+        <!-- Configure these elements to secure URIs in your application 
+        <intercept-url pattern="/pedido/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/categoria/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/relProdCat/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/prodCosto/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/producto/**" access="hasRole('ROLE_USER')" />
+        -->
         <intercept-url pattern="/resources/**" access="permitAll" />
         <intercept-url pattern="/login/**" access="permitAll" />
+        <intercept-url pattern="/home/**" access="permitAll" />
         <intercept-url pattern="/**" access="permitAll" />
         <csrf disabled="true"/>
     </http>
@@ -32,6 +37,8 @@
             -->
         </authentication-provider>
     </authentication-manager>
+    
+    <global-method-security secured-annotations="enabled"/>
     
     <beans:bean name="encriptador"
 		class="com.soutech.frigento.util.Encriptador"/>

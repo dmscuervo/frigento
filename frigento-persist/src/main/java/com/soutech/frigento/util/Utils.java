@@ -3,6 +3,9 @@ package com.soutech.frigento.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.soutech.frigento.model.Pedido;
+import com.soutech.frigento.model.Venta;
+
 public class Utils {
 
 	public static final SimpleDateFormat SDF_DDMMYYYY_HHMM = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -18,5 +21,19 @@ public class Utils {
 			result = "0".concat(result);
 		}
 		return result;
+	}
+
+	public static String generarNroRemito(Pedido pedido) {
+		StringBuilder nro = new StringBuilder("S");
+		nro.append(aTextoConCeroIzqSegunCantDigitos(pedido.getVersion().intValue(), 2));
+		nro.append("-");
+		nro.append(aTextoConCeroIzqSegunCantDigitos(pedido.getId(), 8));
+		return nro.toString();
+	}
+	
+	public static String generarNroRemito(Venta venta) {
+		StringBuilder nro = new StringBuilder("V01-");
+		nro.append(aTextoConCeroIzqSegunCantDigitos(venta.getId(), 8));
+		return nro.toString();
 	}
 }

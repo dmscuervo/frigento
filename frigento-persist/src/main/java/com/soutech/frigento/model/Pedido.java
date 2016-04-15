@@ -55,6 +55,10 @@ public class Pedido implements Serializable {
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private BigDecimal costo;
 
+	@NotNull
+    @Column(name = "VERSION")
+    private Short version;
+
 	@Column(name = "F_ENTREGAR")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
@@ -140,4 +144,13 @@ public class Pedido implements Serializable {
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
+
+	public Short getVersion() {
+		return version;
+	}
+
+	public void setVersion(Short version) {
+		this.version = version;
+	}
+	
 }

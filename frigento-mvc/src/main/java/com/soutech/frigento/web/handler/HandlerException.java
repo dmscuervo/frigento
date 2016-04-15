@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,18 +42,19 @@ public class HandlerException {
     public String handleSQLException(HttpServletRequest request, Exception ex){
         logger.info("SQLException Occured:: URL="+request.getRequestURL());
         
-//        String key = BindingResult.MODEL_KEY_PREFIX + "productoForm";
-//        ModelAndView modelAndView = new ModelAndView();
-//        
-//        BeanPropertyBindingResult br = new BeanPropertyBindingResult(new Producto(), "productoForm");
-//        br.rejectValue("codigo", "NotEmpty.productoForm.codigo");
-//        Producto producto = new Producto();
-//        modelAndView.getModel().put(key, new BeanPropertyBindingResult(producto, "productoForm"));
-//        modelAndView.getModel().put("productoForm", producto);
-        
         request.setAttribute("msgTitle", "Error Inesperado");
         request.setAttribute("msgResult", "Ocurrio un error no conteplado. Contactese con el administrador.<br>".concat(ex.getMessage()));
         logger.error(PrinterStack.getStackTraceAsString(ex));
+        
+        return "generic/mensajeException";
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(HttpServletRequest request, Exception ex){
+        logger.info("Acceso denegado: URL="+request.getRequestURL());
+        
+        request.setAttribute("msgTitle", "Acceso Denegado");
+        request.setAttribute("msgResult", "No dispone de permisos para utilizar esta función.<br>".concat(ex.getMessage()));
         
         return "generic/mensajeException";
     }

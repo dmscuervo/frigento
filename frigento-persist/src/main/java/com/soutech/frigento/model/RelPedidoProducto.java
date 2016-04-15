@@ -46,8 +46,8 @@ public class RelPedidoProducto implements Serializable {
     @NotNull
     @Column(name = "COSTO")
     private BigDecimal costo;
-
-	public String toString() {
+    
+    public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 

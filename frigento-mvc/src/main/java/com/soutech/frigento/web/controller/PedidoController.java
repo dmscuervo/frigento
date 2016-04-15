@@ -1,8 +1,6 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -14,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
+import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelPedidoProducto;
@@ -50,6 +51,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 @Controller
 @RequestMapping(value="/pedido")
 @SessionAttributes(names="estadoList")
+@Secured({"ROLE_ADMIN"})
 public class PedidoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -203,7 +205,7 @@ public class PedidoController extends GenericController {
     }
     
     @RequestMapping(params = "descargar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String descargar(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
+    public void descargar(@PathVariable("id") Integer idPed, HttpServletRequest httpServletRequest, HttpServletResponse response) {
     	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed);
     	Pedido pedido = relPedProdList.get(0).getPedido();
     	
@@ -213,8 +215,8 @@ public class PedidoController extends GenericController {
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
     	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
-    	parameters.put("nroPedido", Utils.aTextoConCeroIzqSegunCantDigitos(pedido.getId(), 6));
-    	parameters.put("proveedor","Alimax");
+    	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
+    	parameters.put("destinatario",Parametro.NOMBRE_PROVEEDOR);
     	parameters.put("domicilio","");
     	
     	//El remito permite hasta 21 items
@@ -222,24 +224,32 @@ public class PedidoController extends GenericController {
     		RelPedidoProducto rpp = new RelPedidoProducto();
 			relPedProdList.add(rpp );
     	}
+    	String archivoReporte = "remitoConfirmado";
+    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+    		archivoReporte = "remitoEntregado";
+    	}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
+    		archivoReporte = "remitoAnulado";
+    	}
     	
 		try {
-			ByteArrayOutputStream bytes = reportManager.buildReportToByteArrayOutputStream("remitoConfirmado", parameters, "ireport/", relPedProdList);
-			File file = new File("C:/Users/Familia/remito.pdf");
-			if(!file.exists()){
-				file.createNewFile();
-			}else{
-				file.delete();	
-			}
-			OutputStream outputStream = new FileOutputStream(file); 
-			bytes.writeTo(outputStream);
-			outputStream.flush();
-			outputStream.close();
+			ByteArrayOutputStream bytes = reportManager.buildReportToByteArrayOutputStream(archivoReporte, parameters, "ireport/", relPedProdList);
+			String fileDownload = "Pedido_"+parameters.get("nroPedido");
+			// set headers for the response
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
+			response.setContentType( "application/pdf" );
+	        response.setContentLength((int) bytes.size());
+	 
+	 
+	        // get output stream of the response
+	        OutputStream outStream = response.getOutputStream();
+			bytes.writeTo(outStream);
+			outStream.flush();
+			outStream.close();
 			bytes.close();
 		} catch (Exception e) {
 			logger.error(PrinterStack.getStackTraceAsString(e));
 		}
-        return "pedido/grilla";
+        
     }
 //    
 //    @RequestMapping(produces = "text/html")

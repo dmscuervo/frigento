@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import com.soutech.frigento.service.CategoriaService;
 
 @Controller
 @RequestMapping(value="/categoria")
+@Secured({"ROLE_ADMIN"})
 public class CategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());

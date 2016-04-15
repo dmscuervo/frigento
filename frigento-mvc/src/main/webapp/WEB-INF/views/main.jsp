@@ -73,6 +73,8 @@
 			}
     		var url = '${pathBase}' + path;
     		$('#page-wrapper').load(url, function(data){
+    			$('#page-wrapper').html(data);
+    			$('#idModalActivar').modal('show');
     			//Desbloqueo pantalla
             	$('#wrapper').unblock();
     			bodyBlock = false;

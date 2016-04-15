@@ -45,10 +45,20 @@ public class LoginController extends GenericController {
         return "main";
     }
 	
-	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
-    public String accessDeniedPage(ModelMap model) {
+	@RequestMapping(value = "/autenticationFailure", method = RequestMethod.GET)
+    public String autenticationFailure(ModelMap model) {
         model.addAttribute("msg", getMessage("login.error.user.password", null));
         return "redirect:/login?error";
+    }
+	
+	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
+    public String accessDeniedPage(HttpServletRequest request) {
+        logger.info("Acceso denegado: URL="+request.getRequestURL());
+        
+        request.setAttribute("msgTitle", "Acceso Denegado");
+        request.setAttribute("msgResult", "No dispone de permisos para utilizar esta función.<br>");
+        
+        return "generic/mensajeException";
     }
 	
 	private String getPrincipal(){

@@ -19,7 +19,7 @@
 			<h2><fmt:message key="login.subtitle" /></h2>
 		</p>
 		<c:url var="loginUrl" value="/login" />
-		<form action="${loginUrl}" method="post" class="form-horizontal">
+		<form action="${loginUrl}" method="post" class="form-horizontal" autocomplete="off">
 			<p>
 				<c:if test="${param.error != null}">
 					<div class="alert alert-danger">${param.msg}</div>

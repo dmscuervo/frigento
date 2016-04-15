@@ -60,6 +60,7 @@ public class PedidoServiceImpl implements PedidoService {
 			}
 			
 			pedido.setCosto(costoTotal);
+			pedido.setVersion(new Short("1"));
 			pedidoDao.save(pedido);
 			//Guardo las relaciones
 			for (RelPedidoProducto rpp : relaciones) {
@@ -144,6 +145,7 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoActual.setEstado(pedido.getEstado());
 			pedidoActual.setFechaAEntregar(pedido.getFechaAEntregar());
 			pedidoActual.setCosto(costoTotal);
+			pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
 			pedidoDao.update(pedidoActual);
 			
 			//Elimino los productos dados de baja
