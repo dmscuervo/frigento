@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="remitoConfirmado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7242a6bb-de6e-4263-acfd-1b64c76b5926">
 	<property name="ireport.zoom" value="2.5937424601000036"/>
-	<property name="ireport.x" value="409"/>
+	<property name="ireport.x" value="361"/>
 	<property name="ireport.y" value="111"/>
 	<parameter name="dia" class="java.lang.String"/>
 	<parameter name="mes" class="java.lang.String"/>
@@ -23,7 +23,7 @@
 		<band height="275" splitType="Stretch">
 			<image>
 				<reportElement x="61" y="7" width="150" height="92" uuid="a62f3db1-4709-4194-a4eb-927214fa14e6"/>
-				<imageExpression><![CDATA["C:\\Dev\\workspace\\git\\frigento\\frigento-mvc\\src\\main\\resources\\ireport\\Logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["Logo.jpg"]]></imageExpression>
 			</image>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="835f4a5a-bd18-4474-ac8a-ff8efefbc2cd"/>

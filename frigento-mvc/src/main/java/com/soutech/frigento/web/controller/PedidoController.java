@@ -79,6 +79,7 @@ public class PedidoController extends GenericController {
     	List<Estado> estados = estadoService.obtenerEstadosPedido();
     	Pedido pedido = new Pedido();
     	pedido.setFecha(new Date());
+    	pedido.setVersion((short)0);
     	pedido.setItems(new ArrayList<ItemDTO>(productos.size()));
     	pedido.setEstado(estados.get(0));
     	//Lo inicializo para que no falle la validación
@@ -89,8 +90,15 @@ public class PedidoController extends GenericController {
     		item.setProducto(producto);
     		pedido.getItems().add(item);
 		}
+    	
+    	List<Estado> estadosPosibles = new ArrayList<Estado>();
+    	for (Estado estado : estados) {
+			if(estado.getId() <= new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+				estadosPosibles.add(estado);
+			}
+		}
 		uiModel.addAttribute("pedidoForm", pedido);
-		uiModel.addAttribute("estadoList", estados);
+		uiModel.addAttribute("estadoList", estadosPosibles);
         return "pedido/alta";
     }
     
@@ -115,6 +123,19 @@ public class PedidoController extends GenericController {
     		mensaje = getMessage("pedido.confirmar.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);
     		return "pedido/alta";
+    	}
+    	
+    	if(pedidoForm.getEstado().getId() >= new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO) && pedidoForm.getEnvioMail()){
+    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId());
+    		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
+			Pedido pedido = relPedProdList.get(0).getPedido();
+			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+			
+			sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+			try {
+				bytes.flush();
+				bytes.close();
+			} catch (IOException e) {}
     	}
     	
 		uiModel.asMap().clear();
@@ -160,6 +181,7 @@ public class PedidoController extends GenericController {
     				item.setCantidad((short)0);
     			}
 			}
+    		item.setPesoPorCaja(producto.getPesoCaja());
     		item.setProducto(producto);
     		pedido.getItems().add(item);
 		}

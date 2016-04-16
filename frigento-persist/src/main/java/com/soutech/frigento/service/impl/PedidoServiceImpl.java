@@ -19,6 +19,7 @@ import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.service.PedidoService;
+import com.soutech.frigento.util.Constantes;
 
 @Service
 public class PedidoServiceImpl implements PedidoService {
@@ -49,7 +50,7 @@ public class PedidoServiceImpl implements PedidoService {
 					}
 					rpp.setProductoCosto(productoCosto);
 					rpp.setCosto(productoCosto.getCosto());
-					rpp.setCantidad(item.getCantidad().floatValue());
+					rpp.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
 					relaciones.add(rpp);
 					//Voy calculando el costo total del pedido
 					costoTotal = costoTotal.add(productoCosto.getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
@@ -102,23 +103,24 @@ public class PedidoServiceImpl implements PedidoService {
 							break;
 						}
 					}
+					ProductoCosto productoCosto = ProductoCostoDao.findByProductoFecha(item.getProducto().getId(), pedido.getFecha());
 					if(prodNuevo){
 						RelPedidoProducto rpp = new RelPedidoProducto();
-						ProductoCosto productoCosto = ProductoCostoDao.findByProductoFecha(item.getProducto().getId(), pedido.getFecha());
 						if(productoCosto == null){
 							Object[] args = new Object[]{item.getProducto().getCodigo(), pedido.getFecha()};
 							throw new ProductoSinCostoException("pedido.confirmar.producto.sin.costo", args);
 						}
 						rpp.setProductoCosto(productoCosto);
 						rpp.setCosto(productoCosto.getCosto());
-						rpp.setCantidad(item.getCantidad().floatValue());
+						rpp.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
 						relacionesNuevas.add(rpp);
 						//Voy calculando el costo total del pedido
 						costoTotal = costoTotal.add(productoCosto.getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
 					}else{
 						//Me fijo si cambio la cantidad
-						if(rppActual.getCantidad().shortValue() != item.getCantidad().shortValue()){
-							rppActual.setCantidad(item.getCantidad().floatValue());
+						Float cantidadNueva = item.getCantidad() * productoCosto.getProducto().getPesoCaja();
+						if(rppActual.getCantidad() != cantidadNueva){
+							rppActual.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
 							relacionesModificadas.add(rppActual);
 						}
 						//Voy calculando el costo total del pedido
@@ -146,7 +148,9 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoActual.setFechaAEntregar(pedido.getFechaAEntregar());
 			pedidoActual.setCosto(costoTotal);
 			if(!prodEliminadosDelPed.isEmpty() || !relacionesModificadas.isEmpty() || !relacionesNuevas.isEmpty()){
-				pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
+				if(pedido.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_PENDIENTE)){
+					pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
+				}
 			}
 			pedidoDao.update(pedidoActual);
 			

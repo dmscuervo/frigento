@@ -12,6 +12,8 @@ public class ItemDTO implements Serializable {
 
 	@NotNull
 	private Short cantidad;
+	
+	private Float pesoPorCaja;
 
 	@NotNull
 	private Producto producto;
@@ -27,6 +29,12 @@ public class ItemDTO implements Serializable {
 	}
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+	public Float getPesoPorCaja() {
+		return pesoPorCaja;
+	}
+	public void setPesoPorCaja(Float pesoPorCaja) {
+		this.pesoPorCaja = pesoPorCaja;
 	}
 	
 }

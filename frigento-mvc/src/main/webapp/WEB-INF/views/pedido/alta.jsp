@@ -5,6 +5,14 @@
 	
 	$(document).ready(function(){
 		
+		visualizarEnvioMail();
+		//Si la pantalla se carga con el pedido en estado confirmado, no dejo el tilde de enviar correo por default
+		//Solo en caso de que no sea una carga de pantalla por validacion de errores
+		var tieneError = '${msgError}';
+		if($('#idEstado').val() == 2 && tieneError == ''){
+			$('#idEnvioMail').prop( "checked", false );
+		}
+		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
 		    $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
@@ -46,6 +54,14 @@
 		
 	});
 	
+	function visualizarEnvioMail(){
+		if($('#idEstado').val() == 2){
+			$('#idConfirmar').slideDown( "slow" );
+		}else{
+			$('#idConfirmar').hide();
+		}
+	}
+	
 </script>
 
 <div style="width: 80%; float: left; min-width: 300px">
@@ -58,6 +74,7 @@
 	<c:url var="urlAlta" value="/pedido/alta" />
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm">
 	<form:hidden path="costo"/>
+	<form:hidden path="version"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -92,7 +109,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-       			<form:select path="estado.id" cssClass="form-control" id="idEstado" >
+       			<form:select path="estado.id" cssClass="form-control" id="idEstado" onchange="visualizarEnvioMail()">
        				<form:options items="${estadoList}" itemValue="id" itemLabel="descripcion" />
         		</form:select>
 			</div>
@@ -100,6 +117,14 @@
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="estado.id" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
+    <div class='row' id="idConfirmar">
+    	<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'>    
+			<div class="form-group" >
+				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="pedido.enviar.mail" />
 			</div>
         </div>
     </div>

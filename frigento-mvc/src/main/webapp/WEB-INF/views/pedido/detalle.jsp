@@ -106,7 +106,7 @@
 			<c:forEach var="item" items="${relPedProdList}" varStatus="status">
 				<tr>
 					<td style="white-space: nowrap;"><fmt:formatNumber
-							value="${item.cantidad}" maxFractionDigits="0"
+							value="${item.cantidad / item.productoCosto.producto.pesoCaja}" maxFractionDigits="0"
 							minFractionDigits="0" /></td>
 					<td style="white-space: nowrap;">${item.productoCosto.producto.codigo}
 						- ${item.productoCosto.producto.descripcion}</td>

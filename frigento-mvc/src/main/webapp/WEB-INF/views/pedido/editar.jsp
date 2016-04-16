@@ -7,7 +7,9 @@
 		
 		visualizarEnvioMail();
 		//Si la pantalla se carga con el pedido en estado confirmado, no dejo el tilde de enviar correo por default
-		if($('#idEstado').val() == 2){
+		//Solo en caso de que no sea una carga de pantalla por validacion de errores
+		var tieneError = '${msgError}';
+		if($('#idEstado').val() == 2 && tieneError == ''){
 			$('#idEnvioMail').prop( "checked", false );
 		}
 		
