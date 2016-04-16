@@ -85,14 +85,10 @@
 		</c:if>			
 		</div>
 	</div>
-	<div class='col-sm-1'>
+	<div class='col-sm-4'>
 		<div class="form-group">
-			<input type="button" id="idBtConfirmar" value='<fmt:message key="boton.confirmar" />' onclick="loadInBody('relProdCat?confirmar')">
-		</div>
-	</div>
-	<div class='col-sm-1'>
-		<div class="form-group">
-			<input type="button" id="idBtAnular" value='<fmt:message key="boton.cancelar" />' onclick="loadInBody('relProdCat/${categoria.id}?listar=&estado=V')">
+			<input type="button" id="idBtConfirmar" class="btn btn-default btn-primary" value='<fmt:message key="boton.confirmar" />' onclick="loadInBody('relProdCat?confirmar')">
+			<input type="button" id="idBtAnular" class="btn btn-default btn-primary" value='<fmt:message key="boton.cancelar" />' onclick="loadInBody('relProdCat/${categoria.id}?listar=&estado=V')">
 		</div>
 	</div>
      <div class='col-sm-4'>
@@ -111,11 +107,11 @@
 <table id="idGrillaRPCa" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
 	<thead>
         <tr>
-            <th><fmt:message key="relProdCat.producto" /></th>
-            <th><fmt:message key="relProdCat.incremento" /></th>
-            <th><fmt:message key="relProdCat.precio" /></th>
-            <th><fmt:message key="relProdCat.fechaDesde" /></th>
-            <th><fmt:message key="relProdCat.fechaHasta" /></th>
+            <th style="white-space: nowrap;"><fmt:message key="relProdCat.producto" /></th>
+            <th style="white-space: nowrap;"><fmt:message key="relProdCat.incremento" /></th>
+            <th style="white-space: nowrap;"><fmt:message key="relProdCat.precio" /></th>
+            <th style="white-space: nowrap;"><fmt:message key="relProdCat.fechaDesde" /></th>
+            <th style="white-space: nowrap;"><fmt:message key="relProdCat.fechaHasta" /></th>
             <th></th>
         </tr>
     </thead>

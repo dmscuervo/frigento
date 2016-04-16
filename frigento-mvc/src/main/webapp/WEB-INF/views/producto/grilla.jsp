@@ -54,23 +54,23 @@
 <table id="idGrillaProd" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
         <thead>
             <tr>
-                <th><fmt:message key="producto.codigo" /></th>
-                <th><fmt:message key="producto.descripcion" /></th>
-                <th><fmt:message key="producto.costoActual" /></th>
-                <th><fmt:message key="producto.stock" /></th>
-                <th><fmt:message key="producto.pesoCaja" /></th>
-                <th><fmt:message key="producto.grilla.acciones" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.codigo" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.descripcion" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.costoActual" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.stock" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.pesoCaja" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
         <c:forEach var="prod" items="${productos}">
         	<tr>
-        		<td>${prod.codigo}</td>
-        		<td>${prod.descripcion}</td>
-        		<td>${prod.costoActual}</td>
-        		<td>${prod.stock}</td>
-        		<td>${prod.pesoCaja}</td>
-        		<td colspan="2">
+        		<td style="white-space: nowrap;">${prod.codigo}</td>
+        		<td style="white-space: nowrap;">${prod.descripcion}</td>
+        		<td style="white-space: nowrap;">${prod.costoActual}</td>
+        		<td style="white-space: nowrap;">${prod.stock}</td>
+        		<td style="white-space: nowrap;">${prod.pesoCaja}</td>
+        		<td colspan="2" style="white-space: nowrap;">
         			<c:if test="${estadoSel eq 'A'}">
 	        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
         				&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmDelete('producto/${prod.id}?borrar')"></i>

@@ -145,7 +145,9 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoActual.setEstado(pedido.getEstado());
 			pedidoActual.setFechaAEntregar(pedido.getFechaAEntregar());
 			pedidoActual.setCosto(costoTotal);
-			pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
+			if(!prodEliminadosDelPed.isEmpty() || !relacionesModificadas.isEmpty() || !relacionesNuevas.isEmpty()){
+				pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
+			}
 			pedidoDao.update(pedidoActual);
 			
 			//Elimino los productos dados de baja

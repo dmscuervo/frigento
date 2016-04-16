@@ -5,6 +5,12 @@
 	
 	$(document).ready(function(){
 		
+		visualizarEnvioMail();
+		//Si la pantalla se carga con el pedido en estado confirmado, no dejo el tilde de enviar correo por default
+		if($('#idEstado').val() == 2){
+			$('#idEnvioMail').prop( "checked", false );
+		}
+		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
 		    $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
@@ -36,15 +42,15 @@
 			$(this).val(value);
 		});
 		
-		/* $('#idCod').on('change', function(){
-			calcularPrecio();
-		});
-		
-		$('#idIncremento').on('keyup', function(){
-			calcularPrecio();
-		}); */
-		
 	});
+	
+	function visualizarEnvioMail(){
+		if($('#idEstado').val() == 2){
+			$('#idConfirmar').slideDown( "slow" );
+		}else{
+			$('#idConfirmar').hide();
+		}
+	}
 	
 </script>
 
@@ -58,6 +64,7 @@
 	<c:url var="urlEditar" value="/pedido/editar" />
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm">
 	<form:hidden path="costo"/>
+	<form:hidden path="version"/>
 	<form:hidden path="id"/>
 	<div class='row'>
         <div class='col-sm-4'>    
@@ -93,14 +100,22 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-       			<form:select path="estado.id" cssClass="form-control" id="idEstado" >
-       				<form:options items="${estadoList}" itemValue="id" itemLabel="descripcion" />
+       			<form:select path="estado.id" cssClass="form-control" id="idEstado" onchange="visualizarEnvioMail()">
+       				<form:options items="${estadoList}" itemValue="id" itemLabel="descripcion"/>
         		</form:select>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="estado.id" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
+    <div class='row' id="idConfirmar">
+    	<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'>    
+			<div class="form-group" >
+				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="pedido.enviar.mail" />
 			</div>
         </div>
     </div>
@@ -153,12 +168,17 @@
 			</table>
 		</div>
 	</div>
+	<br/>
 	<div class='row'>
-        <div class='col-sm-12'> 
+		<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'> 
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.aceptar"/>'
+						value='<fmt:message key="boton.aplicar.cambios"/>'
 						onclick="javascript:submitInBody($('#idForm'))">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.cancelar"/>'
+						onclick="javascript:loadInBody('pedido?estados=1,2&sortFieldName=id&sortOrder=asc')">
 			</div>
         </div>
     </div>

@@ -46,10 +46,10 @@ ${msgError}
         			<i class="fa fa-list-ol" onclick="loadInBody('pedido/${ped.id}?detalle')"></i>
         			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">
         				&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>
-        				&nbsp;&nbsp;<i class="fa fa-check" onclick="confirmAccion('pedido/${ped.id}?anular')"></i>
-        				&nbsp;&nbsp;<i class="fa fa-times" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
         			</c:if>
         			<c:if test="${ped.estado.id gt 1}">
+        				&nbsp;&nbsp;<i class="fa fa-check" onclick="confirmAccion('pedido/${ped.id}?cumplir')"></i>
+        				&nbsp;&nbsp;<i class="fa fa-times" onclick="loadInBody('pedido/${ped.id}?anular')"></i>
         				&nbsp;&nbsp;<a href="pedido/${ped.id}?descargar"><i class="fa fa-arrow-circle-down" ></i></a>
         			</c:if>
 				</td>

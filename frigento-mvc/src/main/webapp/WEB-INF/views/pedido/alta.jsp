@@ -152,12 +152,17 @@
 			</table>
 		</div>
 	</div>
+	<br/>
 	<div class='row'>
-        <div class='col-sm-12'> 
+		<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'> 
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.generar"/>'
+						value='<fmt:message key="boton.aceptar"/>'
 						onclick="javascript:submitInBody($('#idForm'))">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.cancelar"/>'
+						onclick="javascript:loadInBody('pedido?estados=1,2&sortFieldName=id&sortOrder=asc')">
 			</div>
         </div>
     </div>

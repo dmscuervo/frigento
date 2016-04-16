@@ -8,6 +8,7 @@
 	<br />
 	<c:url var="urlEditar" value="/categoria/editar" />
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="categoriaForm" id="idForm">
+	<form:hidden path="id" />
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -27,17 +28,19 @@
 			</div>
         </div>
     </div>
+    <br/>
 	<div class='row'>
-        <div class='col-sm-12'> 
+		<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'> 
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.confirmar"/>'
+						value='<fmt:message key="boton.aplicar.cambios"/>'
 						onclick="javascript:submitInBody($('#idForm'))">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.cancelar"/>'
+						onclick="javascript:loadInBody('categoria?sortFieldName=descripcion&sortOrder=asc')">
 			</div>
         </div>
     </div>
-	
-	<form:hidden path="id" />
-	
 	</form:form>
 </div>

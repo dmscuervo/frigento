@@ -35,7 +35,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
 @RequestMapping(value="/producto")
-@Secured({"ROLE_USER"})
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());

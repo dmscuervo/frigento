@@ -116,8 +116,8 @@
 	</div>
 	<div class='col-sm' style="float: right;">
 		<div class="form-group">
-			<input type="button" id="idBtConfirmar" value='<fmt:message key="boton.confirmar" />' onclick="procesarPrecios()">
-			<input type="button" id="idBtAnular" value='<fmt:message key="boton.cancelar" />' onclick="loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')">
+			<input type="button" id="idBtConfirmar" class="btn btn-default btn-primary" value='<fmt:message key="boton.confirmar" />' onclick="procesarPrecios">
+			<input type="button" id="idBtAnular" class="btn btn-default btn-primary" value='<fmt:message key="boton.cancelar" />' onclick="loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')">
 		</div>
 	</div>
 </div>

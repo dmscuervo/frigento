@@ -1,15 +1,13 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,8 +31,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
+import com.soutech.frigento.exception.ReporteException;
 import com.soutech.frigento.model.Estado;
-import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelPedidoProducto;
@@ -43,7 +41,7 @@ import com.soutech.frigento.service.PedidoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
-import com.soutech.frigento.util.PrinterStack;
+import com.soutech.frigento.util.SendMailSSL;
 import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.reports.ReportManager;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
@@ -59,7 +57,7 @@ public class PedidoController extends GenericController {
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS"), true));   
+         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm"), true));   
     }
     
     @Autowired
@@ -72,6 +70,8 @@ public class PedidoController extends GenericController {
     private ProductoService productoService;
     @Autowired
     private ReportManager reportManager;
+    @Autowired
+    private SendMailSSL sndMailSSL;
     
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
@@ -112,7 +112,7 @@ public class PedidoController extends GenericController {
     	if(ok){
     		mensaje = getMessage("pedido.confirmar.ok");
     	}else{
-    		mensaje = getMessage("pedido.confirmar.sin.cambios");
+    		mensaje = getMessage("pedido.confirmar.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);
     		return "pedido/alta";
     	}
@@ -194,9 +194,22 @@ public class PedidoController extends GenericController {
     	if(ok){
     		mensaje = getMessage("pedido.editar.ok");
     	}else{
-    		mensaje = getMessage("pedido.confirmar.sin.cambios");
+    		mensaje = getMessage("pedido.confirmar.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);
     		return "pedido/editar";
+    	}
+    	
+    	if(pedidoForm.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)) && pedidoForm.getEnvioMail()){
+    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId());
+    		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
+			Pedido pedido = relPedProdList.get(0).getPedido();
+			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+			
+			sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+			try {
+				bytes.flush();
+				bytes.close();
+			} catch (IOException e) {}
     	}
     	
 		uiModel.asMap().clear();
@@ -207,47 +220,24 @@ public class PedidoController extends GenericController {
     @RequestMapping(params = "descargar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public void descargar(@PathVariable("id") Integer idPed, HttpServletRequest httpServletRequest, HttpServletResponse response) {
     	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed);
-    	Pedido pedido = relPedProdList.get(0).getPedido();
     	
-    	Map<String, Object> parameters = new HashMap<String, Object>();
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTime(pedido.getFecha());
-    	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
-    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
-    	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
-    	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
-    	parameters.put("destinatario",Parametro.NOMBRE_PROVEEDOR);
-    	parameters.put("domicilio","");
-    	
-    	//El remito permite hasta 21 items
-    	while(relPedProdList.size() % 21 != 0){
-    		RelPedidoProducto rpp = new RelPedidoProducto();
-			relPedProdList.add(rpp );
-    	}
-    	String archivoReporte = "remitoConfirmado";
-    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
-    		archivoReporte = "remitoEntregado";
-    	}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
-    		archivoReporte = "remitoAnulado";
-    	}
-    	
+		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
+		Pedido pedido = relPedProdList.get(0).getPedido();
+		String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
+		response.setContentType( "application/pdf" );
+        response.setContentLength((int) bytes.size());
+
+        OutputStream outStream;
 		try {
-			ByteArrayOutputStream bytes = reportManager.buildReportToByteArrayOutputStream(archivoReporte, parameters, "ireport/", relPedProdList);
-			String fileDownload = "Pedido_"+parameters.get("nroPedido");
-			// set headers for the response
-			response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
-			response.setContentType( "application/pdf" );
-	        response.setContentLength((int) bytes.size());
-	 
-	 
-	        // get output stream of the response
-	        OutputStream outStream = response.getOutputStream();
+			outStream = response.getOutputStream();
 			bytes.writeTo(outStream);
 			outStream.flush();
 			outStream.close();
 			bytes.close();
-		} catch (Exception e) {
-			logger.error(PrinterStack.getStackTraceAsString(e));
+		} catch (IOException e) {
+			throw new ReporteException("pedido.generar.reporte.error");
 		}
         
     }

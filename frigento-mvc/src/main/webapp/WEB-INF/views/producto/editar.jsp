@@ -22,6 +22,7 @@
 	</p>
 	<c:url var="urlEditar" value="/producto/editar" />
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+	<form:hidden path="id" />
 	<form:hidden path="stockPrevio"/>
 	<div class='row'>
         <div class='col-sm-4'>    
@@ -201,17 +202,19 @@
 			</div>
         </div>
     </div>
+    <br/>
 	<div class='row'>
-        <div class='col-sm-12'> 
+		<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'> 
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.confirmar"/>'
+						value='<fmt:message key="boton.aplicar.cambios"/>'
 						onclick="javascript:submitInBody($('#idForm'))">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.cancelar"/>'
+						onclick="javascript:loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')">
 			</div>
         </div>
     </div>
-	
-	<form:hidden path="id" />
-	
 	</form:form>
 </div>

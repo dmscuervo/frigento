@@ -76,6 +76,9 @@ public class Pedido implements Serializable {
 	
 	@Transient
 	private List<ItemDTO> items;
+	
+	@Transient
+	private Boolean envioMail = Boolean.TRUE;
 
 	public Estado getEstado() {
 		return this.estado;
@@ -151,6 +154,14 @@ public class Pedido implements Serializable {
 
 	public void setVersion(Short version) {
 		this.version = version;
+	}
+
+	public Boolean getEnvioMail() {
+		return envioMail;
+	}
+
+	public void setEnvioMail(Boolean envioMail) {
+		this.envioMail = envioMail;
 	}
 	
 }
