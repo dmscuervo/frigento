@@ -15,4 +15,7 @@ public interface ProductoCostoService {
 
 	List<ProductoCosto> obtenerProductosCosto(String estadoRel, String sortFieldName, String sortOrder);
 
+	public ProductoCosto obtenerProductoCosto(Integer idProd, Date fecha);
+
+	List<ProductoCosto> obtenerProductosCosto(Date fecha);
 }

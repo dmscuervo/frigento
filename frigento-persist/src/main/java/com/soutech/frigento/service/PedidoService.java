@@ -17,4 +17,6 @@ public interface PedidoService {
 
 	void anularPedido(Integer pedidoId);
 
+	void cumplirPedido(Integer pedidoId);
+
 }

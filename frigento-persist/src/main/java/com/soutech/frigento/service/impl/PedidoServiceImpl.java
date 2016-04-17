@@ -27,11 +27,13 @@ import com.soutech.frigento.util.Constantes;
 public class PedidoServiceImpl implements PedidoService {
 
 	@Autowired
-    PedidoDao pedidoDao;
+    private PedidoDao pedidoDao;
 	@Autowired
-    ProductoCostoDao ProductoCostoDao;
+	private ProductoCostoDao ProductoCostoDao;
 	@Autowired
-    RelPedidoProductoDao relPedidoProductoDao;
+	private RelPedidoProductoDao relPedidoProductoDao;
+	@Autowired
+	private ControlStockProducto controlStockProducto;
 	
 	@Override
 	@Transactional
@@ -197,6 +199,20 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		pedido.setFechaAnulado(new Date());
     	pedidoDao.update(pedido);
+	}
+
+	@Override
+	@Transactional
+	public void cumplirPedido(Integer pedidoId) {
+		//Incrementar el stock
+		Pedido pedido = controlStockProducto.incrementarStockBy(pedidoId);
+		//Cumplo el pedido
+		Estado estado = new Estado();
+    	estado.setId(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO));
+		pedido.setEstado(estado);
+		
+		pedido.setFechaEntregado(new Date());
+		pedidoDao.update(pedido);
 	}
 
 }

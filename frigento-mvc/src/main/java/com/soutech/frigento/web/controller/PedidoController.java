@@ -30,14 +30,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.service.EstadoService;
 import com.soutech.frigento.service.PedidoService;
+import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
@@ -67,6 +70,8 @@ public class PedidoController extends GenericController {
     private RelPedidoProductoService relPedidoProductoService;
     @Autowired
     private EstadoService estadoService;
+    @Autowired
+    private ProductoCostoService productoCostoService;
     @Autowired
     private ProductoService productoService;
     @Autowired
@@ -121,7 +126,7 @@ public class PedidoController extends GenericController {
     	if(ok){
     		mensaje = getMessage("pedido.confirmar.ok");
     	}else{
-    		mensaje = getMessage("pedido.confirmar.sin.items");
+    		mensaje = getMessage("pedido.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);
     		return "pedido/alta";
     	}
@@ -219,7 +224,7 @@ public class PedidoController extends GenericController {
     	if(ok){
     		mensaje = getMessage("pedido.editar.ok");
     	}else{
-    		mensaje = getMessage("pedido.confirmar.sin.items");
+    		mensaje = getMessage("pedido.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);
     		return "pedido/editar";
     	}
@@ -274,8 +279,9 @@ public class PedidoController extends GenericController {
     @RequestMapping(params = "anular", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preAnular(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
     	Pedido pedido = pedidoService.obtenerPedido(idPed);
-    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
-        	httpServletRequest.setAttribute("informar", getMessage("pedido.anular.estado.error", Constantes.ESTADO_PEDIDO_ANULADO));
+    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))
+    			|| pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+        	httpServletRequest.setAttribute("informar", getMessage("pedido.anular.estado.error", pedido.getEstado().getDescripcion()));
         	return "pedido/grilla";
         }
     	uiModel.addAttribute("pedidoForm", pedido);
@@ -305,5 +311,94 @@ public class PedidoController extends GenericController {
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
     
+    @RequestMapping(params = "cumplir", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String preCumplir(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
+    	List<Estado> estados = estadoService.obtenerEstadosPedido();
+    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed, "productoCosto.producto.codigo", "asc");
+    	Pedido pedido = relPedProdList.get(0).getPedido();
+    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))
+    			|| pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+        	httpServletRequest.setAttribute("informar", getMessage("pedido.cumplir.estado.error", pedido.getEstado().getDescripcion()));
+        	return "pedido/grilla";
+        }
+    	
+    	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(pedido.getFecha());
+    	pedido.setItems(new ArrayList<ItemDTO>(prodCostoList.size()));
+    	for (ProductoCosto prodCosto : prodCostoList) {
+    		ItemDTO item = new ItemDTO();
+    		item.setCantidad((short)0);
+    		item.setCostoCumplir(prodCosto.getCosto());
+    		for (RelPedidoProducto rpp : relPedProdList) {
+    			if(rpp.getProductoCosto().getProducto().getId().equals(prodCosto.getProducto().getId())){
+    				item.setCantidad(new BigDecimal(rpp.getCantidad()/prodCosto.getProducto().getPesoCaja()).setScale(0, RoundingMode.HALF_UP).shortValue());
+    				item.setCostoCumplir(rpp.getCosto());
+    				break;
+    			}
+			}
+    		item.setProducto(prodCosto.getProducto());
+    		pedido.getItems().add(item);
+		}
+    	
+    	List<Estado> estadosPosibles = new ArrayList<Estado>();
+    	for (Estado estado : estados) {
+			if(estado.getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+				estadosPosibles.add(estado);
+			}
+		}
+    		
+		uiModel.addAttribute("pedidoForm", pedido);
+		uiModel.addAttribute("estadoList", estadosPosibles);
+        return "pedido/cumplir";
+    }
     
+    @RequestMapping(value = "/cumplir", method = RequestMethod.POST, produces = "text/html")
+    public String cumplir(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	if (bindingResult.hasErrors()) {
+        	return "pedido/editar";
+        }
+    	//Valido costo no nulo
+    	String mensaje;
+    	Boolean hayCantidades = Boolean.FALSE;
+    	for (ItemDTO item : pedidoForm.getItems()) {
+			if(item.getCostoCumplir() == null){
+				mensaje = getMessage("pedido.cumplir.sin.costo");
+				httpServletRequest.setAttribute("msgError", mensaje);
+				return "pedido/cumplir";
+			}
+			if(item.getCantidad() != 0){
+				hayCantidades = Boolean.TRUE;
+			}
+		}
+    	//Valido que exista al menos un item con cantidad
+    	if(!hayCantidades){
+    		mensaje = getMessage("pedido.cumplir.sin.items");
+			httpServletRequest.setAttribute("msgError", mensaje);
+			return "pedido/cumplir";
+    	}
+
+    	pedidoService.cumplirPedido(pedidoForm.getId());
+    	mensaje = getMessage("pedido.cumplir.ok");
+    	
+    	if(pedidoForm.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO)) && pedidoForm.getEnvioMail()){
+    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
+    		ByteArrayOutputStream bytes;
+			try {
+				bytes = reportManager.generarRemito(relPedProdList);
+				Pedido pedido = relPedProdList.get(0).getPedido();
+				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+				
+				sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+				try {
+					bytes.flush();
+					bytes.close();
+				} catch (IOException e) {}
+			} catch (Exception e) {
+				mensaje = getMessage("pedido.editar.remito.error");
+			}
+    	}
+    	
+		uiModel.asMap().clear();
+
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
+    }
 }

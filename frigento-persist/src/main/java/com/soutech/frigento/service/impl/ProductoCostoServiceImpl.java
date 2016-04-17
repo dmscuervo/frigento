@@ -36,5 +36,16 @@ public class ProductoCostoServiceImpl implements ProductoCostoService {
 		return productoCostoDao.findAll(estadoRel, sortFieldName, sortOrder);
 	}
 
+	@Override
+	public ProductoCosto obtenerProductoCosto(Integer idProd, Date fecha){
+		return productoCostoDao.findByProductoFecha(idProd, fecha);
+	}
+
+	@Override
+	public List<ProductoCosto> obtenerProductosCosto(Date fecha) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 }

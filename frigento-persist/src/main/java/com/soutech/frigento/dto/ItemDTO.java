@@ -1,6 +1,7 @@
 package com.soutech.frigento.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,8 @@ public class ItemDTO implements Serializable {
 	@NotNull
 	private Producto producto;
 	
+	private BigDecimal costoCumplir;
+	
 	public Short getCantidad() {
 		return cantidad;
 	}
@@ -28,4 +31,11 @@ public class ItemDTO implements Serializable {
 	public void setProducto(Producto producto) {
 		this.producto = producto;
 	}
+	public BigDecimal getCostoCumplir() {
+		return costoCumplir;
+	}
+	public void setCostoCumplir(BigDecimal costoCumplir) {
+		this.costoCumplir = costoCumplir;
+	}
+	
 }
