@@ -34,7 +34,7 @@
 				<span id="idDesc" style="white-space: nowrap;">${relPedProdList[0].pedido.id}</span>
 	        </div>
 	        <div class='col-md-3'>    
-				<label class="control-label" for="idDesc2" style="white-space: nowrap;">
+				<label class="control-label" for="idDesc" style="white-space: nowrap;">
 					<fmt:message key="pedido.fecha" />:
 				</label>
 	        </div>
@@ -44,15 +44,15 @@
 	    </div>
 	    <div class='row'>
 	        <div class='col-md-3'>    
-				<label class="control-label" for="idDesc" style="white-space: nowrap;">
+				<label class="control-label" for="idCosto" style="white-space: nowrap;">
 					<fmt:message key="pedido.costo" />:
 				</label>
 	        </div>
 	        <div class='col-md-3'>
-				<span id="idDesc" style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${relPedProdList[0].pedido.costo}" /></span>
+				<span id="idCosto" style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${relPedProdList[0].pedido.costo}" /></span>
 	        </div>
 	        <div class='col-md-3'>    
-				<label class="control-label" for="idDesc2" style="white-space: nowrap;">
+				<label class="control-label" for="idCosto" style="white-space: nowrap;">
 					<fmt:message key="pedido.fecha.entregar" />:
 				</label>
 	        </div>
@@ -62,16 +62,16 @@
 	    </div>
 	    <div class='row'>
 	        <div class='col-md-3'>    
-				<label class="control-label" for="idDesc" style="white-space: nowrap;">
+				<label class="control-label" for="idEstado" style="white-space: nowrap;">
 					<fmt:message key="pedido.estado" />:
 				</label>
 	        </div>
 	        <div class='col-md-3'>
-				<span id="idDesc" style="white-space: nowrap;">${relPedProdList[0].pedido.estado.descripcion}</span>
+				<span id="idEstado" style="white-space: nowrap;">${relPedProdList[0].pedido.estado.descripcion}</span>
 	        </div>
 	        <div class='col-md-3'>    
 				<c:if test="${relPedProdList[0].pedido.estado.id eq 3}">
-					<label class="control-label" for="idDesc2" style="white-space: nowrap;">
+					<label class="control-label" for="idEstado" style="white-space: nowrap;">
 						<fmt:message key="pedido.fecha.entregador" />:
 					</label>
 				</c:if>
@@ -83,10 +83,10 @@
 	        </div>
 	        <div class='col-md-3'>
         		<c:if test="${relPedProdList[0].pedido.estado.id eq 3}">
-					<span id="idDesc2" style="white-space: nowrap;"><fmt:formatDate value="${relPedProdList[0].pedido.fechaEntregado}" pattern="dd/MM/yyyy HH:mm:ss"/></span>
+					<span style="white-space: nowrap;"><fmt:formatDate value="${relPedProdList[0].pedido.fechaEntregado}" pattern="dd/MM/yyyy HH:mm:ss"/></span>
 				</c:if>
 				<c:if test="${relPedProdList[0].pedido.estado.id eq 4}">
-					<span id="idDesc2" style="white-space: nowrap;"><fmt:formatDate value="${relPedProdList[0].pedido.fechaAnulado}" pattern="dd/MM/yyyy HH:mm:ss"/></span>
+					<span style="white-space: nowrap;"><fmt:formatDate value="${relPedProdList[0].pedido.fechaAnulado}" pattern="dd/MM/yyyy HH:mm:ss"/></span>
 				</c:if>
 	        </div>
 	    </div>
@@ -99,6 +99,10 @@
 				<th style="white-space: nowrap;"><fmt:message
 						key="pedido.item.producto" /></th>
 				<th style="white-space: nowrap;"><fmt:message
+						key="producto.pesoCaja" /></th>
+				<th style="white-space: nowrap;"><fmt:message
+						key="pedido.item.pu" /></th>
+				<th style="white-space: nowrap;"><fmt:message
 						key="pedido.item.costo" /></th>
 			</tr>
 		</thead>
@@ -110,8 +114,11 @@
 							minFractionDigits="0" /></td>
 					<td style="white-space: nowrap;">${item.productoCosto.producto.codigo}
 						- ${item.productoCosto.producto.descripcion}</td>
+					<td style="white-space: nowrap;">${item.productoCosto.producto.pesoCaja}</td>
 					<td style="white-space: nowrap;"><fmt:formatNumber
-							currencySymbol="$" type="currency" value="${item.costo}" /></td>
+							currencySymbol="$" type="currency" value="${item.costo * item.productoCosto.producto.pesoCaja}" /></td>
+					<td style="white-space: nowrap;"><fmt:formatNumber
+							currencySymbol="$" type="currency" value="${item.cantidad * item.costo}" /></td>
 				</tr>
 			</c:forEach>
 		</tbody>

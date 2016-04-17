@@ -10,5 +10,5 @@ public interface RelPedidoProductoDao extends IDao<RelPedidoProducto, Long> {
 
 	List<RelPedidoProducto> findAll(Short[] estadoPedidoId, String sortFieldName, String sortOrder);
 
-	List<RelPedidoProducto> findAllByPedido(Integer idPedido);
+	List<RelPedidoProducto> findAllByPedido(Integer idPedido, String sortFieldName, String sortOrder);
 }

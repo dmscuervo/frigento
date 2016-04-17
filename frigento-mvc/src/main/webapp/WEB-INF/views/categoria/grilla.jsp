@@ -37,7 +37,7 @@
         		<td style="white-space: nowrap;">${cat.descripcion}</td>
         		<td style="white-space: nowrap;">
         			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
-        			&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmDelete('categoria/${cat.id}?borrar')"></i>
+        			&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('categoria/${cat.id}?borrar')"></i>
         			&nbsp;&nbsp;<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar=&estado=V')"></i>
 				</td>
         	</tr>

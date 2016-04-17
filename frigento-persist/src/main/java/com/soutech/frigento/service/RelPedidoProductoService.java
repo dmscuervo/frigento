@@ -11,6 +11,6 @@ public interface RelPedidoProductoService {
 
 	List<RelPedidoProducto> obtenerPedidos(Short[] estadoPedidoId, String sortFieldName, String sortOrder);
 
-	List<RelPedidoProducto> obtenerByPedido(Integer idPedido);
+	List<RelPedidoProducto> obtenerByPedido(Integer idPedido, String sortFieldName, String sortOrder);
 
 }

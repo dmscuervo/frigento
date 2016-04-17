@@ -43,7 +43,11 @@ public class HandlerException {
         logger.info("SQLException Occured:: URL="+request.getRequestURL());
         
         request.setAttribute("msgTitle", "Error Inesperado");
-        request.setAttribute("msgResult", "Ocurrio un error no conteplado. Contactese con el administrador.<br>".concat(ex.getMessage()));
+        if(ex.getMessage() != null){
+        	request.setAttribute("msgResult", "Ocurrio un error no conteplado. Contactese con el administrador.<br>".concat(ex.getMessage()));
+        }else{
+        	request.setAttribute("msgResult", "Ocurrio un error no conteplado. Contactese con el administrador.<br>");
+        }
         logger.error(PrinterStack.getStackTraceAsString(ex));
         
         return "generic/mensajeException";

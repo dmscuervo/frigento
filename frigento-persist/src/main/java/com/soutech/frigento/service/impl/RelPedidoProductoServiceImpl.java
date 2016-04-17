@@ -27,8 +27,8 @@ public class RelPedidoProductoServiceImpl implements RelPedidoProductoService {
 	}
 
 	@Override
-	public List<RelPedidoProducto> obtenerByPedido(Integer idPedido) {
-		return relPedidoProductoDao.findAllByPedido(idPedido);
+	public List<RelPedidoProducto> obtenerByPedido(Integer idPedido, String sortFieldName, String sortOrder) {
+		return relPedidoProductoDao.findAllByPedido(idPedido, sortFieldName, sortOrder);
 	}
 
 }

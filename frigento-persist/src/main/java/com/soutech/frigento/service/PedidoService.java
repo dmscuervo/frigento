@@ -15,4 +15,6 @@ public interface PedidoService {
 
 	boolean actualizarPedido(Pedido pedido) throws ProductoSinCostoException;
 
+	void anularPedido(Integer pedidoId);
+
 }

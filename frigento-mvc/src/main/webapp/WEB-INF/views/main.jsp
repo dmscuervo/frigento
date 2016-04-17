@@ -74,7 +74,7 @@
     		var url = '${pathBase}' + path;
     		$('#page-wrapper').load(url, function(data){
     			$('#page-wrapper').html(data);
-    			$('#idModalActivar').modal('show');
+    			$('#idModalAccion').modal('show');
     			//Desbloqueo pantalla
             	$('#wrapper').unblock();
     			bodyBlock = false;
@@ -83,17 +83,10 @@
     		});
     	}
     	
-    	function confirmDelete(path){
+    	function confirmarAccion(path){
     		var url = '${pathBase}' + path;
     		$('#divVentanaGrilla').load(url, function(data){
-    			$('#idModalBorrar').modal('show');
-    		});
-    	}
-    	
-    	function confirmActivar(path){
-    		var url = '${pathBase}' + path;
-    		$('#divVentanaGrilla').load(url, function(data){
-    			$('#idModalActivar').modal('show');
+    			$('#idModalAccion').modal('show');
     		});
     	}
     	
@@ -264,7 +257,7 @@
                                     <a href="javascript:loadInBody('pedido?alta')"><fmt:message key="menu.pedido.generar"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('pedido?estados=1,2&sortFieldName=id&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
+                                    <a href="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
                                 </li>
                             </ul>
                         </li>
@@ -325,7 +318,7 @@
 			<tr>
 				<td><img src="<c:url value="/resources/images/ajax-loader.gif"/> "></td>
 				<td style="width: 5px;">&nbsp;</td>
-				<td style="FONT-FAMILY: Arial,Verdana;font-size: 12px; font-weight: bold; vertical-align: middle;">Cargando ...</td>
+				<td style="FONT-FAMILY: Arial,Verdana;font-size: 12px; font-weight: bold; vertical-align: middle;">Procesando ...</td>
 			</tr>
 		</table>
 	</div>

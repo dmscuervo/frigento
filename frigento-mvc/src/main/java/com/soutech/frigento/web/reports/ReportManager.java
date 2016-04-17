@@ -34,70 +34,6 @@ public class ReportManager{
 	}
   
 	static Logger logger = Logger.getLogger(ReportManager.class);
-///**
-// * @param reportName - nombre del archivo de reporte sin extension
-// * @param parameters - map con los parametros a escribir
-// * @param response  
-// * @throws IOException
-// */
-//  public static void buildReportToStream(String reportName, Map<String, Object> parameters, 
-//		  HttpServletResponse response, String reportsPath)throws Exception{
-//	  
-//	logger.info("iniciando la creacion del reporte: " + reportName );  
-//	
-//	Calendar cal;
-//	String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
-//	java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(DATE_FORMAT);
-//	
-//	ByteArrayOutputStream out = new ByteArrayOutputStream();
-//	sdf.setTimeZone(TimeZone.getDefault());
-//	
-//	if(!reportsPath.endsWith(File.separator)){
-//		reportsPath = reportsPath.concat(File.separator);
-//	}
-//
-//	parameters.put("subreporte", reportsPath);
-//	
-//	try {
-//		String fileName = reportsPath + reportName ;	
-//		
-//	    File reportFile = new File(fileName + ".jasper");
-//	
-//	    @SuppressWarnings("deprecation")
-//		JasperReport jasperReport = (JasperReport)JRLoader.loadObject(reportFile);
-//
-//	    logger.info("iniciando la escritura del reporte" );
-//	    Usuario usuario =(Usuario)parameters.get("usuario");
-//	    Collection<Usuario> col = new ArrayList<Usuario>();
-//	    	col.add(usuario);
-//	   
-//
-//	    logger.info("iniciando la exportacion");
-//    	JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(col);
-// 	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,jrbcds);
-// 	    logger.info("fin de la escritura del reporte" );
-//    	
-// 	    if(parameters.get("newFileName")!= null){
-//			reportName = (String)parameters.get("newFileName");
-//		}
-// 	    
-//	    response.setHeader("Content-Disposition", "attachment;filename=" + reportName + ".pdf");
-//    	JRPdfExporter exporter = new JRPdfExporter();
-//        response.setContentType( "application/pdf" );
-//        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-//        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);    
-//        exporter.exportReport();
-//	    
-//	    logger.info("fin de exportacion - reporte generado con exito.");  
-//
-//	}catch (Exception ex){
-//    	cal = Calendar.getInstance(TimeZone.getDefault());
-//        logger.error("Fecha: "+sdf.format(cal.getTime())+" Nombre Clase: ReportManager");
-//        logger.error("error en la creacion del reporte: "+ PrinterStack.getStackTraceAsString(ex), ex.getCause());
-//        throw ex;
-//    }
-//	response.getOutputStream().write(out.toByteArray());
-//  }
 	
 	public ByteArrayOutputStream generarRemito(List<RelPedidoProducto> relPedProdList) throws ReporteException{
 		Pedido pedido = relPedProdList.get(0).getPedido();
@@ -127,7 +63,7 @@ public class ReportManager{
 		try {
 			bytes = buildReportToByteArrayOutputStream(archivoReporte, parameters, "ireport/", relPedProdList);
 		} catch (Exception e) {
-			throw new ReporteException("pedido.generar.reporte.error");
+			throw new ReporteException("pedido.generar.remito.error");
 		}
 		return bytes;
 	}

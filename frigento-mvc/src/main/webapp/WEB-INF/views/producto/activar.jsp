@@ -4,16 +4,16 @@
 <script type="text/javascript">
 
 	function confirmar(){
-		$('#idModalActivar').on('hidden.bs.modal', function () {
-			$('#idModalActivar').modal('hide');
+		$('#idModalAccion').on('hidden.bs.modal', function () {
+			$('#idModalAccion').modal('hide');
 			submitInBody($('#idForm'));
 		});
-		$('#idModalActivar').modal('hide');
+		$('#idModalAccion').modal('hide');
 	}
 
 </script>
 
-<div class="modal fade" id="idModalActivar" tabindex="-1" role="dialog">
+<div class="modal fade" id="idModalAccion" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<c:url var="urlActivar" value="/producto/activar" />

@@ -73,11 +73,11 @@
         		<td colspan="2" style="white-space: nowrap;">
         			<c:if test="${estadoSel eq 'A'}">
 	        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
-        				&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmDelete('producto/${prod.id}?borrar')"></i>
+        				&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('producto/${prod.id}?borrar')"></i>
 	        			&nbsp;&nbsp;<i class="fa fa-usd" onclick="loadInBody('prodCosto/${prod.id}?listar=&estado=V')"></i>
         			</c:if>
         			<c:if test="${estadoSel eq 'I'}">
-        				<i class="fa fa-check-square-o" onclick="confirmActivar('producto/${prod.id}?activar')"></i>
+        				<i class="fa fa-check-square-o" onclick="confirmarAccion('producto/${prod.id}?activar')"></i>
         			</c:if>
 
 				</td>

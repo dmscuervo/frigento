@@ -3,6 +3,7 @@ package com.soutech.frigento.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.RelPedidoProductoDao;
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
+import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelPedidoProducto;
@@ -87,7 +89,7 @@ public class PedidoServiceImpl implements PedidoService {
 			BigDecimal costoTotal = BigDecimal.ZERO;
 			List<RelPedidoProducto> relacionesNuevas = new ArrayList<RelPedidoProducto>();
 			List<RelPedidoProducto> relacionesModificadas = new ArrayList<RelPedidoProducto>();
-			List<RelPedidoProducto> relaciones = relPedidoProductoDao.findAllByPedido(pedido.getId());
+			List<RelPedidoProducto> relaciones = relPedidoProductoDao.findAllByPedido(pedido.getId(), null, null);
 			List<RelPedidoProducto> prodEliminadosDelPed = new ArrayList<RelPedidoProducto>();
 			Pedido pedidoActual = relaciones.get(0).getPedido();
 			for (ItemDTO item : pedido.getItems()) {
@@ -186,5 +188,15 @@ public class PedidoServiceImpl implements PedidoService {
 		return pedidoDao.findById(idPedido);	
 	}
 
-	
+	@Override
+	public void anularPedido(Integer pedidoId) {
+		Pedido pedido = pedidoDao.findById(pedidoId);
+		Estado estado = new Estado();
+    	estado.setId(new Short(Constantes.ESTADO_PEDIDO_ANULADO));
+		pedido.setEstado(estado);
+		
+		pedido.setFechaAnulado(new Date());
+    	pedidoDao.update(pedido);
+	}
+
 }

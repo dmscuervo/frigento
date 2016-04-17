@@ -4,32 +4,33 @@
 <script type="text/javascript">
 
 	function confirmar(){
-		$('#idModalBorrar').on('hidden.bs.modal', function () {
-			$('#idModalBorrar').modal('hide');
+		$('#idModalAccion').on('hidden.bs.modal', function () {
+			$('#idModalAccion').modal('hide');
 			submitInBody($('#idForm'));
 		});
-		$('#idModalBorrar').modal('hide');
+		$('#idModalAccion').modal('hide');
 	}
 
 </script>
 
-<div class="modal fade" id="idModalBorrar" tabindex="-1" role="dialog">
+<div class="modal fade" id="idModalAccion" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<c:url var="urlBorrar" value="/categoria/borrar" />
+			<c:url var="urlBorrar" value="/pedido/anular" />
 			<form:form action="${urlBorrar}" method="post"
-				class="form-horizontal" commandName="categoriaForm" id="idForm">
+				class="form-horizontal" commandName="pedidoForm" id="idForm">
+			<form:hidden path="id" />
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title"><fmt:message key="categoria.borrar.title"/></h4>
+				<h4 class="modal-title"><fmt:message key="pedido.anular.title"/></h4>
 			</div>
 			<div class="modal-body">
 				<p>
-					<fmt:message key="categoria.borrar.confirm">
-						<fmt:param value='${categoriaForm.descripcion}'/>
+					<fmt:message key="pedido.anular.confirm">
+						<fmt:param value='${pedidoForm.id}'/>
 					</fmt:message>
 				</p>
 			</div>
@@ -38,8 +39,6 @@
 					onclick="confirmar()"><fmt:message key="boton.aceptar"/></button>
 				<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 			</div>
-				<form:hidden path="id" />
-				<form:hidden path="descripcion" />
 			</form:form>
 		</div>
 		<!-- /.modal-content -->

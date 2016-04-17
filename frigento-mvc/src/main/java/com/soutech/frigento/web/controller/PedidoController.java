@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
-import com.soutech.frigento.exception.ReporteException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
@@ -53,7 +53,8 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 public class PedidoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "pedido?estados="+Constantes.ESTADO_PEDIDO_PENDIENTE+","+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=id&sortOrder=asc";
+    //public static final String BUSQUEDA_DEFAULT = "pedido?estados="+Constantes.ESTADO_PEDIDO_PENDIENTE+","+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=id&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "pedido?sortFieldName=id&sortOrder=asc";
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -126,25 +127,28 @@ public class PedidoController extends GenericController {
     	}
     	
     	if(pedidoForm.getEstado().getId() >= new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO) && pedidoForm.getEnvioMail()){
-    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId());
-    		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
-			Pedido pedido = relPedProdList.get(0).getPedido();
-			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
-			
-			sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
+    		ByteArrayOutputStream bytes;
 			try {
-				bytes.flush();
-				bytes.close();
-			} catch (IOException e) {}
+				bytes = reportManager.generarRemito(relPedProdList);
+				Pedido pedido = relPedProdList.get(0).getPedido();
+				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+				
+				sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+				try {
+					bytes.flush();
+					bytes.close();
+				} catch (IOException e) {}
+			} catch (Exception e) {
+				mensaje = getMessage("pedido.confirmar.remito.error");
+			}
     	}
-    	
 		uiModel.asMap().clear();
-
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
     
     @RequestMapping(produces = "text/html")
-    public String listar(@RequestParam(value = "estados", required = true) Short estadoPedido[], @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
+    public String listar(@RequestParam(value = "estados", required = false) Short estadoPedido[], @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
     	httpServletRequest.setAttribute("pedidos", pedidoService.obtenerPedidos(estadoPedido, sortFieldName, sortOrder));
     	httpServletRequest.setAttribute("estadoSel", estadoPedido);
         if(informar != null){
@@ -155,7 +159,7 @@ public class PedidoController extends GenericController {
     
     @RequestMapping(params = "detalle", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String detalle(@PathVariable("id") Integer idPedido, Model uiModel) {
-        uiModel.addAttribute("relPedProdList", relPedidoProductoService.obtenerByPedido(idPedido));
+        uiModel.addAttribute("relPedProdList", relPedidoProductoService.obtenerByPedido(idPedido, "productoCosto.producto.codigo", "asc"));
         return "pedido/detalle";
     }
     
@@ -163,7 +167,7 @@ public class PedidoController extends GenericController {
     public String preEdit(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
     	List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
     	List<Estado> estados = estadoService.obtenerEstadosPedido();
-    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed);
+    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed, "productoCosto.producto.codigo", "asc");
     	Pedido pedido = relPedProdList.get(0).getPedido();
     	if(pedido.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
         	httpServletRequest.setAttribute("informar", getMessage("pedido.editar.estado.error", new Object[]{estados.get(0).getDescripcion().concat(" o ").concat(estados.get(1).getDescripcion())}));
@@ -175,13 +179,12 @@ public class PedidoController extends GenericController {
     		ItemDTO item = new ItemDTO();
     		for (RelPedidoProducto rpp : relPedProdList) {
     			if(rpp.getProductoCosto().getProducto().getId().equals(producto.getId())){
-    				item.setCantidad(rpp.getCantidad().shortValue());
+    				item.setCantidad(new BigDecimal(rpp.getCantidad()/producto.getPesoCaja()).setScale(0, RoundingMode.HALF_UP).shortValue());
     				break;
     			}else{
     				item.setCantidad((short)0);
     			}
 			}
-    		item.setPesoPorCaja(producto.getPesoCaja());
     		item.setProducto(producto);
     		pedido.getItems().add(item);
 		}
@@ -222,16 +225,21 @@ public class PedidoController extends GenericController {
     	}
     	
     	if(pedidoForm.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)) && pedidoForm.getEnvioMail()){
-    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId());
-    		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
-			Pedido pedido = relPedProdList.get(0).getPedido();
-			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
-			
-			sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+    		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
+    		ByteArrayOutputStream bytes;
 			try {
-				bytes.flush();
-				bytes.close();
-			} catch (IOException e) {}
+				bytes = reportManager.generarRemito(relPedProdList);
+				Pedido pedido = relPedProdList.get(0).getPedido();
+				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+				
+				sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+				try {
+					bytes.flush();
+					bytes.close();
+				} catch (IOException e) {}
+			} catch (Exception e) {
+				mensaje = getMessage("pedido.editar.remito.error");
+			}
     	}
     	
 		uiModel.asMap().clear();
@@ -240,123 +248,62 @@ public class PedidoController extends GenericController {
     }
     
     @RequestMapping(params = "descargar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-    public void descargar(@PathVariable("id") Integer idPed, HttpServletRequest httpServletRequest, HttpServletResponse response) {
-    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed);
+    public String descargar(@PathVariable("id") Integer idPed, HttpServletRequest httpServletRequest, HttpServletResponse response) {
+    	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed, "productoCosto.producto.codigo", "asc");
     	
-		ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
-		Pedido pedido = relPedProdList.get(0).getPedido();
-		String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
-
-		response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
-		response.setContentType( "application/pdf" );
-        response.setContentLength((int) bytes.size());
-
-        OutputStream outStream;
-		try {
-			outStream = response.getOutputStream();
+    	try {
+			ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
+			Pedido pedido = relPedProdList.get(0).getPedido();
+			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+	
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
+			response.setContentType( "application/pdf" );
+	        response.setContentLength((int) bytes.size());
+	
+	        OutputStream outStream = response.getOutputStream();
 			bytes.writeTo(outStream);
 			outStream.flush();
 			outStream.close();
 			bytes.close();
-		} catch (IOException e) {
-			throw new ReporteException("pedido.generar.reporte.error");
+    	} catch (Exception e) {
+			return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.generar.remito.error")));
 		}
-        
+        return null;
     }
-//    
-//    @RequestMapping(produces = "text/html")
-//    public String listar(@RequestParam(value = "estado", required = true) String estado, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, HttpServletRequest httpServletRequest) {
-//    	httpServletRequest.setAttribute("pedidos", pedidoService.obtenerPedidos(estado, sortFieldName, sortOrder));
-//    	httpServletRequest.setAttribute("estadoSel", estado);
-//        if(informar != null){
-//        	httpServletRequest.setAttribute("informar", informar);
-//        }
-//        return "pedido/grilla";
-//    }
-//    
-//    @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-//    public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
-//    	Date fechaHastaMin = relPedidoCategoriaService.obtenerMinFechaDesde(id);
-//    	Date fechaHastaMin2 = pedidoCostoService.obtenerMinFechaHasta(id);
-//    	Date fechaHastaMin3 = relPedidoPedidoService.obtenerMinFechaPedido(id);
-//    	//Me quedo con la mas vieja
-//    	Date fechaMinD = new Date();
-//    	//Inicializo valores en caso de nulos
-//    	if(fechaHastaMin != null){
-//    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : fechaHastaMin2;
-//    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : fechaHastaMin3;
-//    	}else if(fechaHastaMin2 != null){
-//    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin2 : fechaHastaMin;
-//    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin2 : fechaHastaMin3;
-//    	}else if(fechaHastaMin3 != null){
-//    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin3 : fechaHastaMin;
-//    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : fechaHastaMin2;
-//    	}
-//    	if(fechaHastaMin != null){
-//    		fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;
-//    		fechaMinD = fechaMinD.before(fechaHastaMin3) ? fechaMinD : fechaHastaMin3;
-//    	}
-//    	
-//    	uiModel.addAttribute("maxDateAlta", fechaMinD.getTime());
-//    	Date fechaDesdeMin = pedidoCostoService.obtenerMinFechaDesde(id);
-//    	Pedido prod = pedidoService.obtenerPedido(id);
-//    	prod.setFechaAlta(fechaDesdeMin);
-//    	prod.setStockPrevio(prod.getStock());
-//    	uiModel.addAttribute("pedidoForm", prod);
-//        return "pedido/editar";
-//    }
-//    
-//    @RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
-//    public String edit(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-//    	formValidator.validate(pedidoForm, bindingResult);
-//        if (bindingResult.hasErrors()) {
-//        	return "pedido/editar";
-//        }
-//        uiModel.asMap().clear();
-//        try {
-//			pedidoService.actualizarPedido(pedidoForm);
-//		} catch (StockAlteradoException e) {
-//			logger.info("El pedido a actualizar habia alterado su stock en pararelo. Se reintenta la edicion.");
-//			e.getPedidoRecargado().setStockPrevio(e.getPedidoRecargado().getStock());
-//	    	uiModel.addAttribute("pedidoForm", e.getPedidoRecargado());
-//	    	httpServletRequest.setAttribute("stockAlterado", getMessage("pedido.editar.error.stock"));
-//	        return "pedido/editar";
-//		}
-//        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.editar.ok", pedidoForm.getDescripcion())));
-//    }
-//    
-//    @RequestMapping(params = "borrar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-//    public String preDelete(@PathVariable("id") Integer id, Model uiModel) {
-//    	uiModel.addAttribute("pedidoForm", pedidoService.obtenerPedido(id));
-//        return "pedido/borrar";
-//    }
-//    
-//    @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
-//    public String delete(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-//    	pedidoService.eliminarPedido(pedidoForm);
-//        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.borrar.ok", pedidoForm.getDescripcion())));
-//    }
-//    
-//    @RequestMapping(params = "activar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
-//    public String preActivar(@PathVariable("id") Integer id, Model uiModel) {
-//    	uiModel.addAttribute("pedidoForm", pedidoService.obtenerPedido(id));
-//        return "pedido/activar";
-//    }
-//    
-//    @RequestMapping(value = "/activar", method = RequestMethod.POST, produces = "text/html")
-//    public String activar(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-//    	pedidoService.reactivarPedido(pedidoService.obtenerPedido(pedidoForm.getId()));
-//        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.activar.ok", pedidoForm.getDescripcion())));
-//    }
-//    
-//    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
-//        String enc = httpServletRequest.getCharacterEncoding();
-//        if (enc == null) {
-//            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-//        }
-//        try {
-//            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-//        } catch (UnsupportedEncodingException uee) {}
-//        return pathSegment;
-//    }
+
+    @RequestMapping(params = "anular", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String preAnular(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Pedido pedido = pedidoService.obtenerPedido(idPed);
+    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
+        	httpServletRequest.setAttribute("informar", getMessage("pedido.anular.estado.error", Constantes.ESTADO_PEDIDO_ANULADO));
+        	return "pedido/grilla";
+        }
+    	uiModel.addAttribute("pedidoForm", pedido);
+    	return "pedido/anular";
+    }
+    
+    @RequestMapping(value = "/anular", method = RequestMethod.POST, produces = "text/html")
+    public String anular(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	pedidoService.anularPedido(pedidoForm.getId());
+    	String mensaje = getMessage("pedido.anular.ok", pedidoForm.getId());
+    	
+		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
+		ByteArrayOutputStream bytes;
+		try {
+			bytes = reportManager.generarRemito(relPedProdList);
+			Pedido pedido = relPedProdList.get(0).getPedido();
+			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
+			
+			sndMailSSL.enviarCorreoPedido(pedido, bytes, fileDownload);
+			try {
+				bytes.flush();
+				bytes.close();
+			} catch (IOException e) {}
+		} catch (Exception e) {
+			mensaje = getMessage("pedido.anular.remito.error");
+		}
+        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
+    }
+    
+    
 }

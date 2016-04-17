@@ -29,7 +29,9 @@ public class PedidoDaoImpl extends AbstractSpringDao<Pedido, Integer> implements
 			hql.append(sortOrder);
 		}
 		Query query = getSession().createQuery(hql.toString());
-		query.setParameterList("estadoId", estado);
+		if(estado != null){
+			query.setParameterList("estadoId", estado);
+		}
 		return query.list();
 	}
 

@@ -4,21 +4,23 @@
 <script type="text/javascript">
 
 	function confirmar(){
-		$('#idModalBorrar').on('hidden.bs.modal', function () {
-			$('#idModalBorrar').modal('hide');
+		$('#idModalAccion').on('hidden.bs.modal', function () {
+			$('#idModalAccion').modal('hide');
 			submitInBody($('#idForm'));
 		});
-		$('#idModalBorrar').modal('hide');
+		$('#idModalAccion').modal('hide');
 	}
 
 </script>
 
-<div class="modal fade" id="idModalBorrar" tabindex="-1" role="dialog">
+<div class="modal fade" id="idModalAccion" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<c:url var="urlBorrar" value="/producto/borrar" />
 			<form:form action="${urlBorrar}" method="post"
 				class="form-horizontal" commandName="productoForm" id="idForm">
+			<form:hidden path="id" />
+			<form:hidden path="descripcion" />
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
@@ -38,8 +40,6 @@
 					onclick="confirmar()"><fmt:message key="boton.aceptar"/></button>
 				<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 			</div>
-				<form:hidden path="id" />
-				<form:hidden path="descripcion" />
 			</form:form>
 		</div>
 		<!-- /.modal-content -->

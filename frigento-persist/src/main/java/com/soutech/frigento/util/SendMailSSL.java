@@ -1,6 +1,10 @@
 package com.soutech.frigento.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -15,8 +19,10 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.sun.xml.internal.ws.util.ByteArrayDataSource;
@@ -24,29 +30,66 @@ import com.sun.xml.internal.ws.util.ByteArrayDataSource;
 @Component
 public class SendMailSSL {
 	
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	public static void main(String args[]) {
-		new SendMailSSL().enviarMail("Asunto", "Cuerpo del mensaje", null, null);
+		try {
+			Pedido pedido = new Pedido();
+			pedido.setId(1);
+			Estado estado = new Estado();
+			estado.setId(new Short(Constantes.ESTADO_PEDIDO_ANULADO));
+			pedido.setEstado(estado);
+			pedido.setVersion((short)2);
+			
+			new SendMailSSL().enviarCorreoPedido(pedido, null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void enviarCorreoPedido(Pedido pedido, ByteArrayOutputStream attachment, String attachFileName){
+	public void enviarCorreoPedido(Pedido pedido, ByteArrayOutputStream attachment, String attachFileName) throws Exception{
 		String subject = "Pedido N° " + Utils.generarNroRemito(pedido);
-		StringBuilder bodyText = new StringBuilder("Hola Fede,<br/><br/>");
-		bodyText.append("Te adjunto ");
-		if(pedido.getVersion().intValue() > 1){
-			bodyText.append("una modificación sobre el pedido.");
-		}else{
-			bodyText.append("un nuevo pedido.");
+		
+		StringBuilder bodyText = new StringBuilder();
+		String path = null;
+		
+		if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
+			
+			if(pedido.getVersion().shortValue() > 1){
+				path = this.getClass().getClassLoader().getResource("mail/body_pedido_modificado.html").getPath();
+				subject = subject.concat(" - MODIFICADO");
+			}else{
+				path = this.getClass().getClassLoader().getResource("mail/body_pedido_confirmado.html").getPath();
+			}
+			
+		}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+			path = this.getClass().getClassLoader().getResource("mail/body_pedido_entregado.html").getPath();
+			subject = subject.concat(" - ENTREGADO");
+		}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
+			path = this.getClass().getClassLoader().getResource("mail/body_pedido_anulado.html").getPath();
+			subject = subject.concat(" - ANULADO");
 		}
-		bodyText.append("<br/><br/>");
-		bodyText.append("Por favor si de lo pedido no tenes algo, avisame.");
-		bodyText.append("<br/><br/>");
-		bodyText.append("Gracias!!<br/>");
-		bodyText.append("Loli");
+		try {
+			BufferedReader fr = new BufferedReader(new FileReader(path));
+			String linea = fr.readLine();
+			while(linea != null){
+				bodyText.append(linea);
+				linea = fr.readLine();
+			}
+			fr.close();
+		} catch (FileNotFoundException e) {
+			logger.error("No se pudo generar el body del mail. Archivo html inexistente.");
+			throw new Exception(e);
+		} catch (IOException e) {
+			logger.error("No se pudo generar el body del mail. Error al leer archivo html.");
+			throw new Exception(e);
+		}
+		
 		enviarMail(subject, bodyText.toString(), attachment, attachFileName);
 	}
 	
 	
-	private void enviarMail(String subject, String bodyText, ByteArrayOutputStream attachment, String attachFileName) {
+	private void enviarMail(String subject, String bodyText, ByteArrayOutputStream attachment, String attachFileName) throws Exception {
 		
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -68,11 +111,11 @@ public class SendMailSSL {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(Parametro.SMTP_GMAIL_REMITENTE));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(Parametro.SMTP_GMAIL_DESTINATARIOS_CC));
+					InternetAddress.parse(Parametro.SMTP_GMAIL_DESTINATARIOS));
 			message.setSubject(subject);
 			
 			BodyPart texto = new MimeBodyPart();
-			texto.setText(bodyText);
+			texto.setContent(bodyText, "text/html");
 			
 			MimeMultipart multiParte = new MimeMultipart();
 			multiParte.addBodyPart(texto);
@@ -85,11 +128,11 @@ public class SendMailSSL {
 			}
 			
 			message.setContent(multiParte);
-			
+			message.saveChanges();
 			Transport.send(message);
 
 		} catch (MessagingException e) {
-			throw new RuntimeException(e);
+			throw new Exception(e);
 		}
 	}
 }

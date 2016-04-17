@@ -23,7 +23,7 @@
 		<band height="275" splitType="Stretch">
 			<image>
 				<reportElement x="61" y="7" width="150" height="92" uuid="a62f3db1-4709-4194-a4eb-927214fa14e6"/>
-				<imageExpression><![CDATA["Logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["ireport/Logo.jpg"]]></imageExpression>
 			</image>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="835f4a5a-bd18-4474-ac8a-ff8efefbc2cd"/>
@@ -231,10 +231,10 @@ info.frigento@gmail.com]]></text>
 			<line>
 				<reportElement x="480" y="0" width="1" height="23" uuid="8ca1cd05-ab66-40e7-ab68-915c73f87643"/>
 			</line>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="11" y="1" width="39" height="21" uuid="e051f91b-3127-4e05-af31-07b7da47711a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cantidad}/$F{productoCosto}.getProducto().getPesoCaja()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="53" y="1" width="366" height="21" uuid="b5f1d297-66c2-4f54-88ca-dc172ab4b002">
@@ -246,7 +246,7 @@ info.frigento@gmail.com]]></text>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="420" y="1" width="60" height="21" uuid="fc4660a4-9ac8-48cb-83f1-bea0ca9220dc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{costo}.multiply(new BigDecimal($F{productoCosto}.getProducto().getPesoCaja()))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="481" y="1" width="64" height="21" uuid="f5426717-e25b-4b56-98db-3619c776b01c">
