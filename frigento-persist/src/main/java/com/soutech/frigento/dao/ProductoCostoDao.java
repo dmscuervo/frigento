@@ -14,5 +14,6 @@ public interface ProductoCostoDao extends IDao<ProductoCosto, Integer> {
 
 	Date getMinFechaHasta(Integer idProd);
 
-	List<ProductoCosto> findAll(String estadoRel, String sortFieldName, String sortOrder);
+	List<ProductoCosto> findAll(String estadoRel, Date fecha, String sortFieldName, String sortOrder);
+
 }

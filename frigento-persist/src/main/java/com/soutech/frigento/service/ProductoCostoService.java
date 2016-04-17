@@ -13,9 +13,8 @@ public interface ProductoCostoService {
 
 	Date obtenerMinFechaDesde(Integer idProd);
 
-	List<ProductoCosto> obtenerProductosCosto(String estadoRel, String sortFieldName, String sortOrder);
+	List<ProductoCosto> obtenerProductosCosto(String estadoRel, Date fecha, String sortFieldName, String sortOrder);
 
 	public ProductoCosto obtenerProductoCosto(Integer idProd, Date fecha);
 
-	List<ProductoCosto> obtenerProductosCosto(Date fecha);
 }

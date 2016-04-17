@@ -32,20 +32,13 @@ public class ProductoCostoServiceImpl implements ProductoCostoService {
 	}
 
 	@Override
-	public List<ProductoCosto> obtenerProductosCosto(String estadoRel, String sortFieldName, String sortOrder) {
-		return productoCostoDao.findAll(estadoRel, sortFieldName, sortOrder);
+	public List<ProductoCosto> obtenerProductosCosto(String estadoRel, Date fecha, String sortFieldName, String sortOrder) {
+		return productoCostoDao.findAll(estadoRel, fecha, sortFieldName, sortOrder);
 	}
 
 	@Override
 	public ProductoCosto obtenerProductoCosto(Integer idProd, Date fecha){
 		return productoCostoDao.findByProductoFecha(idProd, fecha);
 	}
-
-	@Override
-	public List<ProductoCosto> obtenerProductosCosto(Date fecha) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	
 }

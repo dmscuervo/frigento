@@ -17,6 +17,6 @@ public interface PedidoService {
 
 	void anularPedido(Integer pedidoId);
 
-	void cumplirPedido(Integer pedidoId);
+	void cumplirPedido(Pedido pedidoCumplido) throws ProductoSinCostoException;
 
 }

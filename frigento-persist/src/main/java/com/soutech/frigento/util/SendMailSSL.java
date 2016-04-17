@@ -3,8 +3,9 @@ package com.soutech.frigento.util;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -51,26 +52,26 @@ public class SendMailSSL {
 		String subject = "Pedido N° " + Utils.generarNroRemito(pedido);
 		
 		StringBuilder bodyText = new StringBuilder();
-		String path = null;
+		InputStream is = null;
 		
 		if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
 			
 			if(pedido.getVersion().shortValue() > 1){
-				path = this.getClass().getClassLoader().getResource("mail/body_pedido_modificado.html").getPath();
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_modificado.html");
 				subject = subject.concat(" - MODIFICADO");
 			}else{
-				path = this.getClass().getClassLoader().getResource("mail/body_pedido_confirmado.html").getPath();
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_confirmado.html");
 			}
 			
 		}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
-			path = this.getClass().getClassLoader().getResource("mail/body_pedido_entregado.html").getPath();
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_entregado.html");
 			subject = subject.concat(" - ENTREGADO");
 		}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
-			path = this.getClass().getClassLoader().getResource("mail/body_pedido_anulado.html").getPath();
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_anulado.html");
 			subject = subject.concat(" - ANULADO");
 		}
 		try {
-			BufferedReader fr = new BufferedReader(new FileReader(path));
+			BufferedReader fr = new BufferedReader(new InputStreamReader(is));
 			String linea = fr.readLine();
 			while(linea != null){
 				bodyText.append(linea);

@@ -75,7 +75,7 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProductoCosto> findAll(String estadoRel, String sortFieldName, String sortOrder) {
+	public List<ProductoCosto> findAll(String estadoRel, Date fecha, String sortFieldName, String sortOrder) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(ProductoCosto.class.getCanonicalName());
 		hql.append(" pc ");
@@ -85,6 +85,10 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		}else if(estadoRel.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
 			hql.append("not null ");
 		}
+		if(fecha != null){
+			hql.append("and pc.fechaDesde <= :fecha ");
+			hql.append("and (pc.fechaHasta is null or pc.fechaHasta > :fecha) ");
+		}
 		if(sortFieldName != null){
 			hql.append("order by pc.");
 			hql.append(sortFieldName);
@@ -92,7 +96,10 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 			hql.append(sortOrder);
 		}
 		Query query = getSession().createQuery(hql.toString());
+		if(fecha != null){
+			query.setParameter("fecha", fecha);
+		}
 		return query.list();
 	}
-	
+
 }

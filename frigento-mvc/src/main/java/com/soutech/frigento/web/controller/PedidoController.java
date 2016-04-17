@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dto.ItemDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
@@ -44,6 +43,7 @@ import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.util.PrinterStack;
 import com.soutech.frigento.util.SendMailSSL;
 import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.reports.ReportManager;
@@ -145,6 +145,8 @@ public class PedidoController extends GenericController {
 					bytes.close();
 				} catch (IOException e) {}
 			} catch (Exception e) {
+				logger.info(getMessage("pedido.confirmar.remito.error"));
+				logger.error(PrinterStack.getStackTraceAsString(e));
 				mensaje = getMessage("pedido.confirmar.remito.error");
 			}
     	}
@@ -243,6 +245,8 @@ public class PedidoController extends GenericController {
 					bytes.close();
 				} catch (IOException e) {}
 			} catch (Exception e) {
+				logger.info(getMessage("pedido.editar.remito.error"));
+				logger.error(PrinterStack.getStackTraceAsString(e));
 				mensaje = getMessage("pedido.editar.remito.error");
 			}
     	}
@@ -306,6 +310,8 @@ public class PedidoController extends GenericController {
 				bytes.close();
 			} catch (IOException e) {}
 		} catch (Exception e) {
+			logger.info(getMessage("pedido.anular.remito.error"));
+			logger.error(PrinterStack.getStackTraceAsString(e));
 			mensaje = getMessage("pedido.anular.remito.error");
 		}
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
@@ -322,7 +328,7 @@ public class PedidoController extends GenericController {
         	return "pedido/grilla";
         }
     	
-    	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(pedido.getFecha());
+    	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(Constantes.ESTADO_REL_VIGENTE, pedido.getFecha(), "producto.codigo", "asc");
     	pedido.setItems(new ArrayList<ItemDTO>(prodCostoList.size()));
     	for (ProductoCosto prodCosto : prodCostoList) {
     		ItemDTO item = new ItemDTO();
@@ -376,7 +382,13 @@ public class PedidoController extends GenericController {
 			return "pedido/cumplir";
     	}
 
-    	pedidoService.cumplirPedido(pedidoForm.getId());
+    	try{
+    		pedidoService.cumplirPedido(pedidoForm);
+    	}catch (ProductoSinCostoException e) {
+			mensaje = getMessage(e.getKeyMessage(), e.getArgs());
+			httpServletRequest.setAttribute("msgError", mensaje);
+			return "pedido/cumplir";
+    	}
     	mensaje = getMessage("pedido.cumplir.ok");
     	
     	if(pedidoForm.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO)) && pedidoForm.getEnvioMail()){
@@ -393,7 +405,9 @@ public class PedidoController extends GenericController {
 					bytes.close();
 				} catch (IOException e) {}
 			} catch (Exception e) {
-				mensaje = getMessage("pedido.editar.remito.error");
+				logger.info(getMessage("pedido.cumplir.remito.error"));
+				logger.error(PrinterStack.getStackTraceAsString(e));
+				mensaje = getMessage("pedido.cumplir.remito.error");
 			}
     	}
     	

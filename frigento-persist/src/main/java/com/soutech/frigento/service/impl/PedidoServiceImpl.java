@@ -82,84 +82,38 @@ public class PedidoServiceImpl implements PedidoService {
 	
 	@Override
 	@Transactional
-	public boolean actualizarPedido(Pedido pedido) throws ProductoSinCostoException {
+	public boolean actualizarPedido(Pedido pedidoModificado) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
-			Boolean prodNuevo;
-			RelPedidoProducto rppActual;
 			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=descripcion&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
-			BigDecimal costoTotal = BigDecimal.ZERO;
 			List<RelPedidoProducto> relacionesNuevas = new ArrayList<RelPedidoProducto>();
 			List<RelPedidoProducto> relacionesModificadas = new ArrayList<RelPedidoProducto>();
-			List<RelPedidoProducto> relaciones = relPedidoProductoDao.findAllByPedido(pedido.getId(), null, null);
-			List<RelPedidoProducto> prodEliminadosDelPed = new ArrayList<RelPedidoProducto>();
-			Pedido pedidoActual = relaciones.get(0).getPedido();
-			for (ItemDTO item : pedido.getItems()) {
-				if(item.getCantidad() != (short)0){
-					rppActual = null;
-					prodNuevo = Boolean.TRUE;
-					hayPedido = Boolean.TRUE;
-					//Me fijo si es un producto nuevo o existente
-					for (RelPedidoProducto rpp : relaciones) {
-						if(rpp.getProductoCosto().getProducto().getId().equals(item.getProducto().getId())){
-							prodNuevo = Boolean.FALSE;
-							rppActual = rpp;
-							break;
-						}
-					}
-					ProductoCosto productoCosto = ProductoCostoDao.findByProductoFecha(item.getProducto().getId(), pedido.getFecha());
-					if(prodNuevo){
-						RelPedidoProducto rpp = new RelPedidoProducto();
-						if(productoCosto == null){
-							Object[] args = new Object[]{item.getProducto().getCodigo(), pedido.getFecha()};
-							throw new ProductoSinCostoException("pedido.confirmar.producto.sin.costo", args);
-						}
-						rpp.setProductoCosto(productoCosto);
-						rpp.setCosto(productoCosto.getCosto());
-						rpp.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
-						relacionesNuevas.add(rpp);
-						//Voy calculando el costo total del pedido
-						costoTotal = costoTotal.add(productoCosto.getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
-					}else{
-						//Me fijo si cambio la cantidad
-						Float cantidadNueva = item.getCantidad() * productoCosto.getProducto().getPesoCaja();
-						if(rppActual.getCantidad() != cantidadNueva){
-							rppActual.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
-							relacionesModificadas.add(rppActual);
-						}
-						//Voy calculando el costo total del pedido
-						costoTotal = costoTotal.add(rppActual.getCosto().multiply(new BigDecimal(rppActual.getCantidad())).setScale(2, RoundingMode.HALF_UP));
-					}
-					
-				}else{
-					//Se saco un producto del pedido. Elimina la relacion
-					for (RelPedidoProducto rpp : relaciones) {
-						if(rpp.getProductoCosto().getProducto().getId().equals(item.getProducto().getId())){
-							prodEliminadosDelPed.add(rpp);
-							break;
-						}
-					}
-				}
-			}
-			if(!hayPedido){
+			List<RelPedidoProducto> relacionesActuales = relPedidoProductoDao.findAllByPedido(pedidoModificado.getId(), null, null);
+			List<RelPedidoProducto> relacionesEliminadas = new ArrayList<RelPedidoProducto>();
+			Pedido pedidoActual = relacionesActuales.get(0).getPedido();
+			
+			BigDecimal costoTotal = controlStockProducto.verificarCambiosPedido(pedidoModificado, relacionesActuales, relacionesNuevas, relacionesModificadas, relacionesEliminadas);
+			
+			if(costoTotal == null){
 				return hayPedido;
 			}
+			hayPedido = Boolean.TRUE;
 			//Ahora persisto los datos. No lo podia hacer antes porque necesitaba saber si habia pedido (hayPedido)
 			
 			//Actualizo datos del pedido
-			pedidoActual.setFecha(pedido.getFecha());
-			pedidoActual.setEstado(pedido.getEstado());
-			pedidoActual.setFechaAEntregar(pedido.getFechaAEntregar());
+			pedidoActual.setFecha(pedidoModificado.getFecha());
+			pedidoActual.setEstado(pedidoModificado.getEstado());
+			pedidoActual.setFechaAEntregar(pedidoModificado.getFechaAEntregar());
 			pedidoActual.setCosto(costoTotal);
-			if(!prodEliminadosDelPed.isEmpty() || !relacionesModificadas.isEmpty() || !relacionesNuevas.isEmpty()){
-				if(pedido.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_PENDIENTE)){
+			if(!relacionesEliminadas.isEmpty() || !relacionesModificadas.isEmpty() || !relacionesNuevas.isEmpty()){
+				if(pedidoModificado.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_PENDIENTE)){
 					pedidoActual.setVersion((short)(pedidoActual.getVersion()+1));
 				}
 			}
 			pedidoDao.update(pedidoActual);
 			
 			//Elimino los productos dados de baja
-			for (RelPedidoProducto rpp : prodEliminadosDelPed) {
+			for (RelPedidoProducto rpp : relacionesEliminadas) {
 				relPedidoProductoDao.delete(rpp);
 			}
 			//Actualizo las modificadas
@@ -168,7 +122,6 @@ public class PedidoServiceImpl implements PedidoService {
 			}
 			//Producto nuevo
 			for (RelPedidoProducto rpp : relacionesNuevas) {
-				rpp.setPedido(pedidoActual);
 				relPedidoProductoDao.save(rpp);
 			}
 			
@@ -203,13 +156,11 @@ public class PedidoServiceImpl implements PedidoService {
 
 	@Override
 	@Transactional
-	public void cumplirPedido(Integer pedidoId) {
+	public void cumplirPedido(Pedido pedidoCumplido) throws ProductoSinCostoException {
 		//Incrementar el stock
-		Pedido pedido = controlStockProducto.incrementarStockBy(pedidoId);
+		Pedido pedido = controlStockProducto.incrementarStockBy(pedidoCumplido);
 		//Cumplo el pedido
-		Estado estado = new Estado();
-    	estado.setId(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO));
-		pedido.setEstado(estado);
+		pedido.setEstado(pedidoCumplido.getEstado());
 		
 		pedido.setFechaEntregado(new Date());
 		pedidoDao.update(pedido);
