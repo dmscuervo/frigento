@@ -22,7 +22,7 @@ public class UsuarioDaoImpl extends AbstractSpringDao<Usuario, Integer> implemen
 		query.setParameter("un", userName);
 		return (Usuario) query.uniqueResult();
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> findAllByCategoriaProd(Short idCat) {

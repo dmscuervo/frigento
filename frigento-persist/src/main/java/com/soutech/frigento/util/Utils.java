@@ -41,10 +41,25 @@ public class Utils {
 	public static String generarUsername(Usuario usuario) {
 		String nick;
 		if(usuario.getApellido() == null || usuario.getApellido().equals("")){
-			nick = usuario.getNombre().toLowerCase();
+			nick = usuario.getNombre().split(" ")[0].toLowerCase();
 		}else{
-			nick = usuario.getNombre().toLowerCase().substring(0, 1).concat(usuario.getApellido().toLowerCase());
+			nick = usuario.getNombre().split(" ")[0].toLowerCase().substring(0, 1).concat(usuario.getApellido().replaceAll(" ", "").toLowerCase());
 		}
 		return nick;
+	}
+	
+	public static String controlEspacioMultiple(String dato) {
+		String[] split = dato.trim().split(" ");
+		StringBuilder p = new StringBuilder();
+		for (int i = 0; i < split.length; i++) {
+			if(!split[i].equals("")){
+				p.append(split[i]);
+				p.append(" ");
+			}
+		}
+		if(p.length()>1){
+			p.replace(p.length()-1, p.length(), "");
+		}
+		return p.toString();
 	}
 }

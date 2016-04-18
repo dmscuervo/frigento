@@ -70,6 +70,7 @@
                 <th style="white-space: nowrap;"><fmt:message key="usuario.nombre" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.apellido" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.username" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="prodCosto.categoria" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.telefono" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.celular" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.calle" /></th>
@@ -84,18 +85,20 @@
         		<td style="white-space: nowrap;">${usu.nombre}</td>
         		<td style="white-space: nowrap;">${usu.apellido}</td>
         		<td style="white-space: nowrap;">${usu.username}</td>
+        		<td style="white-space: nowrap;">${usu.categoriaProducto.descripcion}</td>
         		<td style="white-space: nowrap;">${usu.telefono}</td>
         		<td style="white-space: nowrap;">${usu.celular}</td>
         		<td style="white-space: nowrap;">${usu.calle}</td>
         		<td style="white-space: nowrap;">${usu.altura}</td>
         		<td style="white-space: nowrap;">${usu.depto}</td>
         		<td style="white-space: nowrap;">
+        			<i class="fa fa-list-ol" onclick="loadInBody('usuario/${usu.id}?detalle')"></i>
         			<c:if test="${usu.habilitado eq 'true' }">
-	        			<i class="fa fa-edit" onclick="loadInBody('usuario/${usu.id}?editar')"></i>
+	        			&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('usuario/${usu.id}?editar')"></i>
         				&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('usuario/${usu.id}?borrar')"></i>
         			</c:if>
         			<c:if test="${usu.habilitado eq 'false' }">
-        				<i class="fa fa-edit" onclick="loadInBody('usuario/${usu.id}?editar')"></i>
+        				&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('usuario/${usu.id}?editar')"></i>
         				&nbsp;&nbsp;<i class="fa fa-check-square-o" onclick="confirmarAccion('usuario/${usu.id}?activar')"></i>
         			</c:if>
 				</td>

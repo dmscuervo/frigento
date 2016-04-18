@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.soutech.frigento.model.Usuario;
+import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.UsuarioService;
 import com.soutech.frigento.util.Encriptador;
 
@@ -30,7 +31,10 @@ public class UsuarioController extends GenericController {
     
     @Autowired
     public UsuarioService usuarioService;
+    @Autowired
+    public CategoriaService categoriaService;
 
+    
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
     	Usuario usuario = new Usuario();
@@ -39,7 +43,9 @@ public class UsuarioController extends GenericController {
 		usuario.setPassword(Encriptador.encriptarPassword("S1nCl4v3"));
 		usuario.setEsAdmin(Boolean.FALSE);
     	uiModel.addAttribute("usuarioForm", usuario);
-        return "usuario/alta";
+    	
+    	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
+    	return "usuario/alta";
     }
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
@@ -72,7 +78,8 @@ public class UsuarioController extends GenericController {
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
     	uiModel.addAttribute("usuarioForm", usuarioService.obtenerUsuario(id));
-        return "usuario/editar";
+    	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
+    	return "usuario/editar";
     }
     
     @RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
@@ -118,4 +125,12 @@ public class UsuarioController extends GenericController {
     	Usuario usuario = usuarioService.reactivarUsuario(usuarioForm.getId());
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("usuario.activar.ok", usuario.getUsername())));
     }
+    
+    @RequestMapping(params = "detalle", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String detalle(@PathVariable("id") Integer idUsuario, Model uiModel) {
+        uiModel.addAttribute("usuario", usuarioService.obtenerUsuario(idUsuario));
+        return "usuario/detalle";
+    }
+    
+    
 }

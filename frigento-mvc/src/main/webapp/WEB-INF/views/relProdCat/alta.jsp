@@ -95,9 +95,7 @@
 			        </div>
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
-			        		<form:select path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
-			        			<form:option value="-1" label='asdasdas'/>
-			        		</form:select>
+			        		<form:select path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod" />
 						</div>
 			        </div>
 			        <div class='col-sm-4'>

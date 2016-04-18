@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -71,6 +72,11 @@ public class Usuario implements Serializable {
     @Column(name = "DEPTO")
     @Size(max = 10)
     private String depto;
+    
+    @Email(regexp="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+    @Column(name = "EMAIL")
+    @Size(max = 30)
+    private String email;
 
     @NotNull
     @Column(name = "ES_ADMIN")
@@ -180,6 +186,22 @@ public class Usuario implements Serializable {
 
 	public void setHabilitado(Boolean habilitado) {
 		this.habilitado = habilitado;
+	}
+
+	public Categoria getCategoriaProducto() {
+		return categoriaProducto;
+	}
+
+	public void setCategoriaProducto(Categoria categoriaProducto) {
+		this.categoriaProducto = categoriaProducto;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }

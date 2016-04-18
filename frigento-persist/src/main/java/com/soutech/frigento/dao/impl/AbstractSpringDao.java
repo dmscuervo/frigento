@@ -110,5 +110,11 @@ public abstract class AbstractSpringDao<T, I extends Serializable> {
 		return findQuery(query.toString());
 	}
 
+	public void desconectarSession(T entity){
+		if(entity != null){
+			getSession().evict(entity);
+		}
+	}
+
 
 }

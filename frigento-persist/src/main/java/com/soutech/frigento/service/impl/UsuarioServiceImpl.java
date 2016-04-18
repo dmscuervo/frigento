@@ -19,6 +19,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public void saveUsuario(Usuario usuario) {
 		generarUserName(usuario);
+		if(usuario.getCategoriaProducto().getId() == null){
+			usuario.setCategoriaProducto(null);
+		}
 		usuarioDao.save(usuario);
 	}
 
@@ -38,9 +41,24 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if(!usuario.getNombre().equals(usuActual.getNombre())
 				|| usuario.getApellido() != null && !usuario.getApellido().equals(usuActual.getApellido())){
 			//Cambio el nombre y/o apellido
-			generarUserName(usuario);
+			generarUserName(usuActual);
 		}
-		usuarioDao.update(usuario);
+		usuActual.setNombre(usuario.getNombre());
+		usuActual.setApellido(usuario.getApellido());
+		usuActual.setTelefono(usuario.getTelefono());
+		usuActual.setCelular(usuario.getCelular());
+		usuActual.setCalle(usuario.getCalle());
+		usuActual.setAltura(usuario.getAltura());
+		usuActual.setDepto(usuario.getDepto());
+		usuActual.setEmail(usuario.getEmail());
+		if(usuario.getCategoriaProducto().getId() == null){
+			usuActual.setCategoriaProducto(null);
+		}else{
+			usuActual.setCategoriaProducto(usuario.getCategoriaProducto());
+		}
+		usuarioDao.update(usuActual);
+		//Para visualizar correctamente el username generado
+		usuario.setUsername(usuActual.getUsername());
 	}
 
 	@Override
@@ -60,6 +78,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 	
 	private void generarUserName(Usuario usuario) {
+		usuario.setNombre(Utils.controlEspacioMultiple(usuario.getNombre()));
+		usuario.setApellido(Utils.controlEspacioMultiple(usuario.getApellido()));
 		usuario.setUsername(Utils.generarUsername(usuario));
 		Usuario usuarioExiste = usuarioDao.findByUserName(usuario.getUsername());
 		int i = 1;

@@ -15,6 +15,28 @@
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idUsuCat" style="white-space: nowrap;">
+					<fmt:message key="usuario.categoria" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+       			<form:select path="categoriaProducto.id" cssClass="form-control" id="idUsuCat" >
+       				<form:option value="" ><fmt:message key="combos.ninguna" /></form:option>
+       				<form:options items="${categoriaList}" itemValue="id" itemLabel="descripcion" />
+        		</form:select>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="categoriaProducto.id" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idNombre">
 					<fmt:message key="usuario.nombre" />
 				</label>
@@ -47,6 +69,25 @@
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="apellido" cssClass="form-validate" id="idApellidoError"/>
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-4' style="white-space: nowrap;">    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idEmail">
+					<fmt:message key="usuario.email" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+				<form:input path="email" cssClass="form-control" id="idEmail" for="idEmailError" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="email" cssClass="form-validate" id="idEmailError"/>
 			</div>
         </div>
     </div>
