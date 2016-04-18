@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.soutech.frigento.model.Pedido;
+import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.model.Venta;
 
 public class Utils {
@@ -35,5 +36,15 @@ public class Utils {
 		StringBuilder nro = new StringBuilder("V01-");
 		nro.append(aTextoConCeroIzqSegunCantDigitos(venta.getId(), 8));
 		return nro.toString();
+	}
+
+	public static String generarUsername(Usuario usuario) {
+		String nick;
+		if(usuario.getApellido() == null || usuario.getApellido().equals("")){
+			nick = usuario.getNombre().toLowerCase();
+		}else{
+			nick = usuario.getNombre().toLowerCase().substring(0, 1).concat(usuario.getApellido().toLowerCase());
+		}
+		return nick;
 	}
 }

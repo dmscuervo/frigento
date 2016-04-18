@@ -20,9 +20,9 @@ public interface ProductoService {
 
 	void actualizarProducto(Producto producto) throws StockAlteradoException;
 
-	void eliminarProducto(Producto producto);
+	void eliminarProducto(Integer productoId);
 
-	void reactivarProducto(Producto producto);
+	void reactivarProducto(Integer productoId);
 
 	boolean asignarNuevoPrecio(List<RelProductoCategoria> relProdCats, Date fechaDesde, BigDecimal costo,
 			BigDecimal[] incrementos) throws FechaDesdeException;

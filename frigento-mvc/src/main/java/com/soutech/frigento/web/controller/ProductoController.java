@@ -1,6 +1,5 @@
 package com.soutech.frigento.web.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.UriUtils;
-import org.springframework.web.util.WebUtils;
 
 import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.StockAlteradoException;
@@ -35,7 +32,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
 @RequestMapping(value="/producto")
-@Secured({"ROLE_USER", "ROLE_ADMIN"})
+@Secured({"ROLE_ADMIN"})
 public class ProductoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -58,7 +55,7 @@ public class ProductoController extends GenericController {
     @Autowired
     public RelPedidoProductoService relPedidoProductoService;
 
-    @Secured({"ROLE_ADMIN"})
+    
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
     	Producto producto = new Producto();
@@ -102,7 +99,6 @@ public class ProductoController extends GenericController {
         return "producto/grilla";
     }
     
-    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Date fechaHastaMin = relProductoCategoriaService.obtenerMinFechaDesde(id);
@@ -159,7 +155,6 @@ public class ProductoController extends GenericController {
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.editar.ok", productoForm.getDescripcion())));
     }
     
-    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "borrar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preDelete(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Producto prod = productoService.obtenerProducto(id);
@@ -173,11 +168,10 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/borrar", method = RequestMethod.POST, produces = "text/html")
     public String delete(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	productoService.eliminarProducto(productoForm);
+    	productoService.eliminarProducto(productoForm.getId());
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.borrar.ok", productoForm.getDescripcion())));
     }
     
-    @Secured({"ROLE_ADMIN"})
     @RequestMapping(params = "activar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preActivar(@PathVariable("id") Integer id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Producto prod = productoService.obtenerProducto(id);
@@ -191,18 +185,8 @@ public class ProductoController extends GenericController {
     
     @RequestMapping(value = "/activar", method = RequestMethod.POST, produces = "text/html")
     public String activar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	productoService.reactivarProducto(productoService.obtenerProducto(productoForm.getId()));
+    	productoService.reactivarProducto(productoForm.getId());
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.activar.ok", productoForm.getDescripcion())));
     }
     
-    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
-        String enc = httpServletRequest.getCharacterEncoding();
-        if (enc == null) {
-            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-        }
-        try {
-            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
-        return pathSegment;
-    }
 }

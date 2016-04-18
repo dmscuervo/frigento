@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "users", uniqueConstraints=@UniqueConstraint(columnNames={"username"}))
@@ -43,6 +44,7 @@ public class Usuario implements Serializable {
 	private Categoria categoriaProducto;
 	
 	@NotNull
+	@NotEmpty
     @Column(name = "NOMBRE")
     @Size(max = 20)
     private String nombre;
@@ -75,7 +77,7 @@ public class Usuario implements Serializable {
     private Boolean esAdmin;
 
 	@Id
-    @SequenceGenerator(name = "usuarioGen", sequenceName = "SEQ_USUARIO")
+    @SequenceGenerator(name = "usuarioGen", sequenceName = "SEQ_USUARIO", initialValue = 2)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "usuarioGen")
     @Column(name = "ID_USUARIO")
     private Integer id;

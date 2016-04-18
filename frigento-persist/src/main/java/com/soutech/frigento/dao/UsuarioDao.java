@@ -9,4 +9,6 @@ public interface UsuarioDao extends IDao<Usuario, Integer> {
 
 	public List<Usuario> findAllByCategoriaProd(Short idCat);
 
+	public List<Usuario> findAll(Boolean estado, String[] sortFieldName, String[] sortOrder);
+
 }

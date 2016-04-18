@@ -75,14 +75,14 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Transactional
 	@Override
-	public void eliminarProducto(Producto producto) {
-		controlStockProducto.eliminarProductoStock(producto.getId());
-		ProductoCosto prodCosto = productoCostoDao.findCostoActual(producto.getId());
+	public void eliminarProducto(Integer productoId) {
+		controlStockProducto.eliminarProductoStock(productoId);
+		ProductoCosto prodCosto = productoCostoDao.findCostoActual(productoId);
 		if(prodCosto != null){
 			logger.info("El producto contiene relaciones con ProductoCosto. Se procede a su baja logica.");
 			productoCostoDao.delete(prodCosto);
 		}
-		List<RelProductoCategoria> relProdCats = relProductoCategoriaDao.findAllByProducto(producto.getId(), Constantes.ESTADO_REL_VIGENTE);
+		List<RelProductoCategoria> relProdCats = relProductoCategoriaDao.findAllByProducto(productoId, Constantes.ESTADO_REL_VIGENTE);
 		if(!relProdCats.isEmpty()){
 			logger.info("El producto contiene relaciones con RelProductoCategoria. Se procede a su baja logica.");
 			}
@@ -93,7 +93,8 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	@Transactional
-	public void reactivarProducto(Producto producto) {
+	public void reactivarProducto(Integer productoId) {
+		Producto producto = productoDao.findById(productoId);
 		ProductoCosto rpc = new ProductoCosto();
 		rpc.setCosto(producto.getCostoActual());
 		rpc.setFechaDesde(new Date());

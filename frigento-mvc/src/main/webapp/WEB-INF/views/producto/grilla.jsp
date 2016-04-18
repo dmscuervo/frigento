@@ -37,7 +37,7 @@
 <div class='row'>
 	<div class='col-sm-6' >    
 		<div class="form-group" style="float: right;">
-			<label class="col-sm-6 control-label" for="idCod" style="white-space: nowrap">
+			<label class="col-sm-6 control-label" for="idSelEstado" style="white-space: nowrap">
 			<fmt:message key="producto.estado" />
 			</label>
 		</div>
@@ -70,7 +70,7 @@
         		<td style="white-space: nowrap;">${prod.costoActual}</td>
         		<td style="white-space: nowrap;">${prod.stock}</td>
         		<td style="white-space: nowrap;">${prod.pesoCaja}</td>
-        		<td colspan="2" style="white-space: nowrap;">
+        		<td style="white-space: nowrap;">
         			<c:if test="${estadoSel eq 'A'}">
 	        			<i class="fa fa-edit" onclick="loadInBody('producto/${prod.id}?editar')"></i>
         				&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('producto/${prod.id}?borrar')"></i>

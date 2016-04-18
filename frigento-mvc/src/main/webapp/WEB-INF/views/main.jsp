@@ -286,13 +286,13 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> <fmt:message key="menu.cliente"/><span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-users fa-fw"></i> <fmt:message key="menu.usuario"/><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="javascript:loadInBody('categoria?alta')"><fmt:message key="menu.categoria.alta"/></a>
+                                    <a href="javascript:loadInBody('usuario?alta')"><fmt:message key="menu.usuario.alta"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('categoria?sortFieldName=descripcion&sortOrder=asc')"><fmt:message key="menu.categoria.listar"/></a>
+                                    <a href="javascript:loadInBody('usuario?sortFieldName=nombre,apellido&sortOrder=asc')"><fmt:message key="menu.usuario.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
