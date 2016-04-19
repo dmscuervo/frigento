@@ -1,6 +1,7 @@
 package com.soutech.frigento.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -51,11 +52,11 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat, estado);
 		for (RelProductoCategoria rpc : relProdCatList) {
 			ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(rpc.getProducto().getId(), fecha);
-			BigDecimal factor = rpc.getIncremento().add(BigDecimal.ONE);
-			rpc.getProducto().setImporteVenta(prodCosto.getCosto().multiply(factor));
+			BigDecimal factor = rpc.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
+			rpc.getProducto().setImporteVenta(prodCosto.getCosto().multiply(factor).setScale(2, RoundingMode.HALF_UP));
 			rpc.getProducto().setCostoVenta(prodCosto.getCosto());
 		}
-		return relProductoCategoriaDao.findAllByCategoria(fecha, idCat, estado);
+		return relProdCatList;
 	}
 	
 	@Override

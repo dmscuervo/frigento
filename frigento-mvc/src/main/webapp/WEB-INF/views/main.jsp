@@ -130,7 +130,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><fmt:message key="app.logo"/></a>
+                <a class="navbar-brand" href="home"><fmt:message key="app.logo"/></a>
             </div>
             <!-- /.navbar-header -->
 
@@ -257,7 +257,7 @@
                                     <a href="javascript:loadInBody('pedido?alta')"><fmt:message key="menu.pedido.generar"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=asc')"><fmt:message key="menu.pedido.listar"/></a>
+                                    <a href="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=desc')"><fmt:message key="menu.pedido.listar"/></a>
                                 </li>
                             </ul>
                         </li>
@@ -268,7 +268,7 @@
                                     <a href="javascript:loadInBody('venta?preAlta')"><fmt:message key="menu.venta.generar"/></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:loadInBody('venta?estado=A&sortFieldName=id&sortOrder=asc')"><fmt:message key="menu.venta.listar"/></a>
+                                    <a href="javascript:loadInBody('venta?estado=A&sortFieldName=id&sortOrder=desc')"><fmt:message key="menu.venta.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

@@ -13,14 +13,21 @@
 		
 	});
 	
-	function cargarForm(form){
+	function cargarForm(form, type){
 		if(!bodyBlock){
 			blockControl($('#wrapper'));
 			bodyBlock = true;				
 		}
+		
+		$("input[placeholder]").each( function () {
+			if($(this).val() == ''){
+			    $(this).val( $(this).attr("placeholder") );
+			}
+		});
+		
 		$.ajax({
             url: form.attr('action'),
-            type: 'GET',
+            type: type,
             data: form.serialize(),
             success: function(result) {
             	//Desbloqueo pantalla
@@ -48,8 +55,8 @@
 	<h3>
 		<fmt:message key="venta.alta.title" />
 	</h3>
-	<p class="form-validate">
-		${msgError}
+	<p class="form-validate" >
+		<label id="msgError">&nbsp;</label>
 	</p>
 	<c:url var="urlPreAlta" value="/venta?alta" />
 	<form:form action="${urlPreAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idFormPreAlta">
@@ -98,10 +105,10 @@
         	<div class="form-group" >
 				<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:cargarForm($('#idFormPreAlta'))">
+						onclick="javascript:cargarForm($('#idFormPreAlta'), 'GET')">
 				<input type="button" class="btn btn-default btn-primary"
 					value='<fmt:message key="boton.cancelar"/>'
-					onclick="javascript:loadInBody('venta?estado=A&sortFieldName=id&sortOrder=asc')">
+					onclick="javascript:loadInBody('venta?estado=A&sortFieldName=id&sortOrder=desc')">
 			</div>
         </div>
     </div>

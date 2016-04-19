@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -83,6 +84,7 @@ public class Venta implements Serializable {
     @Column(name = "VERSION")
     private Short version;
 
+    @Valid
 	@Transient
 	private List<ItemVentaDTO> items;
 	

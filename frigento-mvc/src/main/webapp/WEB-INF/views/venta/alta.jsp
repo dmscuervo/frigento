@@ -9,6 +9,8 @@
 		//Si la pantalla se carga con la venta en estado confirmado, no dejo el tilde de enviar correo por default
 		//Solo en caso de que no sea una carga de pantalla por validacion de errores
 		var tieneError = '${msgError}';
+		$('#msgError').text(tieneError);
+		
 		if($('#idEstado').val() == 2 && tieneError == ''){
 			$('#idEnvioMail').prop( "checked", false );
 		}
@@ -60,6 +62,8 @@
 
 	<c:url var="urlAlta" value="/venta/alta" />
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm">
+	<form:hidden path="fecha"/>
+	<form:hidden path="usuario.id"/>
 	<form:hidden path="importe"/>
 	<form:hidden path="version"/>
 	<div class='row'>
@@ -128,7 +132,7 @@
 			        <c:forEach var="item" items="${ventaForm.items}" varStatus="status">
 			        	<tr>
 			        		<td style="white-space: nowrap;">
-			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" />
+			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="0" />
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
@@ -143,17 +147,21 @@
 			</table>
 		</div>
 	</div>
-	<br/>
+	<div class='row'>
+		<div class='col-sm-12'>
+			<form:errors path="*" cssClass="form-validate" />
+		</div>
+	</div>
 	<div class='row'>
 		<div class='col-sm-4'>&nbsp;</div>
         <div class='col-sm-8'> 
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:cargarForm($('#idForm'), 'POST')">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('venta?sortFieldName=id&sortOrder=asc')">
+						onclick="javascript:loadInBody('venta?sortFieldName=id&sortOrder=desc')">
 			</div>
         </div>
     </div>

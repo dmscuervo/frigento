@@ -56,8 +56,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 public class PedidoController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    //public static final String BUSQUEDA_DEFAULT = "pedido?estados="+Constantes.ESTADO_PEDIDO_PENDIENTE+","+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=id&sortOrder=asc";
-    public static final String BUSQUEDA_DEFAULT = "pedido?sortFieldName=id&sortOrder=asc";
+    public static final String BUSQUEDA_DEFAULT = "pedido?sortFieldName=id&sortOrder=desc";
     
     @InitBinder
     public void initBinder(WebDataBinder binder){

@@ -40,7 +40,7 @@ public class PedidoServiceImpl implements PedidoService {
 	public boolean generarPedido(Pedido pedido) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
-			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=id&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
+			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=id&sortOrder=desc"), "prodCosto.concurrencia.costo.error");
 			BigDecimal costoTotal = BigDecimal.ZERO;
 			List<RelPedidoProducto> relaciones = new ArrayList<RelPedidoProducto>();
 			for (ItemPedidoDTO item : pedido.getItems()) {
@@ -85,7 +85,7 @@ public class PedidoServiceImpl implements PedidoService {
 	public boolean actualizarPedido(Pedido pedidoModificado) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
-			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=descripcion&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
+			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=descripcion&sortOrder=desc"), "prodCosto.concurrencia.costo.error");
 			List<RelPedidoProducto> relacionesNuevas = new ArrayList<RelPedidoProducto>();
 			List<RelPedidoProducto> relacionesModificadas = new ArrayList<RelPedidoProducto>();
 			List<RelPedidoProducto> relacionesActuales = relPedidoProductoDao.findAllByPedido(pedidoModificado.getId(), null, null);

@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.VentaDao;
 import com.soutech.frigento.model.Venta;
 
 @Repository
+@Transactional(readOnly=true)
 public class VentaDaoImpl extends AbstractSpringDao<Venta, Integer> implements VentaDao {
 
 	@SuppressWarnings("unchecked")

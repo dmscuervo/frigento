@@ -187,7 +187,7 @@
 						onclick="javascript:submitInBody($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=asc')">
+						onclick="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=desc')">
 			</div>
         </div>
     </div>

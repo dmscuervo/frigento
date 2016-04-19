@@ -55,7 +55,7 @@ public class VentaController extends GenericController {
 	protected final Log logger = LogFactory.getLog(getClass());
 	// public static final String BUSQUEDA_DEFAULT =
 	// "venta?estados="+Constantes.ESTADO_PEDIDO_PENDIENTE+","+Constantes.ESTADO_PEDIDO_CONFIRMADO+"&sortFieldName=id&sortOrder=asc";
-	public static final String BUSQUEDA_DEFAULT = "venta?sortFieldName=id&sortOrder=asc";
+	public static final String BUSQUEDA_DEFAULT = "venta?estado=A&sortFieldName=id&sortOrder=desc";
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -99,6 +99,7 @@ public class VentaController extends GenericController {
 				ventaForm.getFecha(), usuario.getCategoriaProducto().getId(), Constantes.ESTADO_REL_VIGENTE);
 		List<Estado> estados = estadoService.obtenerEstadosVenta();
 		Venta venta = new Venta();
+		venta.setUsuario(usuario);
 		venta.setFecha(new Date());
 		venta.setVersion((short) 0);
 		venta.setItems(new ArrayList<ItemVentaDTO>(relProdCatList.size()));
@@ -108,7 +109,7 @@ public class VentaController extends GenericController {
 		for (RelProductoCategoria rpc : relProdCatList) {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
-			item.setCantidad((float) 0);
+			//item.setCantidad((float) 0);
 			item.setProducto(producto);
 			item.setCostoVenta(rpc.getProducto().getCostoVenta());
 			item.setRelProductoCategoriaId(rpc.getId());
@@ -148,6 +149,10 @@ public class VentaController extends GenericController {
 		} else {
 			mensaje = getMessage("venta.sin.items");
 			httpServletRequest.setAttribute("msgError", mensaje);
+			//Esto lo hago para que la pantalla quede sin valores precargados 
+			for (ItemVentaDTO item : ventaForm.getItems()) {
+				item.setCantidad(null);
+			}
 			return "venta/alta";
 		}
 
@@ -180,6 +185,7 @@ public class VentaController extends GenericController {
 			@RequestParam(value = "sortOrder", required = false) String sortOrder,
 			@RequestParam(value = "informar", required = false) String informar,
 			HttpServletRequest httpServletRequest) {
+			
 		httpServletRequest.setAttribute("ventas", ventaService.obtenerVentas(estadoVenta, sortFieldName, sortOrder));
 		httpServletRequest.setAttribute("estadoSel", estadoVenta);
 		if (informar != null) {

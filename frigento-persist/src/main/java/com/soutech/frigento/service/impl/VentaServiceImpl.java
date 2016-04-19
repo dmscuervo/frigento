@@ -35,7 +35,7 @@ public class VentaServiceImpl implements VentaService {
 	public boolean generarVenta(Venta venta) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
-			ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("venta?estado=A&sortFieldName=id&sortOrder=asc"), "relProdCat.concurrencia.precio.error");
+			ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("venta?estado=A&sortFieldName=id&sortOrder=desc"), "relProdCat.concurrencia.precio.error");
 			BigDecimal importeTotal = BigDecimal.ZERO;
 			List<RelVentaProducto> relaciones = new ArrayList<RelVentaProducto>();
 			for (ItemVentaDTO item : venta.getItems()) {
@@ -49,7 +49,7 @@ public class VentaServiceImpl implements VentaService {
 					rpp.setCantidad(item.getCantidad());
 					relaciones.add(rpp);
 					//Voy calculando el costo total del pedido
-					importeTotal = importeTotal.add(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP);
+					importeTotal = importeTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta())).setScale(2, RoundingMode.HALF_UP);
 				}
 			}
 			if(!hayPedido){
