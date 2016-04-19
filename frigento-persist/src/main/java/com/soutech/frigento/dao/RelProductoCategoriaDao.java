@@ -6,7 +6,7 @@ import com.soutech.frigento.model.RelProductoCategoria;
 
 public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Integer> {
 
-	List<RelProductoCategoria> findAllByCategoria(Short idCat, String estado);
+	List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat, String estado);
 
 	List<RelProductoCategoria> findAllByProducto(Integer idProd, String estado);
 

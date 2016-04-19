@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
+import com.soutech.frigento.model.Venta;
 import com.sun.xml.internal.ws.util.ByteArrayDataSource;
 
 @Component
@@ -88,7 +89,47 @@ public class SendMailSSL {
 		
 		enviarMail(subject, bodyText.toString(), attachment, attachFileName);
 	}
-	
+
+	public void enviarCorreoVenta(Venta venta, ByteArrayOutputStream attachment, String attachFileName) throws Exception{
+		String subject = "Pedido N° " + Utils.generarNroRemito(venta);
+		
+		StringBuilder bodyText = new StringBuilder();
+		InputStream is = null;
+		
+		if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
+			
+			if(venta.getVersion().shortValue() > 1){
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_modificado.html");
+				subject = subject.concat(" - MODIFICADO");
+			}else{
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_confirmado.html");
+			}
+			
+		}else if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_entregado.html");
+			subject = subject.concat(" - ENTREGADO");
+		}else if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_anulado.html");
+			subject = subject.concat(" - ANULADO");
+		}
+		try {
+			BufferedReader fr = new BufferedReader(new InputStreamReader(is));
+			String linea = fr.readLine();
+			while(linea != null){
+				bodyText.append(linea);
+				linea = fr.readLine();
+			}
+			fr.close();
+		} catch (FileNotFoundException e) {
+			logger.error("No se pudo generar el body del mail. Archivo html inexistente.");
+			throw new Exception(e);
+		} catch (IOException e) {
+			logger.error("No se pudo generar el body del mail. Error al leer archivo html.");
+			throw new Exception(e);
+		}
+		
+		enviarMail(subject, bodyText.toString(), attachment, attachFileName);
+	}
 	
 	private void enviarMail(String subject, String bodyText, ByteArrayOutputStream attachment, String attachFileName) throws Exception {
 		
@@ -136,4 +177,5 @@ public class SendMailSSL {
 			throw new Exception(e);
 		}
 	}
+	
 }

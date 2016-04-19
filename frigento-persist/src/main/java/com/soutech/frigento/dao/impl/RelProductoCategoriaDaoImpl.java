@@ -18,7 +18,7 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RelProductoCategoria> findAllByCategoria(Short idCat, String estado) {
+	public List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat, String estado) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" r where r.categoria.id = :catId");
@@ -27,8 +27,16 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		}else if(estado != null && estado.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
 			hql.append(" and r.fechaHasta is not null");
 		}
+		if(fecha != null){
+			hql.append(" and r.fechaDesde <= :fecha");
+			hql.append(" and (r.fechaHasta is null or r.fechaHasta > :fecha)");
+		}
+		hql.append(" order by r.producto.descripcion asc");
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("catId", idCat);
+		if(fecha != null){
+			query.setParameter("fecha", fecha);
+		}
 		return query.list();
 	}
 

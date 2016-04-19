@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
 import com.soutech.frigento.dao.RelPedidoProductoDao;
-import com.soutech.frigento.dto.ItemDTO;
+import com.soutech.frigento.dto.ItemPedidoDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Pedido;
@@ -81,7 +81,7 @@ public class ControlStockProducto {
 		
 		//Actualizo stock
 		;
-		for (ItemDTO item : pedidoCumplido.getItems()) {
+		for (ItemPedidoDTO item : pedidoCumplido.getItems()) {
 			Producto producto = productoDao.findById(item.getProducto().getId());
 			producto.setStock(producto.getStock() + (producto.getPesoCaja() * item.getCantidad()));
 			producto.setStockControlado(Boolean.TRUE);
@@ -109,7 +109,7 @@ public class ControlStockProducto {
 		BigDecimal costoTotal = null;
 		Boolean prodNuevo;
 		RelPedidoProducto rppActual;
-		for (ItemDTO item : pedidoModificado.getItems()) {
+		for (ItemPedidoDTO item : pedidoModificado.getItems()) {
 			if(item.getCantidad() != (short)0){
 				rppActual = null;
 				prodNuevo = Boolean.TRUE;

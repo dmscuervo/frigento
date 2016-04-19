@@ -1,5 +1,6 @@
 package com.soutech.frigento.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.soutech.frigento.dao.RelVentaProductoDao;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
@@ -41,7 +43,19 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	
 	@Override
 	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, String estado) {
-		return relProductoCategoriaDao.findAllByCategoria(idCat, estado);
+		return relProductoCategoriaDao.findAllByCategoria(null, idCat, estado);
+	}
+	
+	@Override
+	public List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado) {
+		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat, estado);
+		for (RelProductoCategoria rpc : relProdCatList) {
+			ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(rpc.getProducto().getId(), fecha);
+			BigDecimal factor = rpc.getIncremento().add(BigDecimal.ONE);
+			rpc.getProducto().setImporteVenta(prodCosto.getCosto().multiply(factor));
+			rpc.getProducto().setCostoVenta(prodCosto.getCosto());
+		}
+		return relProductoCategoriaDao.findAllByCategoria(fecha, idCat, estado);
 	}
 	
 	@Override
@@ -56,7 +70,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
-			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
+			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(null, categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
 			for (RelProductoCategoria relProdCatActual : relacionesActual) {
 				Short idCat = relProdCatActual.getCategoria().getId();
 				Integer idProd = relProdCatActual.getProducto().getId();

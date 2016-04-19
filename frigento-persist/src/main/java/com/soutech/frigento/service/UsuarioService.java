@@ -17,4 +17,6 @@ public interface UsuarioService {
 	Usuario eliminarUsuario(Integer usuarioId);
 
 	public Usuario reactivarUsuario(Integer usuarioId);
+
+	List<Usuario> obtenerUsuariosConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder);
 }

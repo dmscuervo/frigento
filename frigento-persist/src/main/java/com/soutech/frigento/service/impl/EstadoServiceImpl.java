@@ -20,5 +20,10 @@ public class EstadoServiceImpl implements EstadoService {
 	public List<Estado> obtenerEstadosPedido() {
 		return estadoDao.findAllByTipo(new TipoEstadoEnum[]{TipoEstadoEnum.A, TipoEstadoEnum.P});
 	}
+	
+	@Override
+	public List<Estado> obtenerEstadosVenta() {
+		return estadoDao.findAllByTipo(new TipoEstadoEnum[]{TipoEstadoEnum.A, TipoEstadoEnum.V});
+	}
 
 }

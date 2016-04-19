@@ -82,6 +82,11 @@ public class Producto implements Serializable {
     @Transient
     private Date fechaAlta;
     
+    @Transient
+    private BigDecimal importeVenta;
+    @Transient
+    private BigDecimal costoVenta;
+    
 	public String getCodigo() {
         return this.codigo;
     }
@@ -184,6 +189,22 @@ public class Producto implements Serializable {
 
 	public void setFechaAlta(Date fechaAlta) {
 		this.fechaAlta = fechaAlta;
+	}
+
+	public BigDecimal getImporteVenta() {
+		return importeVenta;
+	}
+
+	public void setImporteVenta(BigDecimal importeVenta) {
+		this.importeVenta = importeVenta;
+	}
+
+	public BigDecimal getCostoVenta() {
+		return costoVenta;
+	}
+
+	public void setCostoVenta(BigDecimal costoVenta) {
+		this.costoVenta = costoVenta;
 	}
 	
 }

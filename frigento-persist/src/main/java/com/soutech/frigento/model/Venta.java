@@ -2,6 +2,7 @@ package com.soutech.frigento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,12 +24,20 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.soutech.frigento.dto.ItemVentaDTO;
+
 
 @Entity
 @Table(name = "VENTA")
 public class Venta implements Serializable {
 
     private static final long serialVersionUID = 4671255183360631983L;
+    
+    @Id
+    @SequenceGenerator(name = "ventaGen", sequenceName = "SEQ_VENTA")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ventaGen")
+    @Column(name = "ID_VENTA")
+    private Integer id;
 
 	@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -69,6 +79,17 @@ public class Venta implements Serializable {
     @DateTimeFormat(style = "M-")
     private Date fechaAnulado;
 
+    @NotNull
+    @Column(name = "VERSION")
+    private Short version;
+
+	@Transient
+	private List<ItemVentaDTO> items;
+	
+	@Transient
+	private Boolean envioMail = Boolean.TRUE;
+
+    
 	public Estado getEstado() {
         return this.estado;
     }
@@ -133,12 +154,6 @@ public class Venta implements Serializable {
         this.fechaAnulado = fechaAnulado;
     }
 
-	@Id
-    @SequenceGenerator(name = "ventaGen", sequenceName = "SEQ_VENTA")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ventaGen")
-    @Column(name = "ID_VENTA")
-    private Integer id;
-
 	public Integer getId() {
         return this.id;
     }
@@ -150,4 +165,29 @@ public class Venta implements Serializable {
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
+	public List<ItemVentaDTO> getItems() {
+		return items;
+	}
+
+	public void setItems(List<ItemVentaDTO> items) {
+		this.items = items;
+	}
+
+	public Boolean getEnvioMail() {
+		return envioMail;
+	}
+
+	public void setEnvioMail(Boolean envioMail) {
+		this.envioMail = envioMail;
+	}
+
+	public Short getVersion() {
+		return version;
+	}
+
+	public void setVersion(Short version) {
+		this.version = version;
+	}
+	
 }

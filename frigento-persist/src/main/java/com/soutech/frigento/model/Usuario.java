@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -87,6 +88,9 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "usuarioGen")
     @Column(name = "ID_USUARIO")
     private Integer id;
+	
+	@Transient
+	private String identificadoWeb;
 
 	public Integer getId() {
         return this.id;
@@ -202,6 +206,14 @@ public class Usuario implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getIdentificadoWeb() {
+		return "(".concat(username).concat(") ").concat(nombre).concat(apellido == null ? "" : " ".concat(apellido));
+	}
+
+	public void setIdentificadoWeb(String identificadoWeb) {
+		this.identificadoWeb = identificadoWeb;
 	}
 	
 }

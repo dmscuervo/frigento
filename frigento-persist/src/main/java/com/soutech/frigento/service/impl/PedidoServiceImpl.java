@@ -14,7 +14,7 @@ import com.soutech.frigento.concurrence.ControlPedidoVsCostoProducto;
 import com.soutech.frigento.dao.PedidoDao;
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.RelPedidoProductoDao;
-import com.soutech.frigento.dto.ItemDTO;
+import com.soutech.frigento.dto.ItemPedidoDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
@@ -40,10 +40,10 @@ public class PedidoServiceImpl implements PedidoService {
 	public boolean generarPedido(Pedido pedido) throws ProductoSinCostoException {
 		boolean hayPedido = Boolean.FALSE;
 		try{
-			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=descripcion&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
+			ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("pedido?estado=A&sortFieldName=id&sortOrder=asc"), "prodCosto.concurrencia.costo.error");
 			BigDecimal costoTotal = BigDecimal.ZERO;
 			List<RelPedidoProducto> relaciones = new ArrayList<RelPedidoProducto>();
-			for (ItemDTO item : pedido.getItems()) {
+			for (ItemPedidoDTO item : pedido.getItems()) {
 				if(item.getCantidad() != (short)0){
 					hayPedido = Boolean.TRUE;
 					RelPedidoProducto rpp = new RelPedidoProducto();

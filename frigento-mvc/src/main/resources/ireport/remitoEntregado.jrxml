@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="remitoEntregado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7242a6bb-de6e-4263-acfd-1b64c76b5926">
 	<property name="ireport.zoom" value="1.7715610000000022"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="19"/>
+	<property name="ireport.y" value="163"/>
 	<parameter name="dia" class="java.lang.String"/>
 	<parameter name="mes" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -10,10 +10,11 @@
 	<parameter name="destinatario" class="java.lang.String"/>
 	<parameter name="domicilio" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Float"/>
-	<field name="productoCosto" class="com.soutech.frigento.model.ProductoCosto"/>
-	<field name="costo" class="java.math.BigDecimal"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="importe" class="java.math.BigDecimal"/>
+	<field name="pu" class="java.math.BigDecimal"/>
 	<variable name="importe" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{costo}.multiply(new BigDecimal($F{cantidad}.intValue())).setScale(2, RoundingMode.HALF_UP)]]></variableExpression>
+		<variableExpression><![CDATA[$F{importe}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<background>
@@ -241,24 +242,20 @@ info.frigento@gmail.com]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="53" y="1" width="366" height="21" uuid="b5f1d297-66c2-4f54-88ca-dc172ab4b002">
-					<printWhenExpression><![CDATA[$F{productoCosto}.getProducto() != null]]></printWhenExpression>
-				</reportElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="53" y="1" width="366" height="21" uuid="b5f1d297-66c2-4f54-88ca-dc172ab4b002"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{productoCosto}.getProducto().getCodigo().concat("-").concat($F{productoCosto}.getProducto().getDescripcion())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="420" y="1" width="60" height="21" uuid="fc4660a4-9ac8-48cb-83f1-bea0ca9220dc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pu}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement x="481" y="1" width="64" height="21" uuid="f5426717-e25b-4b56-98db-3619c776b01c">
-					<printWhenExpression><![CDATA[$F{costo} != null && $F{cantidad} != null]]></printWhenExpression>
-				</reportElement>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="481" y="1" width="64" height="21" uuid="f5426717-e25b-4b56-98db-3619c776b01c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{costo}.multiply(new BigDecimal($F{cantidad}.intValue())).setScale(2, RoundingMode.HALF_UP)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

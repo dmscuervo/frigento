@@ -8,4 +8,6 @@ public interface EstadoService {
 
 	List<Estado> obtenerEstadosPedido();
 
+	List<Estado> obtenerEstadosVenta();
+
 }

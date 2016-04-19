@@ -67,5 +67,37 @@ public class UsuarioDaoImpl extends AbstractSpringDao<Usuario, Integer> implemen
 		return query.list();
 	}
 
-	
+	@Override
+	public List<Usuario> findAllConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(Usuario.class.getCanonicalName());
+		hql.append(" u ");
+		hql.append(" where u.categoriaProducto is not null ");
+		if(estado != null){
+			hql.append("and u.habilitado = :estado ");
+		}
+		if(sortFieldName != null){
+			hql.append("order by u.");
+			for (int i = 0; i < sortFieldName.length; i++) {
+				String sfn = sortFieldName[i];
+				String so;
+				try {
+					so = sortOrder[i];
+				} catch (Exception e) {
+					so = "asc";
+				}
+				hql.append(sfn);
+				hql.append(" ");
+				hql.append(so);
+				hql.append(", u.");
+			}
+			hql.replace(hql.length()-4, hql.length(), "");
+		}
+		Query query = getSession().createQuery(hql.toString());
+		if(estado != null){
+			query.setParameter("estado", estado);
+		}
+		return query.list();
+	}
+
 }

@@ -77,6 +77,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return usuario;
 	}
 	
+	@Override
+	public List<Usuario> obtenerUsuariosConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder) {
+		return usuarioDao.findAllConCategoria(estado, sortFieldName, sortOrder);
+	}
+
 	private void generarUserName(Usuario usuario) {
 		usuario.setNombre(Utils.controlEspacioMultiple(usuario.getNombre()));
 		usuario.setApellido(Utils.controlEspacioMultiple(usuario.getApellido()));

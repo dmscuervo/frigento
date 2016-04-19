@@ -265,22 +265,10 @@
                             <a href="#"><i class="fa fa-shopping-cart fa-fw"></i> <fmt:message key="menu.venta"/><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="panels-wells.html">Panels and Wells</a>
+                                    <a href="javascript:loadInBody('venta?preAlta')"><fmt:message key="menu.venta.generar"/></a>
                                 </li>
                                 <li>
-                                    <a href="buttons.html">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="icons.html"> Icons</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">Grid</a>
+                                    <a href="javascript:loadInBody('venta?estado=A&sortFieldName=id&sortOrder=asc')"><fmt:message key="menu.venta.listar"/></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

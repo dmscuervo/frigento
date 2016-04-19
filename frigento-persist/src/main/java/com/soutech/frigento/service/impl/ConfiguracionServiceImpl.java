@@ -44,7 +44,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
 			
 			estado = new Estado();
 			estado.setDescripcion("Confirmado");
-			estado.setTipo(TipoEstadoEnum.P);
+			estado.setTipo(TipoEstadoEnum.A);
 			estadoDao.save(estado);
 			
 			estado = new Estado();

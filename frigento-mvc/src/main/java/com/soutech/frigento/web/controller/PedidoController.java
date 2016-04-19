@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.soutech.frigento.dto.ItemDTO;
+import com.soutech.frigento.dto.ItemPedidoDTO;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
@@ -86,12 +86,12 @@ public class PedidoController extends GenericController {
     	Pedido pedido = new Pedido();
     	pedido.setFecha(new Date());
     	pedido.setVersion((short)0);
-    	pedido.setItems(new ArrayList<ItemDTO>(productos.size()));
+    	pedido.setItems(new ArrayList<ItemPedidoDTO>(productos.size()));
     	pedido.setEstado(estados.get(0));
     	//Lo inicializo para que no falle la validación
     	pedido.setCosto(BigDecimal.ZERO);
     	for (Producto producto : productos) {
-    		ItemDTO item = new ItemDTO();
+    		ItemPedidoDTO item = new ItemPedidoDTO();
     		item.setCantidad((short)0);
     		item.setProducto(producto);
     		pedido.getItems().add(item);
@@ -135,7 +135,7 @@ public class PedidoController extends GenericController {
     		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
     		ByteArrayOutputStream bytes;
 			try {
-				bytes = reportManager.generarRemito(relPedProdList);
+				bytes = reportManager.generarRemitoPedido(relPedProdList);
 				Pedido pedido = relPedProdList.get(0).getPedido();
 				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
 				
@@ -181,9 +181,9 @@ public class PedidoController extends GenericController {
         	return "pedido/grilla";
         }
     	
-    	pedido.setItems(new ArrayList<ItemDTO>(productos.size()));
+    	pedido.setItems(new ArrayList<ItemPedidoDTO>(productos.size()));
     	for (Producto producto : productos) {
-    		ItemDTO item = new ItemDTO();
+    		ItemPedidoDTO item = new ItemPedidoDTO();
     		for (RelPedidoProducto rpp : relPedProdList) {
     			if(rpp.getProductoCosto().getProducto().getId().equals(producto.getId())){
     				item.setCantidad(new BigDecimal(rpp.getCantidad()/producto.getPesoCaja()).setScale(0, RoundingMode.HALF_UP).shortValue());
@@ -235,7 +235,7 @@ public class PedidoController extends GenericController {
     		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
     		ByteArrayOutputStream bytes;
 			try {
-				bytes = reportManager.generarRemito(relPedProdList);
+				bytes = reportManager.generarRemitoPedido(relPedProdList);
 				Pedido pedido = relPedProdList.get(0).getPedido();
 				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
 				
@@ -261,7 +261,7 @@ public class PedidoController extends GenericController {
     	List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(idPed, "productoCosto.producto.codigo", "asc");
     	
     	try {
-			ByteArrayOutputStream bytes = reportManager.generarRemito(relPedProdList);
+			ByteArrayOutputStream bytes = reportManager.generarRemitoPedido(relPedProdList);
 			Pedido pedido = relPedProdList.get(0).getPedido();
 			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
 	
@@ -300,7 +300,7 @@ public class PedidoController extends GenericController {
 		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
 		ByteArrayOutputStream bytes;
 		try {
-			bytes = reportManager.generarRemito(relPedProdList);
+			bytes = reportManager.generarRemitoPedido(relPedProdList);
 			Pedido pedido = relPedProdList.get(0).getPedido();
 			String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
 			
@@ -329,9 +329,9 @@ public class PedidoController extends GenericController {
         }
     	
     	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(Constantes.ESTADO_REL_VIGENTE, pedido.getFecha(), "producto.codigo", "asc");
-    	pedido.setItems(new ArrayList<ItemDTO>(prodCostoList.size()));
+    	pedido.setItems(new ArrayList<ItemPedidoDTO>(prodCostoList.size()));
     	for (ProductoCosto prodCosto : prodCostoList) {
-    		ItemDTO item = new ItemDTO();
+    		ItemPedidoDTO item = new ItemPedidoDTO();
     		item.setCantidad((short)0);
     		item.setCostoCumplir(prodCosto.getCosto());
     		for (RelPedidoProducto rpp : relPedProdList) {
@@ -365,7 +365,7 @@ public class PedidoController extends GenericController {
     	//Valido costo no nulo
     	String mensaje;
     	Boolean hayCantidades = Boolean.FALSE;
-    	for (ItemDTO item : pedidoForm.getItems()) {
+    	for (ItemPedidoDTO item : pedidoForm.getItems()) {
 			if(item.getCostoCumplir() == null){
 				mensaje = getMessage("pedido.cumplir.sin.costo");
 				httpServletRequest.setAttribute("msgError", mensaje);
@@ -395,7 +395,7 @@ public class PedidoController extends GenericController {
     		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");
     		ByteArrayOutputStream bytes;
 			try {
-				bytes = reportManager.generarRemito(relPedProdList);
+				bytes = reportManager.generarRemitoPedido(relPedProdList);
 				Pedido pedido = relPedProdList.get(0).getPedido();
 				String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
 				
