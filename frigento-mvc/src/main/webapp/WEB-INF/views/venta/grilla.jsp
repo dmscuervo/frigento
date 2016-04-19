@@ -3,8 +3,9 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		if(!$.fn.DataTable.isDataTable('#idGrillaPed')){
-	    	$('#idGrillaPed').DataTable({
+		if(!$.fn.DataTable.isDataTable('#idGrillaVta')){
+	    	$('#idGrillaVta').DataTable({
+	    		order: [[ 0, "desc" ]],
 	    		columnDefs: [
 		                       { orderable: false, targets: -1 }
 		                     ]
@@ -20,37 +21,37 @@
 
 <div style="width: 80%; float: left; min-width: 300px">
 <h3>
-	<fmt:message key="pedido.grilla.title" />
+	<fmt:message key="venta.grilla.title" />
 </h3>
 ${msgError}
-<table id="idGrillaPed" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
+<table id="idGrillaVta" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.id" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.costo" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.estado" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha.entregar" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.grilla.acciones" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.id" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.fecha" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.importe" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.estado" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.fecha.entregar" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="venta.grilla.acciones" /></th>
             </tr>
         </thead>
         <tbody>
-        <c:forEach var="ped" items="${pedidos}">
+        <c:forEach var="vta" items="${ventas}">
         	<tr>
-        		<td style="white-space: nowrap;">${ped.id}</td>
-        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
-        		<td style="white-space: nowrap;">${ped.costo}</td>
-        		<td style="white-space: nowrap;">${ped.estado.descripcion}</td>
-        		<td style="white-space: nowrap;"><fmt:formatDate value="${ped.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
+        		<td style="white-space: nowrap;">${vta.id}</td>
+        		<td style="white-space: nowrap;"><fmt:formatDate value="${vta.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
+        		<td style="white-space: nowrap;">${vta.importe}</td>
+        		<td style="white-space: nowrap;">${vta.estado.descripcion}</td>
+        		<td style="white-space: nowrap;"><fmt:formatDate value="${vta.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
         		<td style="white-space: nowrap;">
-        			<i class="fa fa-list-ol" onclick="loadInBody('pedido/${ped.id}?detalle')"></i>
-        			<c:if test="${ped.estado.id eq 1 or ped.estado.id eq 2}">
-        				&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('pedido/${ped.id}?editar')"></i>
-        				&nbsp;&nbsp;<i class="fa fa-check" onclick="loadInBody('pedido/${ped.id}?cumplir')"></i>
-        				&nbsp;&nbsp;<i class="fa fa-times" onclick="confirmarAccion('pedido/${ped.id}?anular')"></i>
+        			<i class="fa fa-list-ol" onclick="loadInBody('venta/${vta.id}?detalle')"></i>
+        			<c:if test="${vta.estado.id eq 1 or vta.estado.id eq 2}">
+        				&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('venta/${vta.id}?editar')"></i>
+        				&nbsp;&nbsp;<i class="fa fa-check" onclick="loadInBody('venta/${vta.id}?cumplir')"></i>
+        				&nbsp;&nbsp;<i class="fa fa-times" onclick="confirmarAccion('venta/${vta.id}?anular')"></i>
         			</c:if>
-        			<c:if test="${ped.estado.id gt 1}">
-        				&nbsp;&nbsp;<a href="pedido/${ped.id}?descargar"><i class="fa fa-arrow-circle-down" ></i></a>
+        			<c:if test="${vta.estado.id gt 1}">
+        				&nbsp;&nbsp;<a href="venta/${vta.id}?descargar"><i class="fa fa-arrow-circle-down" ></i></a>
         			</c:if>
 				</td>
         	</tr>

@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
+<!--PRE-ALTA NO QUITAR. ESTA ETIQUETA PERMITE SABER QUE EL CONTENIDO SE CARGA EN UN DIV INTERNO-->
 <script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -61,7 +61,7 @@
 </script>
 
 	<c:url var="urlAlta" value="/venta/alta" />
-	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm">
+	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm" autocomplete="off">
 	<form:hidden path="fecha"/>
 	<form:hidden path="usuario.id"/>
 	<form:hidden path="importe"/>
@@ -137,7 +137,6 @@
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 								<form:hidden path="items[${status.index}].importeVenta"/>
-								<form:hidden path="items[${status.index}].costoVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
 			        		</td>
 			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>

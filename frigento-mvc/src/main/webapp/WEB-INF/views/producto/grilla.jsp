@@ -30,6 +30,7 @@
 			
 </script>
 
+<div style="width: 80%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="producto.grilla.title" />
 </h3>
@@ -85,6 +86,7 @@
         </c:forEach>
         </tbody>
 </table>
+</div>
 
 <div id="divVentanaGrilla">
 </div>

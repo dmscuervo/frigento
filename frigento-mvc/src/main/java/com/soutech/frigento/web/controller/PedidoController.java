@@ -123,7 +123,7 @@ public class PedidoController extends GenericController {
 			return "pedido/alta";
 		}
     	if(ok){
-    		mensaje = getMessage("pedido.confirmar.ok");
+    		mensaje = getMessage("pedido.alta.ok");
     	}else{
     		mensaje = getMessage("pedido.sin.items");
     		httpServletRequest.setAttribute("msgError", mensaje);

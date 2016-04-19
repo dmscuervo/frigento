@@ -18,7 +18,6 @@ public class ItemVentaDTO implements Serializable {
 	private Producto producto;
 	
 	private BigDecimal importeVenta;
-	private BigDecimal costoVenta;
 	private Integer relProductoCategoriaId;
 	
 	public BigDecimal getImporteVenta() {
@@ -35,14 +34,6 @@ public class ItemVentaDTO implements Serializable {
 
 	public void setRelProductoCategoriaId(Integer relProductoCategoriaId) {
 		this.relProductoCategoriaId = relProductoCategoriaId;
-	}
-
-	public BigDecimal getCostoVenta() {
-		return costoVenta;
-	}
-
-	public void setCostoVenta(BigDecimal costoVenta) {
-		this.costoVenta = costoVenta;
 	}
 
 	public Float getCantidad() {

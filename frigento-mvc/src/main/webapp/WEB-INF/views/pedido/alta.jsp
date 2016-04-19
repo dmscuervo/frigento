@@ -72,7 +72,7 @@
 		${msgError}
 	</p>
 	<c:url var="urlAlta" value="/pedido/alta" />
-	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm">
+	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm" autocomplete="off">
 	<form:hidden path="costo"/>
 	<form:hidden path="version"/>
 	<div class='row'>

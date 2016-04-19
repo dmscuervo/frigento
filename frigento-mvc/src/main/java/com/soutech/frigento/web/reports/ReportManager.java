@@ -84,24 +84,24 @@ public class ReportManager{
 		return bytes;
 	}
 	
-	public ByteArrayOutputStream generarRemitoVenta(Venta pedido) throws ReporteException{
+	public ByteArrayOutputStream generarRemitoVenta(Venta venta) throws ReporteException{
 		Map<String, Object> parameters = new HashMap<String, Object>();
     	Calendar cal = Calendar.getInstance();
-    	cal.setTime(pedido.getFecha());
+    	cal.setTime(venta.getFecha());
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
     	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
-    	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
-    	parameters.put("destinatario",Parametro.NOMBRE_PROVEEDOR);
+    	parameters.put("nroPedido", Utils.generarNroRemito(venta));
+    	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
     	parameters.put("domicilio","");
     	
     	List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
-    	for (ItemVentaDTO item : pedido.getItems()) {
+    	for (ItemVentaDTO item : venta.getItems()) {
 			RemitoDTO remito = new RemitoDTO();
 			remito.setCantidad(item.getCantidad());
 			remito.setProducto(item.getProducto().getCodigo().concat("-").concat(item.getProducto().getDescripcion()));
-			remito.setPu(item.getCostoVenta());
-			remito.setImporte(item.getImporteVenta());
+			remito.setPu(item.getImporteVenta());
+			remito.setImporte(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad()).setScale(2, RoundingMode.HALF_UP)));
 			itemsRemito.add(remito);
 		}
     	
@@ -111,9 +111,9 @@ public class ReportManager{
     		itemsRemito.add(remitos);
     	}
     	String archivoReporte = "remitoConfirmado";
-    	if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+    	if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
     		archivoReporte = "remitoEntregado";
-    	}else if(pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
+    	}else if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
     		archivoReporte = "remitoAnulado";
     	}
     	

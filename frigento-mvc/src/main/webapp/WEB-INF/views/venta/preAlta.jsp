@@ -34,9 +34,18 @@
             	$('#wrapper').unblock();
     			bodyBlock = false;
     			//Cargo contenido
-    			$('#divButton').slideUp();
-            	$('#contenidoAlta').html(result);
-    			$('#divPreAlta').prop('disabled', true);
+    			//La pantalla de preAlta comienza con el tag definido a continuación. 
+    			//Caso contrario es porque finalizo el alta y cargo una nueva pantalla.
+    			if(result.trim().startsWith('<!--PRE-ALTA')){
+	    			$('#divButton').slideUp();
+	            	$('#contenidoAlta').html(result);
+	    			$('#divPreAlta').prop('disabled', true);
+    			}else{
+    				//Finaliza el proceso
+    				$('#page-wrapper').html(result);
+        			//Levanto Modal
+        			$('#idModalMensaje').modal('show');
+    			}
             }
         });
 	}

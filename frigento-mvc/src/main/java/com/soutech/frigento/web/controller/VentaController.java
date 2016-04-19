@@ -109,9 +109,7 @@ public class VentaController extends GenericController {
 		for (RelProductoCategoria rpc : relProdCatList) {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
-			//item.setCantidad((float) 0);
 			item.setProducto(producto);
-			item.setCostoVenta(rpc.getProducto().getCostoVenta());
 			item.setRelProductoCategoriaId(rpc.getId());
 			item.setImporteVenta(rpc.getProducto().getImporteVenta());
 			venta.getItems().add(item);
@@ -145,7 +143,7 @@ public class VentaController extends GenericController {
 			return "venta/alta";
 		}
 		if (ok) {
-			mensaje = getMessage("venta.confirmar.ok");
+			mensaje = getMessage("venta.alta.ok");
 		} else {
 			mensaje = getMessage("venta.sin.items");
 			httpServletRequest.setAttribute("msgError", mensaje);

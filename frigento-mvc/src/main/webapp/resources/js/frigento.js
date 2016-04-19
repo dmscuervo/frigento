@@ -1,4 +1,13 @@
 /**
+ * Soluciona el problema que existe en IE8 con la funcion trim()
+*/ 
+if(typeof String.prototype.trim !== 'function') {
+	String.prototype.trim = function() {
+		return this.replace(/^\s+|\s+$/g, ''); 
+	};
+}
+
+/**
 * Funcion para agregar una pantalla que bloquee el control
 */
 function blockControl(control){
