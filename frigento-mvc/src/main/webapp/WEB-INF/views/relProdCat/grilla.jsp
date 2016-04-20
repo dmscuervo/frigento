@@ -33,6 +33,9 @@
 	    	$('#idSelEstado option[value="NV"]').prop('selected', false);
 	    	$('#idSelEstado option[value=""]').prop('selected', true);	
 	    }
+	    
+	    //Defino que registro se pueden editar
+	    
 	});
 	
 	$('#idGrillaRPCa tbody').on( 'click', 'tr', function () {
@@ -118,17 +121,17 @@
     <tbody id="idBodyContenido">
     	<c:forEach var="prodCat" items="${productosCategoria}" varStatus="status">
 		<tr>
-			<td style="white-space: nowrap;">${prodCat.producto.codigo} - ${prodCat.producto.descripcion}</td>
+			<td style="white-space: nowrap;" id="idCodigo-${status.index}" >${prodCat.producto.codigo} - ${prodCat.producto.descripcion}</td>
 		    <td style="white-space: nowrap;">${prodCat.incremento}</td>
 		    <td style="white-space: nowrap;">${prodCat.precioCalculado}</td>
 		    <td style="white-space: nowrap;"><fmt:formatDate value="${prodCat.fechaDesde}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
-		    <td style="white-space: nowrap;">
+		    <td style="white-space: nowrap;" id="idFechaHasta-${status.index}">
 		    	<c:choose>
 		    		<c:when test="${not empty prodCat.fechaHasta}"><fmt:formatDate value="${prodCat.fechaHasta}" pattern="dd/MM/yyyy HH:mm:ss"/></c:when>
 		    		<c:otherwise><fmt:message key="estado.rel.vigente" /></c:otherwise>
 		    	</c:choose>
     		</td>
-		    <td style="white-space: nowrap;">
+		    <td style="white-space: nowrap;" id="idAccion-${status.index}">
 		    	<c:if test="${empty prodCat.id}">
 		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
 		    	</c:if>

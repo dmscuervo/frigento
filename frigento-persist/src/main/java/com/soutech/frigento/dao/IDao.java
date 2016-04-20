@@ -16,6 +16,8 @@ public interface IDao<T, I> {
 	void saveAll(Collection<T> listEntity);
 
 	T findById(I idEntity);
+	
+	T load(I idEntity);
 
 	List<T> findAll();
 
@@ -24,4 +26,6 @@ public interface IDao<T, I> {
 	List<T> findAll(String sortFieldName, String sortOrder);
 	
 	void desconectarSession(T entity);
+	
+	T merge(T entity);
 }

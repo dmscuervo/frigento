@@ -80,6 +80,13 @@ public abstract class AbstractSpringDao<T, I extends Serializable> {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
+	public T load(I id) {
+		if(id == null)	return null;
+		return (T) getSession().load(type, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public List<T> findQuery(String query) {
 		return getSession().createQuery(query).list();
 	}
@@ -115,6 +122,5 @@ public abstract class AbstractSpringDao<T, I extends Serializable> {
 			getSession().evict(entity);
 		}
 	}
-
 
 }

@@ -12,4 +12,5 @@ public interface ProductoDao extends IDao<Producto, Integer> {
 	List<Producto> findAll(String estado, String sortFieldName, String sortOrder);
 
 	void reactivar(Producto producto);
+
 }

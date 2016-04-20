@@ -43,13 +43,13 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
     RelVentaProductoDao relVentaProductoDao;
 	
 	@Override
-	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, String estado) {
-		return relProductoCategoriaDao.findAllByCategoria(null, idCat, estado);
+	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, String estado, String[] sortFieldName, String[] sortOrder) {
+		return relProductoCategoriaDao.findAllByCategoria(idCat, estado, sortFieldName, sortOrder);
 	}
 	
 	@Override
 	public List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado) {
-		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat, estado);
+		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat);
 		for (RelProductoCategoria rpc : relProdCatList) {
 			ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(rpc.getProducto().getId(), fecha);
 			BigDecimal factor = rpc.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
@@ -71,7 +71,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
-			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(null, categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
+			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE, null, null);
 			for (RelProductoCategoria relProdCatActual : relacionesActual) {
 				Short idCat = relProdCatActual.getCategoria().getId();
 				Integer idProd = relProdCatActual.getProducto().getId();

@@ -71,7 +71,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 			throw new EntityExistException("usuario", new Object[]{usuariosStr.toString()});
 		}
 		
-		List<RelProductoCategoria> relaciones = relProductoCategoriaDao.findAllByCategoria(null, categoria.getId(), Constantes.ESTADO_REL_VIGENTE);
+		List<RelProductoCategoria> relaciones = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE, null, null);
 		if(relaciones != null && !relaciones.isEmpty()){
 			for (RelProductoCategoria relProductoCategoria : relaciones) {
 				relProductoCategoriaDao.delete(relProductoCategoria);

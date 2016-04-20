@@ -67,6 +67,7 @@ public class UsuarioDaoImpl extends AbstractSpringDao<Usuario, Integer> implemen
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> findAllConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder) {
 		StringBuilder hql = new StringBuilder("from ");

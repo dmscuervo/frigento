@@ -18,7 +18,7 @@
 		<fmt:message key="producto.editar.title" />
 	</h3>
 	<p class="form-validate">
-		${stockAlterado}
+		${msgError}
 	</p>
 	<c:url var="urlEditar" value="/producto/editar" />
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">

@@ -16,4 +16,6 @@ public interface ProductoCostoDao extends IDao<ProductoCosto, Integer> {
 
 	List<ProductoCosto> findAll(String estadoRel, Date fecha, String sortFieldName, String sortOrder);
 
+	List<ProductoCosto> findAllFechaDesdeEntre(Integer idProd, Date fechaIni, Date fechaFin, String sortFieldName, String sortOrder);
+
 }

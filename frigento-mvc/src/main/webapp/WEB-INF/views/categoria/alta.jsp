@@ -1,6 +1,21 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		//Se evita el submit del form al apretar la tecla ENTER
+		$('#idForm').on('keyup keypress', function(e) {
+			  var keyCode = e.keyCode || e.which;
+			  if (keyCode === 13) { 
+			    e.preventDefault();
+			    return false;
+			  }
+			});
+	})
+</script>
+
+
 <div style="width: 50%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="categoria.alta.title" />

@@ -41,6 +41,7 @@ import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.validator.ErrorJSONHandler;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
@@ -113,6 +114,18 @@ public class RelProductoCategoriaController extends GenericController {
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+        Date fechaDesdeMinPosible = null;
+        for (RelProductoCategoria rpc : lista) {
+			if(rpc.getProducto().getCodigo().equals(relProdCatForm.getProducto().getCodigo())){
+				if(fechaDesdeMinPosible == null || rpc.getFechaHasta().before(fechaDesdeMinPosible)){
+					fechaDesdeMinPosible = rpc.getFechaHasta();
+				}
+			}
+		}
+        if(fechaDesdeMinPosible != null && relProdCatForm.getFechaDesde().before(fechaDesdeMinPosible)){
+        	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
+			return "relProdCat/grilla";
+        }
         lista.add(relProdCatForm);
         codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
         return "relProdCat/grilla";
@@ -192,7 +205,7 @@ public class RelProductoCategoriaController extends GenericController {
     	if(!estado.equals("")){
     		estadoBusqueda = estado;
     	}
-        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda);
+        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda, new String[]{"producto.id", "fechaDesde"}, new String[]{"asc", "asc"});
 		uiModel.addAttribute("productosCategoria", relProdCats);
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         Map<String, String> codDescripcionMap = new TreeMap<String, String>();
@@ -200,9 +213,11 @@ public class RelProductoCategoriaController extends GenericController {
         for (RelProductoCategoria relProdCat : relProdCats) {
         	productosYaRelacionados.add(relProdCat.getProducto().getId());
 			//Calculo precio
-        	BigDecimal costoActual = relProdCat.getProducto().getCostoActual();
+        	//BigDecimal costoActual = relProdCat.getProducto().getCostoActual();
+        	ProductoCosto prodCosto = productoCostoService.obtenerProductoCosto(relProdCat.getProducto().getId(), relProdCat.getFechaDesde());
+        	BigDecimal costoEnLaFecha = prodCosto.getCosto();
         	BigDecimal factor = relProdCat.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
-        	BigDecimal precioCalc = costoActual.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+        	BigDecimal precioCalc = costoEnLaFecha.multiply(factor).setScale(2, RoundingMode.HALF_UP);
         	relProdCat.setPrecioCalculado(precioCalc);
         }
         for (Producto producto : productos) {

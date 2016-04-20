@@ -1,6 +1,7 @@
 package com.soutech.frigento.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.util.Utils;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {	
@@ -63,13 +65,37 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	@Transactional
-	public void actualizarProducto(Producto producto) throws StockAlteradoException {
+	public void actualizarProducto(Producto producto) throws StockAlteradoException, FechaDesdeException {
+		//Chequeo si cambio la fecha de alta del producto. En dicho caso, veo si es aceptable el cambio de fecha
+		//Para eso controlo que no se superponga con un rango de fechas existente en productoCosto
+		List<ProductoCosto> prodCostoList = new ArrayList<ProductoCosto>();
+		Producto productoActual = productoDao.load(producto.getId());
+		String condicion = "";
+		if(productoActual.getFechaAlta().before(producto.getFechaAlta())){
+			Date fechaIni = productoActual.getFechaAlta();
+			Date fechaFin = producto.getFechaAlta();
+			prodCostoList = productoCostoDao.findAllFechaDesdeEntre(producto.getId(), fechaIni, fechaFin, "fechaDesde", "asc");
+			condicion = "mayor";
+			
+		}else if(productoActual.getFechaAlta().after(producto.getFechaAlta())){
+			Date fechaIni = producto.getFechaAlta();
+			Date fechaFin = productoActual.getFechaAlta();
+			prodCostoList = productoCostoDao.findAllFechaDesdeEntre(producto.getId(), fechaIni, fechaFin, "fechaDesde", "desc");
+			condicion = "menor";
+		}
+		
+		if(!prodCostoList.isEmpty()){
+			throw new FechaDesdeException("producto.edit.fecha.error", new Object[]{condicion, Utils.formatDate(prodCostoList.get(0).getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
+		}
 		//Primero actualizo productoCosto
-		ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(producto.getId(), producto.getFechaAlta());
+		ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(producto.getId(), productoActual.getFechaAlta());
 		prodCosto.setCosto(producto.getCostoActual());
 		prodCosto.setFechaDesde(producto.getFechaAlta());
 		productoCostoDao.update(prodCosto);
-		
+		//Esto se hace para asociar al objecto producto a la sessión, ya que sino nos daria el siguiente error:
+		//A different object with the same identifier value was already associated with the session
+		//Debido a que tenemos otro objecto (productoActual) con el mismo id obtenido durante la session
+		producto = productoDao.merge(producto);
 		controlStockProducto.actualizarProductoStock(producto);
 	}
 

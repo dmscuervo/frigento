@@ -102,4 +102,25 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ProductoCosto> findAllFechaDesdeEntre(Integer idProd, Date fechaIni, Date fechaFin, String sortFieldName, String sortOrder) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc ");
+		hql.append("where pc.producto.id = :idProd ");
+		hql.append("and pc.fechaDesde >= :fecha1 and pc.fechaDesde < :fecha2 ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		query.setParameter("fecha1", fechaIni);
+		query.setParameter("fecha2", fechaFin);
+		if(sortFieldName != null){
+			hql.append("order by pc.");
+			hql.append(sortFieldName);
+			hql.append(" ");
+			hql.append(sortOrder);
+		}
+		return query.list();
+	}
+
 }

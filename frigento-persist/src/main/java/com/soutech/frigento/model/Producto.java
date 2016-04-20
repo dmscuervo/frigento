@@ -79,7 +79,8 @@ public class Producto implements Serializable {
     @Column(name = "FECHA_BAJA")
     private Date fechaBaja;
     
-    @Transient
+    @NotNull
+    @Column(name = "FECHA_ALTA")
     private Date fechaAlta;
     
     @Transient

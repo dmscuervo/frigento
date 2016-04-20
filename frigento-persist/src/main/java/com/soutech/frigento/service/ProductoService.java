@@ -18,7 +18,7 @@ public interface ProductoService {
 
 	List<Producto> obtenerProductos(String estado, String sortFieldName, String sortOrder);
 
-	void actualizarProducto(Producto producto) throws StockAlteradoException;
+	void actualizarProducto(Producto producto) throws StockAlteradoException, FechaDesdeException;
 
 	void eliminarProducto(Integer productoId);
 

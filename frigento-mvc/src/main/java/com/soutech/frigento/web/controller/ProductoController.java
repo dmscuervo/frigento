@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.soutech.frigento.exception.EntityExistException;
+import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.service.ProductoCostoService;
@@ -149,7 +150,11 @@ public class ProductoController extends GenericController {
 			logger.info("El producto a actualizar habia alterado su stock en pararelo. Se reintenta la edicion.");
 			e.getProductoRecargado().setStockPrevio(e.getProductoRecargado().getStock());
 	    	uiModel.addAttribute("productoForm", e.getProductoRecargado());
-	    	httpServletRequest.setAttribute("stockAlterado", getMessage("producto.editar.error.stock"));
+	    	httpServletRequest.setAttribute("msgError", getMessage("producto.editar.error.stock"));
+	        return "producto/editar";
+		} catch (FechaDesdeException e) {
+			logger.info("Se intento cambiar la fecha de alta pero la misma se superponia con otro rango de fechas en ProductoCosto.");
+			httpServletRequest.setAttribute("msgError", getMessage(e.getKeyMessage(), e.getArgs()));
 	        return "producto/editar";
 		}
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.editar.ok", productoForm.getDescripcion())));
