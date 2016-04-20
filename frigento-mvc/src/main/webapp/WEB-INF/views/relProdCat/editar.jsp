@@ -7,8 +7,43 @@
 	$(document).ready(function(){
 		$('#datetimepicker1').datetimepicker({
 			ignoreReadonly: true,
+			maxDate: moment().add(-1, 'minutes'),
 			locale: 'es'
         });
+		//20/04/2016 16:45
+		//var day = moment($("#datetimepicker1").find("input").val(), "DD/MM/YYYY HH:mm");
+		//console.log(day);
+		/*
+		var fechaHora = $("#datetimepicker1").find("input").val().split(" ");
+		console.log(fechaHora[0]);
+		var day = moment(fechaHora[0], "DD/MM/YYYY");
+		console.log(day);
+		*/
+		//day.toDate();
+		
+		$('#datetimepicker2').datetimepicker({
+			ignoreReadonly: true,
+			minDate: moment($("#datetimepicker1").find("input").val(), "DD/MM/YYYY HH:mm"),
+			maxDate: moment(),
+			locale: 'es'
+        });
+		
+		$("#datetimepicker2").find("input").val('');
+		//Establezco el minimo de fechaHasta con el valor de fechaDesde
+		//$('#datetimepicker2').data("DateTimePicker").minDate($('#datetimepicker1').data('date'));
+		//$('#datetimepicker2').datetimepicker('method', 'setStartDate', $('#datetimepicker1').data('date'));
+		
+		/* $("#datetimepicker2").on("dp.show", function (e) {
+			console.log('asdasdasd');
+        }); */
+		
+		$("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+		$("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+		
 		//Aplico restricciones
 		$('#idIncremento').keyup(function(){
 			var value=$(this).val();
@@ -165,6 +200,30 @@
 			        <div class='col-sm-4'>
 			        	<div class="form-group" >
 							<label id="errorFechaDesde" class="form-validate" style="white-space: nowrap;"></label>
+						</div>
+			        </div>
+			    </div>
+			    <div class='row'>
+			        <div class='col-sm-4'>    
+						<div class="form-group" >
+							<label class="col-sm-2 control-label" for="idFechaHasta" style="white-space: nowrap;">
+								<fmt:message key="relProdCat.fechaHasta" />
+							</label>
+						</div>
+			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group">
+                			<div class='input-group date' id='datetimepicker2'>
+                				<form:input path="fechaHasta" cssClass="form-control" id="idFechaHasta" readonly="true"/>
+                   				<span class="input-group-addon">
+                        			<span class="glyphicon glyphicon-calendar"></span>
+                    			</span>
+                			</div>
+						</div>
+			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group" >
+							<label id="errorFechaHasta" class="form-validate" style="white-space: nowrap;"></label>
 						</div>
 			        </div>
 			    </div>

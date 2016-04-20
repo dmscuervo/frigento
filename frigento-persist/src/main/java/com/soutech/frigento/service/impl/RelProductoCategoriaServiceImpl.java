@@ -119,6 +119,10 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 					relProdCat.setCategoria(categoriaDao.findById(relProdCat.getCategoria().getId()));
 					relProdCat.setProducto(producto);
 					relProductoCategoriaDao.save(relProdCat);
+				}else{
+					if(relProdCat.getEsEditable() && relProdCat.getFechaHasta() == null){
+						relProductoCategoriaDao.update(relProdCat);
+					}
 				}
 			}
 			

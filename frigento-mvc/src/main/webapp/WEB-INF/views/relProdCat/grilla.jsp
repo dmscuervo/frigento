@@ -6,9 +6,7 @@
 		if(!$.fn.DataTable.isDataTable('#idGrillaRPCa')){
 		    $('#idGrillaRPCa').DataTable({
 		    	"paging": false,
-		        "columnDefs": [
-		                       { "orderable": false, "targets": -1 }
-		                     ]
+		    	ordering: false
 		    }); 
 		}
 		
@@ -136,7 +134,10 @@
 		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
 		    	</c:if>
 		    	<c:if test="${empty prodCat.fechaHasta}">
-		    	<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
+		    		<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
+		    	</c:if>
+		    	<c:if test="${prodCat.esEditable}">
+		    		<i class="fa fa-check" onclick="eliminar('relProdCat/${status.index}?ponerVigente')" ></i>
 		    	</c:if>
 		    </td>
 		</tr>

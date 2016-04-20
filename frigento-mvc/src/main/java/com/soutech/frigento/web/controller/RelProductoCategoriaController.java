@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.list.TreeList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,11 +116,21 @@ public class RelProductoCategoriaController extends GenericController {
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+        //Control de fecha y de relaciones actuales
         Date fechaDesdeMinPosible = null;
+        RelProductoCategoria relActual = null;
         for (RelProductoCategoria rpc : lista) {
 			if(rpc.getProducto().getCodigo().equals(relProdCatForm.getProducto().getCodigo())){
-				if(fechaDesdeMinPosible == null || rpc.getFechaHasta().before(fechaDesdeMinPosible)){
-					fechaDesdeMinPosible = rpc.getFechaHasta();
+				//Control de fecha
+				if(rpc.getFechaHasta() == null){//Registro actual vigente. La nueva fecha no puede ser menor que la fechaDesde del actual
+					if(fechaDesdeMinPosible == null || rpc.getFechaDesde().equals(fechaDesdeMinPosible) || rpc.getFechaDesde().after(fechaDesdeMinPosible)){
+						fechaDesdeMinPosible = rpc.getFechaDesde();
+						relActual = rpc;
+					}
+				}else{
+					if(fechaDesdeMinPosible == null || rpc.getFechaHasta().after(fechaDesdeMinPosible)){
+						fechaDesdeMinPosible = rpc.getFechaHasta();
+					}
 				}
 			}
 		}
@@ -126,7 +138,13 @@ public class RelProductoCategoriaController extends GenericController {
         	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
 			return "relProdCat/grilla";
         }
+        //Habia una relacion vigente. La cierro
+        if(relActual != null){
+        	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
+        }
+        //Fin Control de fecha
         lista.add(relProdCatForm);
+        controlEditable(lista);
         codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
         return "relProdCat/grilla";
     }
@@ -165,6 +183,33 @@ public class RelProductoCategoriaController extends GenericController {
 			}
         	uiModel.addAttribute("codProductosMap", codDescripcionMap);
         }
+        //Control de fecha y de relaciones actuales
+        Date fechaDesdeMinPosible = null;
+        RelProductoCategoria relActual = null;
+        for (RelProductoCategoria rpc : lista) {
+			if(rpc.getProducto().getCodigo().equals(relProdCatForm.getProducto().getCodigo())){
+				//Control de fecha
+				if(rpc.getFechaHasta() == null){//Registro actual vigente. La nueva fecha no puede ser menor que la fechaDesde del actual
+					if(fechaDesdeMinPosible == null || rpc.getFechaDesde().equals(fechaDesdeMinPosible) || rpc.getFechaDesde().after(fechaDesdeMinPosible)){
+						fechaDesdeMinPosible = rpc.getFechaDesde();
+						relActual = rpc;
+					}
+				}else{
+					if(fechaDesdeMinPosible == null || rpc.getFechaHasta().after(fechaDesdeMinPosible)){
+						fechaDesdeMinPosible = rpc.getFechaHasta();
+					}
+				}
+			}
+		}
+        if(fechaDesdeMinPosible != null && relProdCatForm.getFechaDesde().before(fechaDesdeMinPosible)){
+        	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
+			return "relProdCat/grilla";
+        }
+        //Habia una relacion vigente. La cierro
+        if(relActual != null){
+        	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
+        }
+        //Fin Control de fecha
         lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
         return "relProdCat/grilla";
     }
@@ -178,6 +223,7 @@ public class RelProductoCategoriaController extends GenericController {
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
     	lista.remove(index.intValue());
+    	controlEditable(lista);
         return "relProdCat/grilla";
     }
     
@@ -198,20 +244,23 @@ public class RelProductoCategoriaController extends GenericController {
     	return "relProdCat/grilla";
     }
  
-    @RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(params = "listar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String listar(@PathVariable("id") Short idCat, @RequestParam(value = "estado", required = true) String estado, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	Categoria categoria = categoriaService.obtenerCategoria(idCat);
     	String estadoBusqueda = null;
     	if(!estado.equals("")){
     		estadoBusqueda = estado;
     	}
-        List<RelProductoCategoria> relProdCats = relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda, new String[]{"producto.id", "fechaDesde"}, new String[]{"asc", "asc"});
+        List<RelProductoCategoria> relProdCats = new TreeList(relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda, new String[]{"producto.id", "fechaDesde"}, new String[]{"asc", "asc"}));
 		uiModel.addAttribute("productosCategoria", relProdCats);
         List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         Map<String, String> codDescripcionMap = new TreeMap<String, String>();
         List<Integer> productosYaRelacionados = new ArrayList<Integer>();
-        for (RelProductoCategoria relProdCat : relProdCats) {
-        	productosYaRelacionados.add(relProdCat.getProducto().getId());
+        Integer prodIdTemp = null;
+        for (int i = 0; i < relProdCats.size(); i++) {
+        	RelProductoCategoria relProdCat = relProdCats.get(i);
+			productosYaRelacionados.add(relProdCat.getProducto().getId());
 			//Calculo precio
         	//BigDecimal costoActual = relProdCat.getProducto().getCostoActual();
         	ProductoCosto prodCosto = productoCostoService.obtenerProductoCosto(relProdCat.getProducto().getId(), relProdCat.getFechaDesde());
@@ -219,11 +268,21 @@ public class RelProductoCategoriaController extends GenericController {
         	BigDecimal factor = relProdCat.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
         	BigDecimal precioCalc = costoEnLaFecha.multiply(factor).setScale(2, RoundingMode.HALF_UP);
         	relProdCat.setPrecioCalculado(precioCalc);
+        	
+        	if(!relProdCat.getProducto().getId().equals(prodIdTemp)){
+        		if(i > 0){
+        			RelProductoCategoria rpcAnterior = relProdCats.get(i-1);
+        			if(rpcAnterior.getFechaHasta() != null){
+        				relProdCat.setEsEditable(Boolean.TRUE);
+        			}
+        		}
+        		prodIdTemp = relProdCat.getProducto().getId();
+        	}
         }
         for (Producto producto : productos) {
-        	if(!productosYaRelacionados.contains(producto.getId())){
+        	//if(!productosYaRelacionados.contains(producto.getId())){
         		codDescripcionMap.put(producto.getCodigo(), producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
-        	}
+        	//}
 		}
         Map<String, BigDecimal> codCostoMap = new HashMap<String, BigDecimal>();
         for (Producto producto : productos) {
@@ -247,4 +306,31 @@ public class RelProductoCategoriaController extends GenericController {
         return "relProdCat/grilla";
     }
     
+    /**
+     * Establece que un item sera editable.
+     * Si el ultimo item de un producto tiene fechaHasta no nula, entonces es editable
+     * Se requiere que relProdCats este ordenada por producto y fechaDesde
+     * @param relProdCats
+     */
+    private void controlEditable(List<RelProductoCategoria> relProdCats){
+    	Collections.sort(relProdCats); 
+    	String prodCodigoTemp = null;
+        for (int i = 0; i < relProdCats.size(); i++) {
+        	RelProductoCategoria relProdCat = relProdCats.get(i);
+        	relProdCat.setEsEditable(Boolean.FALSE);
+			if(!relProdCat.getProducto().getCodigo().equals(prodCodigoTemp)){
+        		if(i > 0){
+        			RelProductoCategoria rpcAnterior = relProdCats.get(i-1);
+        			if(rpcAnterior.getFechaHasta() != null){
+        				rpcAnterior.setEsEditable(Boolean.TRUE);
+        			}
+        		}
+        		prodCodigoTemp = relProdCat.getProducto().getCodigo();
+        	}
+        }
+        RelProductoCategoria rpcAnterior = relProdCats.get(relProdCats.size()-1);
+		if(rpcAnterior.getFechaHasta() != null){
+			rpcAnterior.setEsEditable(Boolean.TRUE);
+		}
+    }
 }

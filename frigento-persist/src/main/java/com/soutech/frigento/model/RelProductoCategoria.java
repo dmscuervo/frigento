@@ -26,7 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "REL_PRODUCTO_CATEGORIA")
 
-public class RelProductoCategoria implements Serializable {
+public class RelProductoCategoria implements Serializable, Comparable<RelProductoCategoria> {
 
 	private static final long serialVersionUID = 1119849523734354664L;
 
@@ -66,6 +66,9 @@ public class RelProductoCategoria implements Serializable {
     
     @Transient
     private Integer indiceLista;
+    
+    @Transient
+    private Boolean esEditable = Boolean.FALSE;
     
 	public BigDecimal getIncremento() {
         return this.incremento;
@@ -134,5 +137,29 @@ public class RelProductoCategoria implements Serializable {
 	public void setIndiceLista(Integer indiceLista) {
 		this.indiceLista = indiceLista;
 	}
+
+	public Boolean getEsEditable() {
+		return esEditable;
+	}
+
+	public void setEsEditable(Boolean esEditable) {
+		this.esEditable = esEditable;
+	}
 	
+		@Override
+	public int compareTo(RelProductoCategoria o) {
+		if(o == null 
+				|| o.getProducto() == null || this.getProducto() == null
+				|| o.getProducto().getCodigo() == null || this.getProducto().getCodigo() == null){
+			return -1;
+		}
+		int compareTo = - o.getProducto().getCodigo().compareTo(this.getProducto().getCodigo());
+		if(compareTo == 0){
+			return - o.getFechaDesde().compareTo(this.getFechaDesde());
+		}else{
+			return compareTo;
+		}
+	}
+
+
 }
