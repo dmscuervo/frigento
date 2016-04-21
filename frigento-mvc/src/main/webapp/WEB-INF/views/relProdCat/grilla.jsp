@@ -130,11 +130,11 @@
 		    	</c:choose>
     		</td>
 		    <td style="white-space: nowrap;" id="idAccion-${status.index}">
-		    	<c:if test="${empty prodCat.id}">
 		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
+		    		<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
+		    	<c:if test="${empty prodCat.id}">
 		    	</c:if>
 		    	<c:if test="${empty prodCat.fechaHasta}">
-		    		<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
 		    	</c:if>
 		    	<c:if test="${prodCat.esEditable}">
 		    		<i class="fa fa-check" onclick="eliminar('relProdCat/${status.index}?ponerVigente')" ></i>

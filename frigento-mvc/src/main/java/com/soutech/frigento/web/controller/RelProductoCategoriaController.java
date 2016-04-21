@@ -184,33 +184,31 @@ public class RelProductoCategoriaController extends GenericController {
         	uiModel.addAttribute("codProductosMap", codDescripcionMap);
         }
         //Control de fecha y de relaciones actuales
-        Date fechaDesdeMinPosible = null;
-        RelProductoCategoria relActual = null;
-        for (RelProductoCategoria rpc : lista) {
-			if(rpc.getProducto().getCodigo().equals(relProdCatForm.getProducto().getCodigo())){
-				//Control de fecha
-				if(rpc.getFechaHasta() == null){//Registro actual vigente. La nueva fecha no puede ser menor que la fechaDesde del actual
-					if(fechaDesdeMinPosible == null || rpc.getFechaDesde().equals(fechaDesdeMinPosible) || rpc.getFechaDesde().after(fechaDesdeMinPosible)){
-						fechaDesdeMinPosible = rpc.getFechaDesde();
-						relActual = rpc;
-					}
-				}else{
-					if(fechaDesdeMinPosible == null || rpc.getFechaHasta().after(fechaDesdeMinPosible)){
-						fechaDesdeMinPosible = rpc.getFechaHasta();
-					}
-				}
-			}
-		}
-        if(fechaDesdeMinPosible != null && relProdCatForm.getFechaDesde().before(fechaDesdeMinPosible)){
-        	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
-			return "relProdCat/grilla";
-        }
-        //Habia una relacion vigente. La cierro
-        if(relActual != null){
-        	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
-        }
+//        Date fechaDesdeMinPosible = null;
+//        RelProductoCategoria relActual = null;
+//        for (RelProductoCategoria rpc : lista) {
+//			if(rpc.getId() != null){
+//				//Es un registro de la bd
+//				rpc.setIncremento(relProdCatForm.getIncremento());
+//				rpc.setPrecioCalculado(relProdCatForm.getPrecioCalculado());
+//				rpc.setFechaDesde(relProdCatForm.getFechaDesde());
+//				rpc.setFechaHasta(relProdCatForm.getFechaHasta());
+//			}else{
+//				//Es un registro nuevo y ahora editado
+//				
+//			}
+//		}
+//        if(fechaDesdeMinPosible != null && relProdCatForm.getFechaDesde().before(fechaDesdeMinPosible)){
+//        	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
+//			return "relProdCat/grilla";
+//        }
+//        //Habia una relacion vigente. La cierro
+//        if(relActual != null){
+//        	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
+//        }
         //Fin Control de fecha
         lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
+        controlEditable(lista);
         return "relProdCat/grilla";
     }
     
@@ -272,13 +270,20 @@ public class RelProductoCategoriaController extends GenericController {
         	if(!relProdCat.getProducto().getId().equals(prodIdTemp)){
         		if(i > 0){
         			RelProductoCategoria rpcAnterior = relProdCats.get(i-1);
+        			rpcAnterior.setEsEditable(Boolean.TRUE);
         			if(rpcAnterior.getFechaHasta() != null){
-        				relProdCat.setEsEditable(Boolean.TRUE);
+        				relProdCat.setEsNoVigente(Boolean.TRUE);
         			}
         		}
         		prodIdTemp = relProdCat.getProducto().getId();
         	}
         }
+        RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
+        rpcUltimo.setEsEditable(Boolean.TRUE);
+		if(rpcUltimo.getFechaHasta() != null){
+			rpcUltimo.setEsNoVigente(Boolean.TRUE);
+		}
+        
         for (Producto producto : productos) {
         	//if(!productosYaRelacionados.contains(producto.getId())){
         		codDescripcionMap.put(producto.getCodigo(), producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
@@ -317,20 +322,23 @@ public class RelProductoCategoriaController extends GenericController {
     	String prodCodigoTemp = null;
         for (int i = 0; i < relProdCats.size(); i++) {
         	RelProductoCategoria relProdCat = relProdCats.get(i);
+        	relProdCat.setEsNoVigente(Boolean.FALSE);
         	relProdCat.setEsEditable(Boolean.FALSE);
 			if(!relProdCat.getProducto().getCodigo().equals(prodCodigoTemp)){
         		if(i > 0){
         			RelProductoCategoria rpcAnterior = relProdCats.get(i-1);
+        			rpcAnterior.setEsEditable(Boolean.TRUE);
         			if(rpcAnterior.getFechaHasta() != null){
-        				rpcAnterior.setEsEditable(Boolean.TRUE);
+        				rpcAnterior.setEsNoVigente(Boolean.TRUE);
         			}
         		}
         		prodCodigoTemp = relProdCat.getProducto().getCodigo();
         	}
         }
-        RelProductoCategoria rpcAnterior = relProdCats.get(relProdCats.size()-1);
-		if(rpcAnterior.getFechaHasta() != null){
-			rpcAnterior.setEsEditable(Boolean.TRUE);
+        RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
+        rpcUltimo.setEsEditable(Boolean.TRUE);
+		if(rpcUltimo.getFechaHasta() != null){
+			rpcUltimo.setEsNoVigente(Boolean.TRUE);
 		}
     }
 }

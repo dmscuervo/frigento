@@ -70,6 +70,9 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
     @Transient
     private Boolean esEditable = Boolean.FALSE;
     
+    @Transient
+    private Boolean esNoVigente = Boolean.FALSE;
+    
 	public BigDecimal getIncremento() {
         return this.incremento;
     }
@@ -146,7 +149,15 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
 		this.esEditable = esEditable;
 	}
 	
-		@Override
+	public Boolean getEsNoVigente() {
+		return esNoVigente;
+	}
+
+	public void setEsNoVigente(Boolean esNoVigente) {
+		this.esNoVigente = esNoVigente;
+	}
+
+	@Override
 	public int compareTo(RelProductoCategoria o) {
 		if(o == null 
 				|| o.getProducto() == null || this.getProducto() == null

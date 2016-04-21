@@ -73,22 +73,17 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
 			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE, null, null);
 			for (RelProductoCategoria relProdCatActual : relacionesActual) {
-				Short idCat = relProdCatActual.getCategoria().getId();
-				Integer idProd = relProdCatActual.getProducto().getId();
 				Boolean prodCatEncontrado = Boolean.FALSE;
 				for (RelProductoCategoria relProdCatNuevo : relaciones) {
-					Producto producto = productoDao.findByCodigo(relProdCatNuevo.getProducto().getCodigo());
-					Short idCatNuevo = relProdCatNuevo.getCategoria().getId();
-					Integer idProdNuevo = producto.getId();
-					if(idCat.equals(idCatNuevo) && idProd.equals(idProdNuevo)){
+					if(relProdCatNuevo.getId() != null && relProdCatNuevo.getId().equals(relProdCatActual.getId())){
 						prodCatEncontrado = Boolean.TRUE;
 						break;
 					}
 				}
 				if(!prodCatEncontrado){
 					//Se dio de baja. Aplico un baja logica
+					Deberia chequear si no hay ninguna venta para el rango de fechas dado de baja. Pero tambien podria ser que una nueva relProdCat con id = null cubra todo o parte del rango original que fue borrado
 					relProductoCategoriaDao.delete(relProdCatActual);
-					
 				}
 			}
 			

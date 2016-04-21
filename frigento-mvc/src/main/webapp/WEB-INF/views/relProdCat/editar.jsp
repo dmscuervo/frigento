@@ -5,6 +5,9 @@
 	
 
 	$(document).ready(function(){
+		
+		var fechaHasta = '${relProdCatForm.fechaHasta}';
+		
 		$('#datetimepicker1').datetimepicker({
 			ignoreReadonly: true,
 			maxDate: moment().add(-1, 'minutes'),
@@ -28,14 +31,9 @@
 			locale: 'es'
         });
 		
-		$("#datetimepicker2").find("input").val('');
-		//Establezco el minimo de fechaHasta con el valor de fechaDesde
-		//$('#datetimepicker2').data("DateTimePicker").minDate($('#datetimepicker1').data('date'));
-		//$('#datetimepicker2').datetimepicker('method', 'setStartDate', $('#datetimepicker1').data('date'));
-		
-		/* $("#datetimepicker2").on("dp.show", function (e) {
-			console.log('asdasdasd');
-        }); */
+		if(fechaHasta == ''){
+			$("#datetimepicker2").find("input").val('');
+		}
 		
 		$("#datetimepicker1").on("dp.change", function (e) {
             $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
@@ -120,6 +118,7 @@
 				<form:hidden path="categoria.id"/>
 				<form:hidden path="id"/>
 				<form:hidden path="indiceLista"/>
+				<form:hidden path="producto.codigo"/>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >
@@ -130,7 +129,7 @@
 			        </div>
 			        <div class='col-sm-4'>
 			        	<div class="form-group">
-			        		<form:select disabled="disabled" path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
+			        		<form:select disabled="true" path="producto.codigo" items="${codProductosMap}" cssClass="form-control" id="idCod">
 			        			<form:option value="-1" label='asdasdas'/>
 			        		</form:select>
 						</div>
