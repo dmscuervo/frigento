@@ -18,12 +18,12 @@ public class VentaDaoImpl extends AbstractSpringDao<Venta, Integer> implements V
 	public List<Venta> findAll(Short[] estado, String sortFieldName, String sortOrder) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(Venta.class.getCanonicalName());
-		hql.append(" p ");
+		hql.append(" v ");
 		if(estado != null){
-			hql.append("where p.estado.id in (:estadoId) ");
+			hql.append("where v.estado.id in (:estadoId) ");
 		}
 		if(sortFieldName != null){
-			hql.append("order by p.");
+			hql.append("order by v.");
 			hql.append(sortFieldName);
 			hql.append(" ");
 			hql.append(sortOrder);
@@ -34,4 +34,5 @@ public class VentaDaoImpl extends AbstractSpringDao<Venta, Integer> implements V
 		}
 		return query.list();
 	}
+
 }

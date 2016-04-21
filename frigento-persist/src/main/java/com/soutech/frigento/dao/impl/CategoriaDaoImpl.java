@@ -1,7 +1,5 @@
 package com.soutech.frigento.dao.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

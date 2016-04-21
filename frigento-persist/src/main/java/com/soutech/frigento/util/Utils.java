@@ -62,4 +62,43 @@ public class Utils {
 		}
 		return p.toString();
 	}
+
+	/**
+	 * Determina si fecha1 es mayor e igual que fecha2
+	 * @param fecha1
+	 * @param fecha2
+	 * @return
+	 */
+	public static Boolean esMayorIgual(Date fecha1, Date fecha2) {
+		if(fecha1.equals(fecha2) || fecha1.after(fecha2)){
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+	
+	/**
+	 * Determina si fecha1 es menor que fecha2
+	 * @param fecha1
+	 * @param fecha2
+	 * @return
+	 */
+	public static Boolean esMenor(Date fecha1, Date fecha2) {
+		if(fecha1.before(fecha2)){
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+	
+	/**
+	 * Determina si fecha1 esta dentro de 
+	 * @param fecha1
+	 * @param fecha2
+	 * @return
+	 */
+	public static Boolean estaDentroDeRelacion(Date fecha, Date fechaDesde, Date fechaHasta) {
+		if(esMayorIgual(fecha, fechaDesde) && (fechaHasta == null || esMenor(fecha, fechaHasta))){
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
 }
