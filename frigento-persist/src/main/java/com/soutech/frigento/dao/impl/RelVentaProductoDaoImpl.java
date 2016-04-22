@@ -84,5 +84,23 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		}
 		return (Date) query.uniqueResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelVentaProducto> findAllByVenta(Integer idVta, String sortFieldName, String sortOrder) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelVentaProducto.class.getCanonicalName());
+		hql.append(" rvp ");
+		hql.append("where rvp.venta.id = :idVta ");
+		if(sortFieldName != null){
+			hql.append("order by rvp.");
+			hql.append(sortFieldName);
+			hql.append(" ");
+			hql.append(sortOrder);
+		}
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idVta", idVta);
+		return query.list();
+	}
 	
 }

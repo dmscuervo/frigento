@@ -18,4 +18,6 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 
 	List<RelProductoCategoria> findAllByDupla(Short idCat, Integer idProd);
 
+	RelProductoCategoria findByDupla(Short id, Integer id2, Date fecha);
+
 }

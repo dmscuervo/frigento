@@ -26,4 +26,9 @@ public class RelVentaProductoServiceImpl implements RelVentaProductoService {
 		return relVentaProductoDao.obtenerFechaPrimerVentaNoAnulada(prodId, catId, fechaIni, fechaFin);
 	}
 
+	@Override
+	public List<RelVentaProducto> obtenerByVenta(Integer idVta, String sortFieldName, String sortOrder) {
+		return relVentaProductoDao.findAllByVenta(idVta, sortFieldName, sortOrder);
+	}
+
 }

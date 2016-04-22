@@ -74,7 +74,7 @@ public class Usuario implements Serializable {
     @Size(max = 10)
     private String depto;
     
-    @Email(regexp="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+    @Email(regexp="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}|^$")//Acepta formato de mails y string vacios (mediante |^$) ya que no es obligatorio
     @Column(name = "EMAIL")
     @Size(max = 30)
     private String email;

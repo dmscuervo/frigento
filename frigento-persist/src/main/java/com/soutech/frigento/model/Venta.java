@@ -89,7 +89,7 @@ public class Venta implements Serializable {
 	private List<ItemVentaDTO> items;
 	
 	@Transient
-	private Boolean envioMail = Boolean.TRUE;
+	private Boolean envioMail = Boolean.FALSE;
 
     
 	public Estado getEstado() {

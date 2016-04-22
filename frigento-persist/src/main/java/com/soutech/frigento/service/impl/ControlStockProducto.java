@@ -11,13 +11,19 @@ import org.springframework.stereotype.Component;
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
 import com.soutech.frigento.dao.RelPedidoProductoDao;
+import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.dto.ItemPedidoDTO;
+import com.soutech.frigento.dto.ItemVentaDTO;
+import com.soutech.frigento.exception.ProductoSinCategoriaException;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelPedidoProducto;
+import com.soutech.frigento.model.RelProductoCategoria;
+import com.soutech.frigento.model.RelVentaProducto;
+import com.soutech.frigento.model.Venta;
 
 @Component
 public class ControlStockProducto {
@@ -27,8 +33,10 @@ public class ControlStockProducto {
 	@Autowired
     ProductoCostoDao productoCostoDao;
 	@Autowired
+    RelProductoCategoriaDao relProductoCategoriaDao;
+	@Autowired
 	private RelPedidoProductoDao relPedidoProductoDao;
-
+	
 	public synchronized void actualizarProductoStock(Producto producto) throws StockAlteradoException{
 		if(producto.getStockPrevio() != null){
 			Float stock = productoDao.obtenerStock(producto.getId());
@@ -57,6 +65,13 @@ public class ControlStockProducto {
 		productoDao.reactivar(producto);
 	}
 
+	/**
+	 * Incremento el stock de un pedido. El mismo se produce cuando el pedido es pasado a cumplido, por lo cual se asume que pedidoCumplido tiene un id ya generado
+	 * Tambien aplico control de cambios sobre las relaciones del pedido, persistiendo las diferencias en base de datos.
+	 * @param pedidoCumplido
+	 * @return Una instancia de Pedido atachada a la session con el monto total del pedido recalculado
+	 * @throws ProductoSinCostoException
+	 */
 	public synchronized Pedido incrementarStockBy(Pedido pedidoCumplido) throws ProductoSinCostoException {
 		
 		List<RelPedidoProducto> relacionesActual = relPedidoProductoDao.findAllByPedido(pedidoCumplido.getId(), null, null);
@@ -80,16 +95,50 @@ public class ControlStockProducto {
 		}
 		
 		//Actualizo stock
-		;
 		for (ItemPedidoDTO item : pedidoCumplido.getItems()) {
 			Producto producto = productoDao.findById(item.getProducto().getId());
 			producto.setStock(producto.getStock() + (producto.getPesoCaja() * item.getCantidad()));
 			producto.setStockControlado(Boolean.TRUE);
 			productoDao.update(producto);
+			
 		}
 		
 		relacionesActual.get(0).getPedido().setCosto(costoTotal);
 		return relacionesActual.get(0).getPedido();
+	}
+	
+	/**
+	 * Decrementa el stock de una venta. El mismo se produce cuando la venta es pasada a confirmada.
+	 * @param pedidoCumplido
+	 * @throws ProductoSinCostoException
+	 */
+	public synchronized void decrementarStockBy(Venta ventaConfirmada) {
+		
+		//Actualizo stock
+		for (ItemVentaDTO item : ventaConfirmada.getItems()) {
+			Producto producto = productoDao.findById(item.getProducto().getId());
+			producto.setStock(producto.getStock() - item.getCantidad());
+			producto.setStockControlado(Boolean.TRUE);
+			productoDao.update(producto);
+		}
+		
+	}
+	
+	/**
+	 * Incrementa el stock de una venta anulada. El mismo se produce cuando la venta es pasada de confirmada a anulada.
+	 * @param pedidoCumplido
+	 * @throws ProductoSinCostoException
+	 */
+	public synchronized void incrementarStockBy(Venta ventaConfirmada) {
+		
+		//Actualizo stock
+		for (ItemVentaDTO item : ventaConfirmada.getItems()) {
+			Producto producto = productoDao.findById(item.getProducto().getId());
+			producto.setStock(producto.getStock() + item.getCantidad());
+			producto.setStockControlado(Boolean.TRUE);
+			productoDao.update(producto);
+		}
+		
 	}
 	
 	/**
@@ -173,5 +222,73 @@ public class ControlStockProducto {
 		return costoTotal;
 	}
 
-	
+	/**
+	 * Chequea cambios en los items de una venta. Completa la informacion de los cambios en las relaciones (relacionesNuevas, relacionesModificadas y relacionesEliminadas).
+	 * Ademas, calcula el precio total de la venta en (precioTotal)
+	 * @param ventaModificada
+	 * @param relacionesActual
+	 * @param relacionesNuevas
+	 * @param relacionesModificadas
+	 * @param relacionesEliminadas
+	 * @param costoTotal
+	 * @return
+	 * @throws ProductoSinCostoException
+	 */
+	public BigDecimal verificarCambiosVenta(Venta ventaModificada, List<RelVentaProducto> relacionesActual, List<RelVentaProducto> relacionesNuevas,
+									List<RelVentaProducto> relacionesModificadas, List<RelVentaProducto> relacionesEliminadas) throws ProductoSinCategoriaException {
+		BigDecimal precioTotal = null;
+		Boolean prodNuevo;
+		RelVentaProducto rvpActual;
+		for (ItemVentaDTO item : ventaModificada.getItems()) {
+			if(item.getCantidad() != (short)0){
+				rvpActual = null;
+				prodNuevo = Boolean.TRUE;
+				//Inicializo precioTotal (solo la primera vez)
+				precioTotal = precioTotal == null ? BigDecimal.ZERO : precioTotal;
+				//Me fijo si es un producto nuevo o existente
+				for (RelVentaProducto rvp : relacionesActual) {
+					if(rvp.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())){
+						prodNuevo = Boolean.FALSE;
+						rvpActual = rvp;
+						break;
+					}
+				}
+				RelProductoCategoria relProductoCategoria = relProductoCategoriaDao.findByDupla(ventaModificada.getUsuario().getCategoriaProducto().getId(), item.getProducto().getId(), ventaModificada.getFecha());
+				if(prodNuevo){
+					RelVentaProducto rvp = new RelVentaProducto();
+					if(relProductoCategoria == null){
+						Object[] args = new Object[]{ventaModificada.getFecha(), item.getProducto().getCodigo(), ventaModificada.getUsuario().getCategoriaProducto().getDescripcion()};
+						throw new ProductoSinCategoriaException("venta.confirmar.sin.producto.categoria", args);
+					}
+					rvp.setVenta(relacionesActual.get(0).getVenta());
+					rvp.setRelProductoCategoria(relProductoCategoria);
+					rvp.setCantidad(item.getCantidad());
+					rvp.setPrecioVenta(item.getImporteVenta());
+					relacionesNuevas.add(rvp);
+					//Voy calculando el importe total de la venta
+					precioTotal = precioTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP));
+
+				}else{
+					//Me fijo si cambio la cantidad
+					Float cantidadNueva = item.getCantidad();
+					if(!rvpActual.getCantidad().equals(cantidadNueva)){
+						rvpActual.setCantidad(item.getCantidad());
+						relacionesModificadas.add(rvpActual);
+					}
+					//Voy calculando el importe total de la venta
+					precioTotal = precioTotal.add(rvpActual.getPrecioVenta().multiply(new BigDecimal(item.getCantidad())).setScale(2, RoundingMode.HALF_UP));
+				}
+				
+			}else{
+				//Se saco un producto de la venta. Elimino la relacion
+				for (RelVentaProducto rpc : relacionesActual) {
+					if(rpc.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())){
+						relacionesEliminadas.add(rpc);
+						break;
+					}
+				}
+			}
+		}
+		return precioTotal;
+	}
 }

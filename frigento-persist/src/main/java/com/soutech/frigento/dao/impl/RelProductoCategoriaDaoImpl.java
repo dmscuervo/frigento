@@ -127,5 +127,20 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		query.setParameter("prodId", idProd);
 		return query.list();
 	}
+
+	@Override
+	public RelProductoCategoria findByDupla(Short idCat, Integer idProd, Date fecha) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.categoria.id = :catId ");
+		hql.append("and r.producto.id = :prodId ");
+		hql.append(" and r.fechaDesde <= :fecha");
+		hql.append(" and (r.fechaHasta is null or r.fechaHasta > :fecha)");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("catId", idCat);
+		query.setParameter("prodId", idProd);
+		query.setParameter("fecha", fecha);
+		return (RelProductoCategoria) query.uniqueResult();
+	}
 	
 }

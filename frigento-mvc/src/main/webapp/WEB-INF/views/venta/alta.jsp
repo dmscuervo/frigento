@@ -12,7 +12,9 @@
 		$('#msgError').text(tieneError);
 		
 		if($('#idEstado').val() == 2 && tieneError == ''){
-			$('#idEnvioMail').prop( "checked", false );
+			if('${not empty ventaForm.usuario.email}'){
+				$('#idEnvioMail').prop( "checked", false );
+			}
 		}
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
@@ -39,19 +41,15 @@
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
 		});
-		
-		/* $('#idCod').on('change', function(){
-			calcularPrecio();
-		});
-		
-		$('#idIncremento').on('keyup', function(){
-			calcularPrecio();
-		}); */
+		//Si el usuario no dispone de email no permito el envio de correo
 		
 	});
 	
 	function visualizarEnvioMail(){
 		if($('#idEstado').val() == 2){
+			if('${empty ventaForm.usuario.email}'){
+				$('#idConfirmarContenido').html('<fmt:message key="venta.usuario.sin.email" />');
+			}
 			$('#idConfirmar').slideDown( "slow" );
 		}else{
 			$('#idConfirmar').hide();
@@ -64,6 +62,7 @@
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm" autocomplete="off">
 	<form:hidden path="fecha"/>
 	<form:hidden path="usuario.id"/>
+	<form:hidden path="usuario.email"/>
 	<form:hidden path="importe"/>
 	<form:hidden path="version"/>
 	<div class='row'>
@@ -90,7 +89,7 @@
     <div class='row' id="idConfirmar">
     	<div class='col-sm-4'>&nbsp;</div>
         <div class='col-sm-8'>    
-			<div class="form-group" >
+			<div class="form-group" id="idConfirmarContenido">
 				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="venta.enviar.mail" />
 			</div>
         </div>
@@ -136,7 +135,7 @@
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
-								<form:hidden path="items[${status.index}].importeVenta"/>
+			        			<form:hidden path="items[${status.index}].importeVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
 			        		</td>
 			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>

@@ -19,6 +19,7 @@ import com.soutech.frigento.exception.ReporteException;
 import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.RelPedidoProducto;
+import com.soutech.frigento.model.RelVentaProducto;
 import com.soutech.frigento.model.Venta;
 import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.PrinterStack;
@@ -85,6 +86,35 @@ public class ReportManager{
 	}
 	
 	public ByteArrayOutputStream generarRemitoVenta(Venta venta) throws ReporteException{
+		List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
+    	for (ItemVentaDTO item : venta.getItems()) {
+			RemitoDTO remito = new RemitoDTO();
+			remito.setCantidad(item.getCantidad());
+			remito.setProducto(item.getProducto().getCodigo().concat("-").concat(item.getProducto().getDescripcion()));
+			remito.setPu(item.getImporteVenta());
+			remito.setImporte(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad()).setScale(2, RoundingMode.HALF_UP)));
+			itemsRemito.add(remito);
+		}
+    	
+    	return generarRemitoVenta(venta , itemsRemito);
+	}
+	
+	public ByteArrayOutputStream generarRemitoVenta(List<RelVentaProducto> relVtaProdList) throws ReporteException{
+		List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
+    	for (RelVentaProducto rvp : relVtaProdList) {
+			RemitoDTO remito = new RemitoDTO();
+			remito.setCantidad(rvp.getCantidad());
+			remito.setProducto(rvp.getRelProductoCategoria().getProducto().getCodigo().concat("-").concat(rvp.getRelProductoCategoria().getProducto().getDescripcion()));
+			remito.setPu(rvp.getPrecioVenta());
+			remito.setImporte(new BigDecimal(rvp.getCantidad()).multiply(rvp.getPrecioVenta()).setScale(2, RoundingMode.HALF_UP));
+			itemsRemito.add(remito);
+		}
+    	
+    	Venta venta = relVtaProdList.get(0).getVenta();
+		return generarRemitoVenta(venta , itemsRemito);
+	}
+	
+	private ByteArrayOutputStream generarRemitoVenta(Venta venta, List<RemitoDTO> itemsRemito) throws ReporteException{
 		Map<String, Object> parameters = new HashMap<String, Object>();
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(venta.getFecha());
@@ -94,16 +124,6 @@ public class ReportManager{
     	parameters.put("nroPedido", Utils.generarNroRemito(venta));
     	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
     	parameters.put("domicilio","");
-    	
-    	List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
-    	for (ItemVentaDTO item : venta.getItems()) {
-			RemitoDTO remito = new RemitoDTO();
-			remito.setCantidad(item.getCantidad());
-			remito.setProducto(item.getProducto().getCodigo().concat("-").concat(item.getProducto().getDescripcion()));
-			remito.setPu(item.getImporteVenta());
-			remito.setImporte(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad()).setScale(2, RoundingMode.HALF_UP)));
-			itemsRemito.add(remito);
-		}
     	
     	//El remito permite hasta 21 items
     	while(itemsRemito.size() % 21 != 0){
@@ -125,7 +145,6 @@ public class ReportManager{
 		}
 		return bytes;
 	}
-  
     
     /**
      * @param reportName - nombre del archivo de reporte sin extension

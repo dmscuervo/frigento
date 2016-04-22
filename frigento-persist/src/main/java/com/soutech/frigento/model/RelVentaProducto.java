@@ -1,5 +1,6 @@
 package com.soutech.frigento.model;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,12 @@ public class RelVentaProducto implements Serializable {
 
     private static final long serialVersionUID = -5309062407934288318L;
 
+    @Id
+    @SequenceGenerator(name = "relVentaProductoGen", sequenceName = "SEQ_REL_VTA_PROD")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "relVentaProductoGen")
+    @Column(name = "ID_REL_VENTA_PROD")
+    private Long id;
+
 	@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_VENTA")
@@ -33,6 +40,10 @@ public class RelVentaProducto implements Serializable {
     @NotNull
     @Column(name = "CANTIDAD")
     private Float cantidad;
+    
+    @NotNull
+    @Column(name = "PRECIO")
+    private BigDecimal precioVenta;
 
 	public Venta getVenta() {
         return this.venta;
@@ -58,12 +69,6 @@ public class RelVentaProducto implements Serializable {
         this.cantidad = cantidad;
     }
 
-	@Id
-    @SequenceGenerator(name = "relVentaProductoGen", sequenceName = "SEQ_REL_VTA_PROD")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "relVentaProductoGen")
-    @Column(name = "ID_REL_VENTA_PROD")
-    private Long id;
-
 	public Long getId() {
         return this.id;
     }
@@ -71,4 +76,13 @@ public class RelVentaProducto implements Serializable {
 	public void setId(Long id) {
         this.id = id;
     }
+
+	public BigDecimal getPrecioVenta() {
+		return precioVenta;
+	}
+
+	public void setPrecioVenta(BigDecimal precioVenta) {
+		this.precioVenta = precioVenta;
+	}
+	
 }

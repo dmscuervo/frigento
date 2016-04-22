@@ -9,4 +9,5 @@ public interface RelVentaProductoDao extends IDao<RelVentaProducto, Long> {
 	Date findMaxFechaNoAnulada(Integer id);
 	List<RelVentaProducto> findAllNoAnulada(Integer prodId, Short catId, Date fechaIni, Date fechaFin);
 	Date obtenerFechaPrimerVentaNoAnulada(Integer prodId, Short catId, Date fechaIni, Date fechaFin);
+	List<RelVentaProducto> findAllByVenta(Integer idVta, String sortFieldName, String sortOrder);
 }
