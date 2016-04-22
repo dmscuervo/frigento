@@ -22,7 +22,6 @@ import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.RelProductoCategoriaService;
-import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.Utils;
 
 @Service
@@ -67,27 +66,30 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 
 	@Override
 	@Transactional
-	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones) throws FechaDesdeException, ProductoInexistenteException {
+	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones, String estadoRelVisualizadas) throws FechaDesdeException, ProductoInexistenteException {
 		//Aplico control de concurrencia entre ventas y cambio de precios
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
 			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
-			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), Constantes.ESTADO_REL_VIGENTE, null, null);
+			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), estadoRelVisualizadas, null, null);
 			for (RelProductoCategoria relProdCatActual : relacionesActual) {
-				Short idCat = relProdCatActual.getCategoria().getId();
-				Integer idProd = relProdCatActual.getProducto().getId();
-				Boolean prodCatEncontrado = Boolean.FALSE;
+				Integer idRpcActual = relProdCatActual.getId();
+				Boolean relacionMantenida = Boolean.FALSE;
 				for (RelProductoCategoria relProdCatNuevo : relaciones) {
-					Producto producto = productoDao.findByCodigo(relProdCatNuevo.getProducto().getCodigo());
-					Short idCatNuevo = relProdCatNuevo.getCategoria().getId();
-					Integer idProdNuevo = producto.getId();
-					if(idCat.equals(idCatNuevo) && idProd.equals(idProdNuevo)){
-						prodCatEncontrado = Boolean.TRUE;
+					Integer idRpcNuevo = relProdCatNuevo.getId();
+					if(idRpcNuevo != null && idRpcNuevo.equals(idRpcActual)){
+						relacionMantenida = Boolean.TRUE;
 						break;
 					}
 				}
-				if(!prodCatEncontrado){
-					//Se dio de baja. Aplico un baja logica
+				if(!relacionMantenida){
+					//Controlo fechas de ventas
+					Date primerFechaVenta = relVentaProductoDao.obtenerFechaPrimerVentaNoAnulada(relProdCatActual.getProducto().getId(), relProdCatActual.getCategoria().getId(), relProdCatActual.getFechaDesde(), relProdCatActual.getFechaHasta());
+					if(primerFechaVenta != null){
+						Object[] args = new Object[]{relProdCatActual.getProducto().getCodigo(), Utils.formatDate(primerFechaVenta, Utils.SDF_DDMMYYYY_HHMM)};
+						throw new FechaDesdeException("relProdCat.borrar.venta.existente", args);
+					}
+					//Se dio de baja. Aplico un baja fisica
 					relProductoCategoriaDao.delete(relProdCatActual);
 					
 				}

@@ -255,8 +255,9 @@ public class RelProductoCategoriaController extends GenericController {
     public String confirmar(Model uiModel, HttpServletRequest httpServletRequest) {
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	Categoria categoria = (Categoria)uiModel.asMap().get("categoria");
+    	String estadoVisualizado = (String) uiModel.asMap().get("estadoSel");
     	try{
-			relProductoCategoriaService.asignarProductos(categoria, lista);
+			relProductoCategoriaService.asignarProductos(categoria, lista, estadoVisualizado);
     	} catch (FechaDesdeException e) {
 			String key = e.getKeyMessage();
 			logger.info(getMessage(key, e.getArgs()));

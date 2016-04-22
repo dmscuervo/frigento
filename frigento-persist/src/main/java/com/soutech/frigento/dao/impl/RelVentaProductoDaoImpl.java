@@ -32,12 +32,13 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RelVentaProducto> findAll(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
+	public List<RelVentaProducto> findAllNoAnulada(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelVentaProducto.class.getCanonicalName());
 		hql.append(" rvp inner join rvp.venta v ");
 		hql.append("inner join rvp.relProductoCategoria rpc ");
-		hql.append("where rpc.producto.id = :prodId ");
+		hql.append("where v.fechaAnulado is null ");
+		hql.append("and rpc.producto.id = :prodId ");
 		hql.append("and rpc.categoria.id = :catId ");
 		if(fechaIni != null){
 			hql.append("and v.fecha >= :fechaIni ");
@@ -58,12 +59,13 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 	}
 
 	@Override
-	public Date obtenerFechaPrimerVenta(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
+	public Date obtenerFechaPrimerVentaNoAnulada(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
 		StringBuilder hql = new StringBuilder("select min(v.fecha) from ");
 		hql.append(RelVentaProducto.class.getCanonicalName());
 		hql.append(" rvp inner join rvp.venta v ");
 		hql.append("inner join rvp.relProductoCategoria rpc ");
-		hql.append("where rpc.categoria.id = :catId ");
+		hql.append("where v.fechaAnulado is null ");
+		hql.append("and rpc.categoria.id = :catId ");
 		hql.append("and rpc.producto.id = :prodId ");
 		if(fechaIni != null){
 			hql.append("and v.fecha >= :fechaIni ");

@@ -36,16 +36,6 @@
 	    
 	});
 	
-	$('#idGrillaRPCa tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
-    } );
-			
 	function generar(path){
 		var url = '${pathBase}' + path;
 		$('#divVentanaGrilla').load(url, function(data){
@@ -130,10 +120,8 @@
 		    	</c:choose>
     		</td>
 		    <td style="white-space: nowrap;" id="idAccion-${status.index}">
-		    	<c:if test="${empty prodCat.id}">
-		    		<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
-		    	</c:if>
 		    	<c:if test="${prodCat.esEditable}">
+		    		<i class="fa fa-minus-square" onclick="eliminar('relProdCat/${status.index}?borrar')" ></i>
 		    		<i class="fa fa-pencil-square" onclick="generar('relProdCat/${status.index}?editar')" ></i>
 		    	</c:if>
 		    	<c:if test="${prodCat.esNoVigente}">

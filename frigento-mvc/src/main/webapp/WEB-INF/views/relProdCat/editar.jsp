@@ -253,7 +253,7 @@
 		        <div class='col-sm-12'> 
 					<div class="form-group">
 							<label id="idMessageError" class="form-validate" ></label>
-							<button type="button" id="btAgregar" class="btn btn-default" onclick="modificar()"><fmt:message key="boton.agregar"/></button>
+							<button type="button" id="btAgregar" class="btn btn-default" onclick="modificar()"><fmt:message key="boton.modificar"/></button>
 					</div>
 		        </div>
 		    </div>

@@ -85,12 +85,6 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 	}
 
 	@Transactional
-	public void delete(RelProductoCategoria relProdCategoria) {
-		relProdCategoria.setFechaHasta(new Date());
-		saveOrUpdate(relProdCategoria);
-	}
-	
-	@Transactional
 	public void deleteAll(Collection<RelProductoCategoria> relProdCategorias) {
 		for (RelProductoCategoria relProdCategoria : relProdCategorias)
 			//La baja de productoCosto es logica

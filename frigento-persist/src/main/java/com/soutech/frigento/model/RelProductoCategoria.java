@@ -50,7 +50,7 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
     private Date fechaHasta;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_CATEGORIA")
     private Categoria categoria;
 

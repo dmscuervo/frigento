@@ -22,7 +22,7 @@ public interface RelProductoCategoriaService {
 	 */
 	List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado);
 
-	void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones) throws FechaDesdeException, ProductoInexistenteException;
+	void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones, String estadoRelVisualizadas) throws FechaDesdeException, ProductoInexistenteException;
 
 	Date obtenerMinFechaDesde(Integer idProd);
 

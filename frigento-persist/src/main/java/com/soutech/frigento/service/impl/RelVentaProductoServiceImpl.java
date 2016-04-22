@@ -18,12 +18,12 @@ public class RelVentaProductoServiceImpl implements RelVentaProductoService {
 
 	@Override
 	public List<RelVentaProducto> obtenerVentas(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
-		return relVentaProductoDao.findAll(prodId, catId, fechaIni, fechaFin);
+		return relVentaProductoDao.findAllNoAnulada(prodId, catId, fechaIni, fechaFin);
 	}
 
 	@Override
 	public Date obtenerFechaPrimerVenta(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
-		return relVentaProductoDao.obtenerFechaPrimerVenta(prodId, catId, fechaIni, fechaFin);
+		return relVentaProductoDao.obtenerFechaPrimerVentaNoAnulada(prodId, catId, fechaIni, fechaFin);
 	}
 
 }
