@@ -13,17 +13,7 @@
 			maxDate: moment().add(-1, 'minutes'),
 			locale: 'es'
         });
-		//20/04/2016 16:45
-		//var day = moment($("#datetimepicker1").find("input").val(), "DD/MM/YYYY HH:mm");
-		//console.log(day);
-		/*
-		var fechaHora = $("#datetimepicker1").find("input").val().split(" ");
-		console.log(fechaHora[0]);
-		var day = moment(fechaHora[0], "DD/MM/YYYY");
-		console.log(day);
-		*/
-		//day.toDate();
-		
+
 		$('#datetimepicker2').datetimepicker({
 			ignoreReadonly: true,
 			minDate: moment($("#datetimepicker1").find("input").val(), "DD/MM/YYYY HH:mm"),
@@ -37,9 +27,11 @@
 		
 		$("#datetimepicker1").on("dp.change", function (e) {
             $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+            calcularPrecio();
         });
 		$("#datetimepicker2").on("dp.change", function (e) {
             $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+            calcularPrecio();
         });
 		
 		//Aplico restricciones
@@ -62,9 +54,35 @@
 	function calcularPrecio(){
 		var costosMap = JSON.parse('${codCostoJson}');
 		var codProd = $('#idCod').val();
+		var rpcFechaDesde = $("#datetimepicker1").find("input").val();
 		var incremento = $('#idIncremento').val();
 		if(codProd != '-1' && incremento != ''){
-			var costo = costosMap[codProd];
+			var costo = 0;
+			//Recorro todas las relaciones productoCosto
+			$.each(costosMap[codProd], function(i,item){
+				var fechaDesde = costosMap[codProd][i].fechaDesde;
+				var fechaHasta = costosMap[codProd][i].fechaHasta;
+				var costoFecha = costosMap[codProd][i].costo;
+				var mFechaDesde = moment(fechaDesde);
+				var mFechaHasta = moment(fechaHasta);
+				var mRpcFechaDesde = moment(rpcFechaDesde,'DD/MM/YYYY HH:mm');
+				
+				if(mFechaDesde.isSameOrBefore(moment(mRpcFechaDesde))
+						&& (fechaHasta == null || mFechaHasta.isAfter(moment(mRpcFechaDesde)))){
+					costo = costoFecha;
+				}
+				
+			});
+			if(costo == ''){
+				//No hay un costo segun la fecha elegida
+				$('#idMessageError').text('No hay un costo para la fecha seleccionada');
+				$('#btAgregar').prop('disabled', true);
+			}else{
+				//Existe un costo
+				$('#idMessageError').text('');
+				$('#btAgregar').prop('disabled', false);
+			}
+			
 			var factor = incremento/100 + 1;
 			$('#idPrecio').val(Math.round(costo*factor * 100) / 100);
 		}else{
@@ -85,6 +103,7 @@
             		$('#errorIncremento').html(obj.incremento);
             		$('#errorPrecioCalculado').html(obj.precioCalculado);
             		$('#errorFechaDesde').html(obj.fechaDesde);
+            		$('#errorFechaHasta').html(obj.fechaHasta);
             		return;
             	}
             	catch(err) {
@@ -116,6 +135,7 @@
 				<c:url var="urlEditar" value="/relProdCat/editar" />
 				<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="relProdCatForm" id="idForm" autocomplete="off">
 				<form:hidden path="categoria.id"/>
+				<form:hidden path="producto.id"/>
 				<form:hidden path="id"/>
 				<form:hidden path="indiceLista"/>
 				<form:hidden path="producto.codigo"/>
@@ -233,7 +253,7 @@
 		        <div class='col-sm-12'> 
 					<div class="form-group">
 							<label id="idMessageError" class="form-validate" ></label>
-							<button type="button" class="btn btn-default" onclick="modificar()"><fmt:message key="boton.agregar"/></button>
+							<button type="button" id="btAgregar" class="btn btn-default" onclick="modificar()"><fmt:message key="boton.agregar"/></button>
 					</div>
 		        </div>
 		    </div>

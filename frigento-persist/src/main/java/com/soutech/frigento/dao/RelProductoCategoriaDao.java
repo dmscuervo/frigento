@@ -16,4 +16,6 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 
 	Date findMinDate(Integer idProd);
 
+	List<RelProductoCategoria> findAllByDupla(Short idCat, Integer idProd);
+
 }

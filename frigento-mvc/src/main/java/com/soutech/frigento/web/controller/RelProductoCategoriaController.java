@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soutech.frigento.exception.FechaDesdeException;
+import com.soutech.frigento.exception.ProductoInexistenteException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
@@ -42,6 +43,7 @@ import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.service.RelVentaProductoService;
 import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.validator.ErrorJSONHandler;
@@ -55,7 +57,10 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA); 
+    private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA);
+    public static String BUSQUEDA_DEFAULT(Short idCat){
+    	return "relProdCat/"+idCat+"?listar=&estado=V";
+    }
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -64,16 +69,14 @@ public class RelProductoCategoriaController extends GenericController {
     
     @Autowired
     private RelProductoCategoriaService relProductoCategoriaService;
-    
+    @Autowired
+    private RelVentaProductoService relVentaProductoService;
     @Autowired
     private ProductoCostoService productoCostoService;
-    
     @Autowired
     private ErrorJSONHandler errorJSONHandler;
-    
     @Autowired
     private ProductoService productoService;
-
     @Autowired
     private CategoriaService categoriaService;
     
@@ -114,7 +117,7 @@ public class RelProductoCategoriaController extends GenericController {
         	return "ajax/value";
         }
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()));;
+    	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()).replaceFirst(relProdCatForm.getProducto().getCodigo().concat(" - "), ""));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
         //Control de fecha y de relaciones actuales
         Date fechaDesdeMinPosible = null;
@@ -156,6 +159,9 @@ public class RelProductoCategoriaController extends GenericController {
     	RelProductoCategoria rpc = lista.get(index.intValue());
     	rpc.setIndiceLista(index);
     	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
+    	//Vuelvo a incorporarlo como posible producto a seleccionar
+    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
         return "relProdCat/editar";
     }
     
@@ -163,50 +169,49 @@ public class RelProductoCategoriaController extends GenericController {
 	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
     public String edit(@Valid @ModelAttribute("relProdCatForm") RelProductoCategoria relProdCatForm, BindingResult bindingResult, Model uiModel) {
     	if (bindingResult.hasErrors()) {
-    		RelProdCatErroresView errorView = new RelProdCatErroresView();
-    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
-    		uiModel.addAttribute("messageAjax", json);
-        	return "ajax/value";
+    		if(bindingResult.getErrorCount() != 1 || !bindingResult.getFieldError().getField().equals("fechaHasta")){
+    			RelProdCatErroresView errorView = new RelProdCatErroresView();
+    			String json = errorJSONHandler.getJSON(errorView, bindingResult);
+    			uiModel.addAttribute("messageAjax", json);
+    			return "ajax/value";
+    		}
         }
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	Map<String, String> codProductosMasterMap = (Map<String, String>) uiModel.asMap().get("codProductosMasterMap");
     	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
-        //Cambio el producto
-        String codProdAnt = lista.get(relProdCatForm.getIndiceLista()).getProducto().getCodigo();
-        String codProd = relProdCatForm.getProducto().getCodigo();
-        if(!codProd.equals(codProdAnt)){
-        	//Actualizo
-        	codDescripcionMap = new HashMap<String, String>(codProductosMasterMap);
-        	for (RelProductoCategoria rpc : lista) {
-				codDescripcionMap.remove(rpc.getProducto().getCodigo());
-			}
-        	uiModel.addAttribute("codProductosMap", codDescripcionMap);
-        }
         //Control de fecha y de relaciones actuales
-//        Date fechaDesdeMinPosible = null;
-//        RelProductoCategoria relActual = null;
-//        for (RelProductoCategoria rpc : lista) {
-//			if(rpc.getId() != null){
-//				//Es un registro de la bd
-//				rpc.setIncremento(relProdCatForm.getIncremento());
-//				rpc.setPrecioCalculado(relProdCatForm.getPrecioCalculado());
-//				rpc.setFechaDesde(relProdCatForm.getFechaDesde());
-//				rpc.setFechaHasta(relProdCatForm.getFechaHasta());
-//			}else{
-//				//Es un registro nuevo y ahora editado
-//				
-//			}
-//		}
-//        if(fechaDesdeMinPosible != null && relProdCatForm.getFechaDesde().before(fechaDesdeMinPosible)){
-//        	uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.desde.min.venta", new Object[]{relProdCatForm.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMinPosible, Utils.SDF_DDMMYYYY_HHMM)}));
-//			return "relProdCat/grilla";
-//        }
-//        //Habia una relacion vigente. La cierro
-//        if(relActual != null){
-//        	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
-//        }
+        if(relProdCatForm.getId() != null){
+        	RelProductoCategoria relProdCatActual = relProductoCategoriaService.obtenerById(relProdCatForm.getId());
+        	if(relProdCatActual.getFechaDesde().getTime() != relProdCatForm.getFechaDesde().getTime()){
+        		//Se cambio la fecha desde
+        		Date fecha = relVentaProductoService.obtenerFechaPrimerVenta(relProdCatForm.getProducto().getId(), relProdCatForm.getCategoria().getId(), relProdCatActual.getFechaDesde(), relProdCatForm.getFechaDesde());
+        		if(fecha != null){
+        			uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.con.venta", new Object[]{"Desde", "mayor", Utils.formatDate(fecha, Utils.SDF_DDMMYYYY_HHMM)}));
+        			return "relProdCat/grilla";
+        		}
+        	}
+        	if(relProdCatForm.getFechaHasta() != null){
+        		if(relProdCatActual.getFechaHasta() == null){
+        			//Se cerro la fechaHasta
+        			Date fecha = relVentaProductoService.obtenerFechaPrimerVenta(relProdCatForm.getProducto().getId(), relProdCatForm.getCategoria().getId(), relProdCatForm.getFechaHasta(), null);
+        			if(fecha != null){
+            			uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.con.venta", new Object[]{"Hasta", "mayor", Utils.formatDate(fecha, Utils.SDF_DDMMYYYY_HHMM)}));
+            			return "relProdCat/grilla";
+            		}
+        		}else if(relProdCatForm.getFechaHasta().getTime() != relProdCatActual.getFechaHasta().getTime()){
+        			//Se cambio la fecha hasta
+        			Date fecha = relVentaProductoService.obtenerFechaPrimerVenta(relProdCatForm.getProducto().getId(), relProdCatForm.getCategoria().getId(), relProdCatForm.getFechaHasta(), relProdCatActual.getFechaHasta());
+            		if(fecha != null){
+            			uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.fecha.con.venta", new Object[]{"Desde", "mayor", Utils.formatDate(fecha, Utils.SDF_DDMMYYYY_HHMM)}));
+            			return "relProdCat/grilla";
+            		}
+        		}
+        	}
+        		
+        }
         //Fin Control de fecha
+        codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
         lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
         controlEditable(lista);
         return "relProdCat/grilla";
@@ -217,10 +222,30 @@ public class RelProductoCategoriaController extends GenericController {
     public String borrar(@PathVariable("idx") Integer index, Model uiModel) {
     	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	RelProductoCategoria rpc = lista.get(index.intValue());
+    	//Control de fecha y de relaciones actuales
+    	if(rpc.getId() != null){
+    		Date fecha = relVentaProductoService.obtenerFechaPrimerVenta(rpc.getProducto().getId(), rpc.getCategoria().getId(), rpc.getFechaDesde(), rpc.getFechaHasta());
+    		if(fecha != null){
+    			uiModel.addAttribute("msgRespuesta", getMessage("relProdCat.rango.con.ventas", Utils.formatDate(fecha, Utils.SDF_DDMMYYYY_HHMM)));
+    			return "relProdCat/grilla";
+    		}
+    	}
+    	//Fin Control de fecha
     	//Vuelvo a incorporarlo como posible producto a seleccionar
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
     	lista.remove(index.intValue());
+    	controlEditable(lista);
+        return "relProdCat/grilla";
+    }
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(params = "ponerVigente", value="/{idx}", produces = "text/html", method = RequestMethod.POST)
+    public String ponerVigente(@PathVariable("idx") Integer index, Model uiModel) {
+    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
+    	RelProductoCategoria rpc = lista.get(index.intValue());
+    	//Lo vuelvo a poner vigente
+    	rpc.setFechaHasta(null);
     	controlEditable(lista);
         return "relProdCat/grilla";
     }
@@ -237,9 +262,13 @@ public class RelProductoCategoriaController extends GenericController {
 			logger.info(getMessage(key, e.getArgs()));
 			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
 			return "relProdCat/grilla";
+		} catch (ProductoInexistenteException e) {
+			String key = e.getKeyMessage();
+			logger.info(getMessage(key, e.getArgs()));
+			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
+			return "relProdCat/grilla";
 		}
-    	httpServletRequest.setAttribute("msgRespuesta", getMessage("relProdCat.confirmar.ok"));
-    	return "relProdCat/grilla";
+    	return "redirect:/".concat(BUSQUEDA_DEFAULT(categoria.getId())).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
     }
  
     @SuppressWarnings("unchecked")
@@ -252,7 +281,6 @@ public class RelProductoCategoriaController extends GenericController {
     	}
         List<RelProductoCategoria> relProdCats = new TreeList(relProductoCategoriaService.obtenerProductosCategoria(idCat, estadoBusqueda, new String[]{"producto.id", "fechaDesde"}, new String[]{"asc", "asc"}));
 		uiModel.addAttribute("productosCategoria", relProdCats);
-        List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         Map<String, String> codDescripcionMap = new TreeMap<String, String>();
         List<Integer> productosYaRelacionados = new ArrayList<Integer>();
         Integer prodIdTemp = null;
@@ -272,26 +300,34 @@ public class RelProductoCategoriaController extends GenericController {
         			RelProductoCategoria rpcAnterior = relProdCats.get(i-1);
         			rpcAnterior.setEsEditable(Boolean.TRUE);
         			if(rpcAnterior.getFechaHasta() != null){
-        				relProdCat.setEsNoVigente(Boolean.TRUE);
+        				rpcAnterior.setEsNoVigente(Boolean.TRUE);
         			}
         		}
         		prodIdTemp = relProdCat.getProducto().getId();
         	}
         }
-        RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
-        rpcUltimo.setEsEditable(Boolean.TRUE);
-		if(rpcUltimo.getFechaHasta() != null){
-			rpcUltimo.setEsNoVigente(Boolean.TRUE);
-		}
+        if(!relProdCats.isEmpty()){
+        	RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
+        	rpcUltimo.setEsEditable(Boolean.TRUE);
+        	if(rpcUltimo.getFechaHasta() != null){
+        		rpcUltimo.setEsNoVigente(Boolean.TRUE);
+        	}
+        }
         
+        List<Producto> productos = productoService.obtenerProductos(Constantes.ESTADO_ACTIVO, "descripcion", "asc");
         for (Producto producto : productos) {
         	//if(!productosYaRelacionados.contains(producto.getId())){
         		codDescripcionMap.put(producto.getCodigo(), producto.getCodigo().concat(" - ").concat(producto.getDescripcion()));
         	//}
 		}
-        Map<String, BigDecimal> codCostoMap = new HashMap<String, BigDecimal>();
-        for (Producto producto : productos) {
-        	codCostoMap.put(producto.getCodigo(), producto.getCostoActual());
+        List<ProductoCosto> prodCostoList = productoCostoService.obtenerTodos(new String[]{"producto.id", "fechaDesde"}, new String[]{"asc", "asc"});
+        Map<String, List<ProductoCosto>> codCostoMap = new HashMap<String, List<ProductoCosto>>();
+        for (ProductoCosto prodCosto : prodCostoList) {
+        	if(!codCostoMap.containsKey(prodCosto.getProducto().getCodigo())){
+        		List<ProductoCosto> values = new ArrayList<ProductoCosto>();
+        		codCostoMap.put(prodCosto.getProducto().getCodigo(), values);
+        	}
+        	codCostoMap.get(prodCosto.getProducto().getCodigo()).add(prodCosto);
 		}
         ObjectMapper mapper = new ObjectMapper();
         String json;
@@ -306,7 +342,7 @@ public class RelProductoCategoriaController extends GenericController {
         uiModel.addAttribute("categoria", categoria);
         uiModel.addAttribute("estadoSel", estado);
         if(informar != null){
-        	uiModel.addAttribute("informar", informar);
+        	uiModel.addAttribute("msgRespuesta", informar);
         }
         return "relProdCat/grilla";
     }

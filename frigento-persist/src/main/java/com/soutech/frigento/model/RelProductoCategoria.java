@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -42,12 +40,12 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
 
     @NotNull
     @Column(name = "F_DESDE")
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaDesde;
 
     @Column(name = "F_HASTA")
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaHasta;
 

@@ -119,4 +119,19 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		query.setParameter("idProd", idProd);
 		return (Date) query.uniqueResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelProductoCategoria> findAllByDupla(Short idCat, Integer idProd) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.categoria.id = :catId ");
+		hql.append("and r.producto.id = :prodId ");
+		hql.append("order by r.categoria.id, r.producto.id, r.fechaDesde ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("catId", idCat);
+		query.setParameter("prodId", idProd);
+		return query.list();
+	}
+	
 }

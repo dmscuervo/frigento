@@ -25,16 +25,47 @@
 			calcularPrecio();
 		});
 		
+		$("#datetimepickerRPCAlta").on("dp.change", function (e) {
+			calcularPrecio();
+        });
+		
 	});
 
 	function calcularPrecio(){
 		var costosMap = JSON.parse('${codCostoJson}');
 		var codProd = $('#idCod').val();
+		var rpcFechaDesde = $("#datetimepickerRPCAlta").find("input").val();
 		var incremento = $('#idIncremento').val();
 		if(codProd != '-1' && incremento != ''){
-			var costo = costosMap[codProd];
+			var costo = 0;
+			//Recorro todas las relaciones productoCosto
+			$.each(costosMap[codProd], function(i,item){
+				var fechaDesde = costosMap[codProd][i].fechaDesde;
+				var fechaHasta = costosMap[codProd][i].fechaHasta;
+				var costoFecha = costosMap[codProd][i].costo;
+				var mFechaDesde = moment(fechaDesde);
+				var mFechaHasta = moment(fechaHasta);
+				var mRpcFechaDesde = moment(rpcFechaDesde,'DD/MM/YYYY HH:mm');
+				
+				if(mFechaDesde.isSameOrBefore(moment(mRpcFechaDesde))
+						&& (fechaHasta == null || mFechaHasta.isAfter(moment(mRpcFechaDesde)))){
+					costo = costoFecha;
+				}
+				
+			});
+			if(costo == ''){
+				//No hay un costo segun la fecha elegida
+				$('#idMessageError').text('No hay un costo para la fecha seleccionada');
+				$('#btAgregar').prop('disabled', true);
+			}else{
+				//Existe un costo
+				$('#idMessageError').text('');
+				$('#btAgregar').prop('disabled', false);
+			}
+
 			var factor = incremento/100 + 1;
 			$('#idPrecio').val(Math.round(costo*factor * 100) / 100);
+			
 		}else{
 			$('#idPrecio').val('');
 		}
@@ -173,7 +204,7 @@
 		        <div class='col-sm-12'> 
 					<div class="form-group">
 							<label id="idMessageError" class="form-validate" ></label>
-							<button type="button" class="btn btn-default" onclick="agregar()"><fmt:message key="boton.agregar"/></button>
+							<button type="button" id="btAgregar" class="btn btn-default" onclick="agregar()"><fmt:message key="boton.agregar"/></button>
 					</div>
 		        </div>
 		    </div>

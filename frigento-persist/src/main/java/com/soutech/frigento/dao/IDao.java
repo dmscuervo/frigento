@@ -25,6 +25,8 @@ public interface IDao<T, I> {
 	
 	List<T> findAll(String sortFieldName, String sortOrder);
 	
+	List<T> findAll(String[] sortFieldName, String[] sortOrder);
+	
 	void desconectarSession(T entity);
 	
 	T merge(T entity);

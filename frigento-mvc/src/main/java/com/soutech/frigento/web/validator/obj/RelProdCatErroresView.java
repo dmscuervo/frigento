@@ -6,6 +6,7 @@ public class RelProdCatErroresView {
 	private String incremento = "";
 	private String precioCalculado = "";
 	private String fechaDesde = "";
+	private String fechaHasta = "";
 
 	public String getCodigo() {
 		return codigo;
@@ -30,6 +31,12 @@ public class RelProdCatErroresView {
 	}
 	public void setFechaDesde(String fechaDesde) {
 		this.fechaDesde = fechaDesde;
+	}
+	public String getFechaHasta() {
+		return fechaHasta;
+	}
+	public void setFechaHasta(String fechaHasta) {
+		this.fechaHasta = fechaHasta;
 	}
 	
 }

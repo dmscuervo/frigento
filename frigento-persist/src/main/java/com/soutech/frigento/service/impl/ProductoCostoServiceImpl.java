@@ -17,6 +17,11 @@ public class ProductoCostoServiceImpl implements ProductoCostoService {
     ProductoCostoDao productoCostoDao;
 
 	@Override
+	public List<ProductoCosto> obtenerTodos(String[] sortFieldName, String[] sortOrder) {
+		return productoCostoDao.findAll(sortFieldName, sortOrder);
+	}
+	
+	@Override
 	public ProductoCosto obtenerActual(Integer idProd) {
 		return productoCostoDao.findCostoActual(idProd);
 	}

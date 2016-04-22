@@ -39,13 +39,48 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		hql.append("inner join rvp.relProductoCategoria rpc ");
 		hql.append("where rpc.producto.id = :prodId ");
 		hql.append("and rpc.categoria.id = :catId ");
-		hql.append("and v.fecha >= :fechaIni ");
-		hql.append("and v.fecha < :fechaFin ");
+		if(fechaIni != null){
+			hql.append("and v.fecha >= :fechaIni ");
+		}
+		if(fechaFin != null){
+			hql.append("and v.fecha < :fechaFin ");
+		}
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("prodId", prodId);
 		query.setParameter("catId", catId);
-		query.setParameter("fechaIni", fechaIni);
-		query.setParameter("fechaFin", fechaFin);
+		if(fechaIni != null){
+			query.setParameter("fechaIni", fechaIni);
+		}
+		if(fechaFin != null){
+			query.setParameter("fechaFin", fechaFin);
+		}
 		return query.list();
 	}
+
+	@Override
+	public Date obtenerFechaPrimerVenta(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
+		StringBuilder hql = new StringBuilder("select min(v.fecha) from ");
+		hql.append(RelVentaProducto.class.getCanonicalName());
+		hql.append(" rvp inner join rvp.venta v ");
+		hql.append("inner join rvp.relProductoCategoria rpc ");
+		hql.append("where rpc.categoria.id = :catId ");
+		hql.append("and rpc.producto.id = :prodId ");
+		if(fechaIni != null){
+			hql.append("and v.fecha >= :fechaIni ");
+		}
+		if(fechaFin != null){
+			hql.append("and v.fecha < :fechaFin ");
+		}
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("prodId", prodId);
+		query.setParameter("catId", catId);
+		if(fechaIni != null){
+			query.setParameter("fechaIni", fechaIni);
+		}
+		if(fechaFin != null){
+			query.setParameter("fechaFin", fechaFin);
+		}
+		return (Date) query.uniqueResult();
+	}
+	
 }
