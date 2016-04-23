@@ -116,10 +116,12 @@ public class ControlStockProducto {
 		
 		//Actualizo stock
 		for (ItemVentaDTO item : ventaConfirmada.getItems()) {
-			Producto producto = productoDao.findById(item.getProducto().getId());
-			producto.setStock(producto.getStock() - item.getCantidad());
-			producto.setStockControlado(Boolean.TRUE);
-			productoDao.update(producto);
+			if(item.getCantidadModificada() != null){
+				Producto producto = productoDao.findById(item.getProducto().getId());
+				producto.setStock(producto.getStock() - item.getCantidadModificada());
+				producto.setStockControlado(Boolean.TRUE);
+				productoDao.update(producto);
+			}
 		}
 		
 	}
@@ -129,12 +131,12 @@ public class ControlStockProducto {
 	 * @param pedidoCumplido
 	 * @throws ProductoSinCostoException
 	 */
-	public synchronized void incrementarStockBy(Venta ventaConfirmada) {
+	public synchronized void incrementarStockBy(List<RelVentaProducto> relVtaProdList) {
 		
 		//Actualizo stock
-		for (ItemVentaDTO item : ventaConfirmada.getItems()) {
-			Producto producto = productoDao.findById(item.getProducto().getId());
-			producto.setStock(producto.getStock() + item.getCantidad());
+		for (RelVentaProducto relVtaProd : relVtaProdList) {
+			Producto producto = productoDao.findById(relVtaProd.getRelProductoCategoria().getProducto().getId());
+			producto.setStock(producto.getStock() + relVtaProd.getCantidad());
 			producto.setStockControlado(Boolean.TRUE);
 			productoDao.update(producto);
 		}
@@ -255,6 +257,7 @@ public class ControlStockProducto {
 				}
 				RelProductoCategoria relProductoCategoria = relProductoCategoriaDao.findByDupla(ventaModificada.getUsuario().getCategoriaProducto().getId(), item.getProducto().getId(), ventaModificada.getFecha());
 				if(prodNuevo){
+					item.setCantidadModificada(item.getCantidad());
 					RelVentaProducto rvp = new RelVentaProducto();
 					if(relProductoCategoria == null){
 						Object[] args = new Object[]{ventaModificada.getFecha(), item.getProducto().getCodigo(), ventaModificada.getUsuario().getCategoriaProducto().getDescripcion()};
@@ -272,6 +275,7 @@ public class ControlStockProducto {
 					//Me fijo si cambio la cantidad
 					Float cantidadNueva = item.getCantidad();
 					if(!rvpActual.getCantidad().equals(cantidadNueva)){
+						item.setCantidadModificada(item.getCantidad()-rvpActual.getCantidad());
 						rvpActual.setCantidad(item.getCantidad());
 						relacionesModificadas.add(rvpActual);
 					}

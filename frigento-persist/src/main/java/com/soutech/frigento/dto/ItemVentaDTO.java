@@ -19,6 +19,7 @@ public class ItemVentaDTO implements Serializable {
 	
 	private BigDecimal importeVenta;
 	private Integer relProductoCategoriaId;
+	private Float cantidadModificada;
 	
 	public BigDecimal getImporteVenta() {
 		return importeVenta;
@@ -50,6 +51,18 @@ public class ItemVentaDTO implements Serializable {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	public Float getCantidadModificada() {
+		return cantidadModificada;
+	}
+
+	/**
+	 * Indica la cantidad a aplicar sobre el stock del producto
+	 * @param cantidadModificada
+	 */
+	public void setCantidadModificada(Float cantidadModificada) {
+		this.cantidadModificada = cantidadModificada;
 	}
 
 }

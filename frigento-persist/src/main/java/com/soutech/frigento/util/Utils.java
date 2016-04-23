@@ -33,7 +33,9 @@ public class Utils {
 	}
 	
 	public static String generarNroRemito(Venta venta) {
-		StringBuilder nro = new StringBuilder("V01-");
+		StringBuilder nro = new StringBuilder("V");
+		nro.append(aTextoConCeroIzqSegunCantDigitos(venta.getVersion().intValue(), 2));
+		nro.append("-");
 		nro.append(aTextoConCeroIzqSegunCantDigitos(venta.getId(), 8));
 		return nro.toString();
 	}

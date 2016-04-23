@@ -6,11 +6,15 @@
 	$(document).ready(function(){
 		
 		visualizarEnvioMail();
-		//Si la pantalla se carga con el pedido en estado confirmado, no dejo el tilde de enviar correo por default
+		//Si la pantalla se carga con el venta en estado confirmado, no dejo el tilde de enviar correo por default
 		//Solo en caso de que no sea una carga de pantalla por validacion de errores
 		var tieneError = '${msgError}';
+		$('#msgError').text(tieneError);
+		
 		if($('#idEstado').val() == 2 && tieneError == ''){
-			$('#idEnvioMail').prop( "checked", false );
+			if('${not empty ventaForm.usuario.email}'){
+				$('#idEnvioMail').prop( "checked", false );
+			}
 		}
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
@@ -26,13 +30,7 @@
 		    }); 
 		}
 		
-		$('#datetimepickerPedidoFecha').datetimepicker({
-			ignoreReadonly: true,
-			maxDate: moment(),
-			locale: 'es'
-	    });
-		
-		$('#datetimepickerPedidoFechaEntrega').datetimepicker({
+		$('#datetimepickerVentaFechaEntrega').datetimepicker({
 			ignoreReadonly: true,
 			locale: 'es'
 	    });
@@ -48,6 +46,9 @@
 	
 	function visualizarEnvioMail(){
 		if($('#idEstado').val() == 2){
+			if('${empty ventaForm.usuario.email}'){
+				$('#idConfirmarContenido').html('<fmt:message key="venta.usuario.sin.email" />');
+			}
 			$('#idConfirmar').slideDown( "slow" );
 		}else{
 			$('#idConfirmar').hide();
@@ -58,37 +59,55 @@
 
 <div style="width: 80%; float: left; min-width: 300px">
 	<h3>
-		<fmt:message key="pedido.editar.title" />&nbsp;<fmt:message key="pedido.id" />:&nbsp;${pedidoForm.id}
+		<fmt:message key="venta.editar.title" />&nbsp;<fmt:message key="venta.id" />:&nbsp;${ventaForm.id}
 	</h3>
 	<p class="form-validate">
 		${msgError}
 	</p>
-	<c:url var="urlEditar" value="/pedido/editar" />
-	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="pedidoForm" id="idForm">
-	<form:hidden path="costo"/>
-	<form:hidden path="version"/>
+	<c:url var="urlEditar" value="/venta/editar" />
+	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm">
 	<form:hidden path="id"/>
+	<form:hidden path="usuario.email"/>
+	<form:hidden path="importe"/>
+	<form:hidden path="version"/>
+	<form:hidden path="fecha"/>
+	<form:hidden path="usuario.id"/>
+	<form:hidden path="usuario.categoriaProducto.id"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idFecha" style="white-space: nowrap;">
-					<fmt:message key="pedido.fecha" />
+					<fmt:message key="venta.fecha" />
 				</label>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-       			<div class='input-group date' id='datetimepickerPedidoFecha'>
-       				<form:input path="fecha" cssClass="form-control" id="idFecha" readonly="true"/>
-          				<span class="input-group-addon">
-               			<span class="glyphicon glyphicon-calendar"></span>
-           			</span>
-       			</div>
+   				<input type="text" readonly="readonly" value="${ventaForm.fecha}" class="form-control">
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="fecha" cssClass="form-validate" />
+				&nbsp;
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idFecha" style="white-space: nowrap;">
+					<fmt:message key="venta.usuario" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+   				<input type="text" readonly="readonly" value="${ventaForm.usuario.identificadoWeb}" class="form-control">
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				&nbsp;
 			</div>
         </div>
     </div>
@@ -96,7 +115,7 @@
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idEstado" style="white-space: nowrap;">
-					<fmt:message key="pedido.estado" />
+					<fmt:message key="venta.estado" />
 				</label>
 			</div>
         </div>
@@ -116,8 +135,8 @@
     <div class='row' id="idConfirmar">
     	<div class='col-sm-4'>&nbsp;</div>
         <div class='col-sm-8'>    
-			<div class="form-group" >
-				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="pedido.enviar.mail" />
+			<div class="form-group" id="idConfirmarContenido">
+				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="venta.enviar.mail" />
 			</div>
         </div>
     </div>
@@ -125,13 +144,13 @@
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idFechaEntregar" style="white-space: nowrap;">
-					<fmt:message key="pedido.fecha.entregar" />
+					<fmt:message key="venta.fecha.entregar" />
 				</label>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-             			<div class='input-group date' id='datetimepickerPedidoFechaEntrega'>
+             			<div class='input-group date' id='datetimepickerVentaFechaEntrega'>
              				<form:input path="fechaAEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
                 				<span class="input-group-addon">
                      			<span class="glyphicon glyphicon-calendar"></span>
@@ -150,18 +169,20 @@
 			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
 			        <thead>
 			            <tr>
-			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.cantidad.caja" /></th>
-			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.producto" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="venta.item.cantidad.kg" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="venta.item.producto" /></th>
 			            </tr>
 			        </thead>
 			        <tbody>
-			        <c:forEach var="item" items="${pedidoForm.items}" varStatus="status">
+			        <c:forEach var="item" items="${ventaForm.items}" varStatus="status">
 			        	<tr>
 			        		<td style="white-space: nowrap;">
-			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="${item.cantidad}" />
+			        			<form:input path="items[${status.index}].cantidad" cssClass="form-control" id="idCantidad-${status.index}" placeholder="0" />
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
+			        			<form:hidden path="items[${status.index}].importeVenta"/>
+								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
 			        		</td>
 			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>
 			        	</tr>
@@ -170,7 +191,11 @@
 			</table>
 		</div>
 	</div>
-	<br/>
+	<div class='row'>
+		<div class='col-sm-12'>
+			<form:errors path="*" cssClass="form-validate" />
+		</div>
+	</div>
 	<div class='row'>
 		<div class='col-sm-4'>&nbsp;</div>
         <div class='col-sm-8'> 
@@ -180,7 +205,7 @@
 						onclick="javascript:submitInBody($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=desc')">
+						onclick="javascript:loadInBody('venta?sortFieldName=id&sortOrder=desc')">
 			</div>
         </div>
     </div>

@@ -30,7 +30,7 @@
 		    }); 
 		}
 		
-		$('#datetimepickerPedidoFechaEntrega').datetimepicker({
+		$('#datetimepickerVentaFechaEntrega').datetimepicker({
 			ignoreReadonly: true,
 			locale: 'es'
 	    });
@@ -104,7 +104,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-             			<div class='input-group date' id='datetimepickerPedidoFechaEntrega'>
+             			<div class='input-group date' id='datetimepickerVentaFechaEntrega'>
              				<form:input path="fechaAEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
                 				<span class="input-group-addon">
                      			<span class="glyphicon glyphicon-calendar"></span>

@@ -45,6 +45,7 @@ public class VentaServiceImpl implements VentaService {
 			List<RelVentaProducto> relaciones = new ArrayList<RelVentaProducto>();
 			for (ItemVentaDTO item : venta.getItems()) {
 				if(item.getCantidad() != (short)0){
+					item.setCantidadModificada(item.getCantidad());
 					hayPedido = Boolean.TRUE;
 					RelVentaProducto rpp = new RelVentaProducto();
 					rpp.setVenta(venta);
@@ -140,7 +141,7 @@ public class VentaServiceImpl implements VentaService {
 			
 			//Decrementar el stock
 			if(ventaActual.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
-				controlStockProducto.decrementarStockBy(ventaActual);
+				controlStockProducto.decrementarStockBy(ventaModificada);
 			}
 			
 		}finally{
@@ -150,13 +151,15 @@ public class VentaServiceImpl implements VentaService {
 		return hayPedido;
 	}
 
+	@Transactional
 	@Override
 	public void anularVenta(Integer ventaId) {
-		Venta venta = ventaDao.findById(ventaId);
+		List<RelVentaProducto> relVtaProdList = relVentaProductoDao.findAllByVenta(ventaId, null, null);
+		Venta venta = relVtaProdList.get(0).getVenta();
 		
 		if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
 			//Tengo que incrementar el stock
-			controlStockProducto.incrementarStockBy(venta);
+			controlStockProducto.incrementarStockBy(relVtaProdList);
 		}
 		
 		Estado estado = new Estado();
