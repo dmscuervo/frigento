@@ -368,7 +368,7 @@ public class VentaController extends GenericController {
 			return "venta/grilla";
 		}
 		uiModel.addAttribute("ventaForm", venta);
-		return "venta/anular";
+		return "venta/cumplir";
 	}
 
 	@RequestMapping(value = "/cumplir", method = RequestMethod.POST, produces = "text/html")
