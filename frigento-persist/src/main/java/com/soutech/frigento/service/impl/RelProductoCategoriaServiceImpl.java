@@ -117,11 +117,12 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 						
 						throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
 						
-					}else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())){
-						
-						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
-						
 					}
+//					else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())){
+//						
+//						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
+//						
+//					}
 					
 					RelProductoCategoria rpc = relProductoCategoriaDao.findActualByDupla(relProdCat.getCategoria().getId(), producto.getId());
 					if(rpc != null){
@@ -139,12 +140,13 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 						
 						throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
 						
-					}else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
-							|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
-						
-						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
-						
 					}
+//					else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
+//							|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
+//						
+//						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
+//						
+//					}
 					//Esto se hace para asociar al objecto relProdCat a la sessión, ya que sino nos daria el siguiente error:
 					//A different object with the same identifier value was already associated with the session
 					relProdCat = relProductoCategoriaDao.merge(relProdCat);

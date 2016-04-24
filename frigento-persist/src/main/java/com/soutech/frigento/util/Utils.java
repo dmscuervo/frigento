@@ -103,4 +103,23 @@ public class Utils {
 		}
 		return Boolean.FALSE;
 	}
+
+	public static Date dameFechaMasAnitgua(Date fecha1, Date fecha2, Date fecha3) {
+		Date fechaMinD = null;
+		if(fecha1 != null){
+    		fecha2 = fecha2 == null ? fecha1 : fecha2;
+    		fecha3 = fecha3 == null ? fecha1 : fecha3;
+    	}else if(fecha2 != null){
+    		fecha1 = fecha1 == null ? fecha2 : fecha1;
+    		fecha3 = fecha3 == null ? fecha2 : fecha3;
+    	}else if(fecha3 != null){
+    		fecha1 = fecha1 == null ? fecha3 : fecha1;
+    		fecha2 = fecha2 == null ? fecha3 : fecha2;
+    	}
+    	if(fecha1 != null){
+    		fechaMinD = fecha1.before(fecha2) ? fecha1 : fecha2;
+    		fechaMinD = fechaMinD.before(fecha3) ? fechaMinD : fecha3;
+    	}
+		return fechaMinD;
+	}
 }

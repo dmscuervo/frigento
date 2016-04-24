@@ -29,6 +29,7 @@ import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
@@ -73,13 +74,13 @@ public class ProductoController extends GenericController {
         }
         try {
 			productoService.saveProducto(productoForm);
-			uiModel.asMap().clear();
 		} catch (EntityExistException e) {
 			String key = "EntityExist.productoForm."+e.getField();
 			bindingResult.rejectValue(e.getField(), key);
 			logger.info(getMessage(key));
 			return "producto/alta";
 		}
+        uiModel.asMap().clear();
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.alta.ok", productoForm.getDescripcion())));
     }
     
@@ -106,21 +107,10 @@ public class ProductoController extends GenericController {
     	Date fechaHastaMin2 = productoCostoService.obtenerMinFechaHasta(id);
     	Date fechaHastaMin3 = relPedidoProductoService.obtenerMinFechaPedido(id);
     	//Me quedo con la mas vieja
-    	Date fechaMinD = new Date();
     	//Inicializo valores en caso de nulos
-    	if(fechaHastaMin != null){
-    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin : fechaHastaMin2;
-    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin : fechaHastaMin3;
-    	}else if(fechaHastaMin2 != null){
-    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin2 : fechaHastaMin;
-    		fechaHastaMin3 = fechaHastaMin3 == null ? fechaHastaMin2 : fechaHastaMin3;
-    	}else if(fechaHastaMin3 != null){
-    		fechaHastaMin = fechaHastaMin == null ? fechaHastaMin3 : fechaHastaMin;
-    		fechaHastaMin2 = fechaHastaMin2 == null ? fechaHastaMin3 : fechaHastaMin2;
-    	}
-    	if(fechaHastaMin != null){
-    		fechaMinD = fechaHastaMin.before(fechaHastaMin2) ? fechaHastaMin : fechaHastaMin2;
-    		fechaMinD = fechaMinD.before(fechaHastaMin3) ? fechaMinD : fechaHastaMin3;
+    	Date fechaMinD = Utils.dameFechaMasAnitgua(fechaHastaMin, fechaHastaMin2, fechaHastaMin3);
+    	if(fechaMinD == null){
+    		fechaMinD = new Date();
     	}
     	
     	uiModel.addAttribute("maxDateAlta", fechaMinD.getTime());
@@ -136,14 +126,13 @@ public class ProductoController extends GenericController {
     	uiModel.addAttribute("productoForm", prod);
         return "producto/editar";
     }
-    
-    @RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
+
+	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
     public String edit(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/editar";
         }
-        uiModel.asMap().clear();
         try {
 			productoService.actualizarProducto(productoForm);
 		} catch (StockAlteradoException e) {
@@ -157,6 +146,7 @@ public class ProductoController extends GenericController {
 			httpServletRequest.setAttribute("msgError", getMessage(e.getKeyMessage(), e.getArgs()));
 	        return "producto/editar";
 		}
+        uiModel.asMap().clear();
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("producto.editar.ok", productoForm.getDescripcion())));
     }
     

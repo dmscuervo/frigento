@@ -18,7 +18,7 @@ public class RelPedidoProductoServiceImpl implements RelPedidoProductoService {
 
 	@Override
 	public Date obtenerMinFechaPedido(Integer idProd) {
-		return relPedidoProductoDao.findMinFechaPedido(idProd);
+		return relPedidoProductoDao.findMinFechaPedidoNoAnulado(idProd);
 	}
 
 	@Override

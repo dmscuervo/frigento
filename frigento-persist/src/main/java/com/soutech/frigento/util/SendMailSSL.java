@@ -27,7 +27,7 @@ import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Venta;
-import com.sun.xml.internal.ws.util.ByteArrayDataSource;
+import com.sun.xml.ws.util.ByteArrayDataSource;
 
 @Component
 public class SendMailSSL {

@@ -6,7 +6,7 @@ import com.soutech.frigento.model.RelPedidoProducto;
 
 public interface RelPedidoProductoDao extends IDao<RelPedidoProducto, Long> {
 
-	Date findMinFechaPedido(Integer idProd);
+	Date findMinFechaPedidoNoAnulado(Integer idProd);
 
 	List<RelPedidoProducto> findAll(Short[] estadoPedidoId, String sortFieldName, String sortOrder);
 

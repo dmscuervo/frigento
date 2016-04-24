@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.soutech.frigento.concurrence.ControlPedidoVsCostoProducto;
 import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
+import com.soutech.frigento.dao.RelPedidoProductoDao;
 import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
@@ -35,6 +36,8 @@ public class ProductoServiceImpl implements ProductoService {
     ProductoCostoDao productoCostoDao;
 	@Autowired
     RelProductoCategoriaDao relProductoCategoriaDao;
+	@Autowired
+	RelPedidoProductoDao relPedidoProductoDao;
 	@Autowired
     ControlStockProducto controlStockProducto;
 
@@ -68,24 +71,27 @@ public class ProductoServiceImpl implements ProductoService {
 	public void actualizarProducto(Producto producto) throws StockAlteradoException, FechaDesdeException {
 		//Chequeo si cambio la fecha de alta del producto. En dicho caso, veo si es aceptable el cambio de fecha
 		//Para eso controlo que no se superponga con un rango de fechas existente en productoCosto
-		List<ProductoCosto> prodCostoList = new ArrayList<ProductoCosto>();
 		Producto productoActual = productoDao.load(producto.getId());
 		String condicion = "";
+		Date maxFHastaPosible = null;
+		List<ProductoCosto> prodCostoList = new ArrayList<ProductoCosto>();
 		if(productoActual.getFechaAlta().before(producto.getFechaAlta())){
 			Date fechaIni = productoActual.getFechaAlta();
 			Date fechaFin = producto.getFechaAlta();
 			prodCostoList = productoCostoDao.findAllFechaDesdeEntre(producto.getId(), fechaIni, fechaFin, "fechaDesde", "asc");
-			condicion = "mayor";
+			Date maxFHastaPC = null;
+			if(prodCostoList.size() > 1){
+				maxFHastaPC = prodCostoList.get(1).getFechaDesde();
+			}
 			
-		}else if(productoActual.getFechaAlta().after(producto.getFechaAlta())){
-			Date fechaIni = producto.getFechaAlta();
-			Date fechaFin = productoActual.getFechaAlta();
-			prodCostoList = productoCostoDao.findAllFechaDesdeEntre(producto.getId(), fechaIni, fechaFin, "fechaDesde", "desc");
-			condicion = "menor";
+			Date maxFHastaRPC = relProductoCategoriaDao.findMinDate(productoActual.getId());
+			Date maxFHastaPed = relPedidoProductoDao.findMinFechaPedidoNoAnulado(productoActual.getId());
+			maxFHastaPosible = Utils.dameFechaMasAnitgua(maxFHastaPC, maxFHastaRPC, maxFHastaPed);
+			condicion = "mayor";
 		}
 		
-		if(!prodCostoList.isEmpty()){
-			throw new FechaDesdeException("producto.edit.fecha.error", new Object[]{condicion, Utils.formatDate(prodCostoList.get(0).getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
+		if(maxFHastaPosible != null){
+			throw new FechaDesdeException("producto.edit.fecha.error", new Object[]{condicion, Utils.formatDate(maxFHastaPosible, Utils.SDF_DDMMYYYY_HHMM)});
 		}
 		//Primero actualizo productoCosto
 		ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(producto.getId(), productoActual.getFechaAlta());

@@ -9,18 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.RelPedidoProductoDao;
 import com.soutech.frigento.model.RelPedidoProducto;
+import com.soutech.frigento.util.Constantes;
 
 @Repository
 @Transactional(readOnly=true)
 public class RelPedidoProductoDaoImpl extends AbstractSpringDao<RelPedidoProducto, Long> implements RelPedidoProductoDao {
 
 	@Override
-	public Date findMinFechaPedido(Integer idProd) {
+	public Date findMinFechaPedidoNoAnulado(Integer idProd) {
 		StringBuilder hql = new StringBuilder("select min(rpp.pedido.fecha) from ");
 		hql.append(RelPedidoProducto.class.getCanonicalName());
 		hql.append(" rpp where rpp.productoCosto.producto.id = :idProd ");
+		hql.append("and rpp.pedido.estado.id <> :idEstadoAnulado ");
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("idProd", idProd);
+		query.setParameter("idEstadoAnulado", new Short(Constantes.ESTADO_PEDIDO_ANULADO));
 		return (Date) query.uniqueResult();
 	}
 
