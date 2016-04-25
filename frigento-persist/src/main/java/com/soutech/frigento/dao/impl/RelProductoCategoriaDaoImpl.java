@@ -142,5 +142,15 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		query.setParameter("fecha", fecha);
 		return (RelProductoCategoria) query.uniqueResult();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelProductoCategoria> findAllActuales() {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.fechaHasta is null ");
+		Query query = getSession().createQuery(hql.toString());
+		return query.list();
+	}
 	
 }

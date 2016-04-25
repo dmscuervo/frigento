@@ -28,6 +28,7 @@
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="categoria.descripcion" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="categoria.cant.productos" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="categoria.grilla.acciones" /></th>
             </tr>
         </thead>
@@ -36,9 +37,15 @@
         	<tr>
         		<td style="white-space: nowrap;">${cat.descripcion}</td>
         		<td style="white-space: nowrap;">
+        			<c:choose>
+        				<c:when test="${empty mapaCant[cat.id]}">0</c:when>
+        				<c:otherwise>${mapaCant[cat.id]}</c:otherwise>
+        			</c:choose>
+        		</td>
+        		<td style="white-space: nowrap;">
         			<i class="fa fa-edit" onclick="loadInBody('categoria/${cat.id}?editar')"></i>
         			&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('categoria/${cat.id}?borrar')"></i>
-        			&nbsp;&nbsp;<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar=&estado=V')"></i>
+        			&nbsp;&nbsp;<i class="fa fa-stack-overflow" onclick="loadInBody('relProdCat/${cat.id}?listar&estado=V')"></i>
 				</td>
         	</tr>
         </c:forEach>

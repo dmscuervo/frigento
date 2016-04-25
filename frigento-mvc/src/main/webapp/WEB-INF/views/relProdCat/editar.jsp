@@ -49,6 +49,8 @@
 			calcularPrecio();
 		});
 		
+		$('#idIncremento').focus();
+		
 	});
 
 	function calcularPrecio(){

@@ -3,8 +3,11 @@ package com.soutech.frigento.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ import com.soutech.frigento.util.Utils;
 @Service
 public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaService {
 
+	private Logger logger = Logger.getLogger(this.getClass());
 	@Autowired
     RelProductoCategoriaDao relProductoCategoriaDao;
 	
@@ -88,7 +92,8 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 				}
 				//Controlo fechas con alta del producto
 				if(!Utils.esMayorIgual(rpcAdd.getFechaDesde(), producto.getFechaAlta())){
-					
+					logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcAdd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
+					logger.debug("Fecha alta del producto: " + Utils.formatDate(producto.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
 					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcAdd.getFechaDesde()});
 					
 				}
@@ -108,7 +113,8 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 				producto = productoDao.findByCodigo(rpcUpd.getProducto().getCodigo());
 				//Controlo fechas con alta del producto
 				if(!Utils.esMayorIgual(rpcUpd.getFechaDesde(), producto.getFechaAlta())){
-					
+					logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
+					logger.debug("Fecha alta del producto: " + Utils.formatDate(producto.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
 					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcUpd.getFechaDesde()});
 					
 				}
@@ -153,6 +159,24 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	@Override
 	public RelProductoCategoria obtenerById(Integer idProdCat) {
 		return relProductoCategoriaDao.findById(idProdCat);
+	}
+
+	@Override
+	public List<RelProductoCategoria> obtenerRelaciones(String sortFieldName, String sortOrder) {
+		return relProductoCategoriaDao.findAll(sortFieldName, sortOrder);
+	}
+
+	@Override
+	public Map<Short, Integer> obtenerCantProductoVigentesXCat() {
+		List<RelProductoCategoria> rel = relProductoCategoriaDao.findAllActuales();
+		Map<Short, Integer> mapa = new HashMap<Short, Integer>();
+		for (RelProductoCategoria rpc : rel) {
+			if(!mapa.containsKey(rpc.getCategoria().getId())){
+				mapa.put(rpc.getCategoria().getId(), 0);
+			}
+			mapa.put(rpc.getCategoria().getId(), mapa.get(rpc.getCategoria().getId())+1);
+		}
+		return mapa;
 	}
 	
 }

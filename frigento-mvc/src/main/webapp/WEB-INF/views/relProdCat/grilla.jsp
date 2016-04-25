@@ -38,6 +38,9 @@
 	function generar(path){
 		var url = '${pathBase}' + path;
 		$('#divVentanaGrilla').load(url, function(data){
+			$('#idModalAlta').on('shown.bs.modal', function () {
+				$('#idIncremento').focus();
+			})  
 			$('#idModalAlta').modal('show');
 		});
 	}

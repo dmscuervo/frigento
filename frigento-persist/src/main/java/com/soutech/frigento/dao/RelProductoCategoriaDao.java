@@ -20,4 +20,6 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 
 	RelProductoCategoria findByDupla(Short id, Integer id2, Date fecha);
 
+	List<RelProductoCategoria> findAllActuales();
+
 }

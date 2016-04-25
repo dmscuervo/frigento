@@ -2,6 +2,7 @@ package com.soutech.frigento.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.ProductoInexistenteException;
@@ -31,5 +32,9 @@ public interface RelProductoCategoriaService {
 	List<RelProductoCategoria> obtenerRelaciones(Integer idProd, Short idCat);
 	
 	RelProductoCategoria obtenerById(Integer idProdCat);
+
+	List<RelProductoCategoria> obtenerRelaciones(String sortFieldName, String sortOrder);
+
+	Map<Short, Integer> obtenerCantProductoVigentesXCat();
 
 }

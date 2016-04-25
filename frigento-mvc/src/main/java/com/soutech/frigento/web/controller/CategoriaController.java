@@ -1,6 +1,7 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import org.springframework.web.util.WebUtils;
 import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.service.CategoriaService;
+import com.soutech.frigento.service.RelProductoCategoriaService;
 
 @Controller
 @RequestMapping(value="/categoria")
@@ -34,6 +36,8 @@ public class CategoriaController extends GenericController {
     
     @Autowired
     public CategoriaService categoriaService;
+    @Autowired
+    public RelProductoCategoriaService relProductoCategoriaService;
 
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
@@ -61,6 +65,7 @@ public class CategoriaController extends GenericController {
     @RequestMapping(produces = "text/html")
     public String listar(@RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
         uiModel.addAttribute("categorias", categoriaService.obtenerCategorias(sortFieldName, sortOrder));
+        uiModel.addAttribute("mapaCant", relProductoCategoriaService.obtenerCantProductoVigentesXCat());
         if(informar != null){
         	uiModel.addAttribute("informar", informar);
         }

@@ -59,7 +59,7 @@ public class RelProductoCategoriaController extends GenericController {
     protected final Log logger = LogFactory.getLog(getClass());
     private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA);
     public static String BUSQUEDA_DEFAULT(Short idCat, String estadoRel){
-    	return "relProdCat/"+idCat+"?listar=&estado="+estadoRel;
+    	return "relProdCat/"+idCat+"?listar&estado="+estadoRel;
     }
     
     @InitBinder
@@ -330,7 +330,7 @@ public class RelProductoCategoriaController extends GenericController {
 			return "relProdCat/grilla";
 		}
     	String estadoVisualizado = (String) uiModel.asMap().get("estadoSel");
-    	return "redirect:/".concat(BUSQUEDA_DEFAULT(categoria.getId(), estadoVisualizado)).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
+    	return listar(categoria.getId(), estadoVisualizado, getMessage("relProdCat.confirmar.ok"), uiModel);
     }
  
     @SuppressWarnings("unchecked")
