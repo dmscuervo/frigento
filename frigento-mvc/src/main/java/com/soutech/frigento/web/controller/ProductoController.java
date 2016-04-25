@@ -26,6 +26,7 @@ import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.ProductoCosto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
@@ -137,7 +138,10 @@ public class ProductoController extends GenericController {
         }
         //Si cambio el costo, me fijo si tiene categorias para advertir
     	if(productoForm.getCostoPrevio() != null && !productoForm.getCostoPrevio().equals(productoForm.getCostoActual())){
-    		List<RelProductoCategoria> relaciones = relProductoCategoriaService.obtenerCategoriasProducto(productoForm.getId(), null);
+    		//Obtengo la relacion prod-costo que se modificara
+    		ProductoCosto prodCosto = productoCostoService.obtenerActual(productoForm.getId());
+    		//Busco si tiene relaciones con categorias para la fecha de prod-costo
+    		List<RelProductoCategoria> relaciones = relProductoCategoriaService.obtenerRelacionesAPartirDe(productoForm.getId(), prodCosto.getFechaDesde());
     		if(!relaciones.isEmpty()){
     			uiModel.addAttribute("productoForm", productoForm);
     	    	return "producto/editConfirmar";

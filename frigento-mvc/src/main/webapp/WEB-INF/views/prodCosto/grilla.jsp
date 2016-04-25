@@ -80,7 +80,9 @@
 		<fmt:param value="${producto.codigo} - ${producto.descripcion}" />
 	</fmt:message>
 </h3>
-<br/>
+<p class="form-validate">
+	${msgRespuesta}
+</p>
 <c:url var="urlConfirmar" value="/prodCosto/confirmar" />
 <form:form action="${urlConfirmar}" method="post" class="form-horizontal" commandName="prodCostoForm" id="idForm" autocomplete="off">
 <form:hidden path="prodId"/>
@@ -146,21 +148,4 @@
 </form:form>
 
 <div id="divVentanaGrilla">
-</div>
-
-<div class="modal fade" id="idModalMensaje" tabindex="-1" role="dialog" style="visibility: hidden;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><fmt:message key="mensaje.title" /></h4>
-      </div>
-      <div class="modal-body">
-        <p>${informar}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.aceptar"/></button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
 </div>

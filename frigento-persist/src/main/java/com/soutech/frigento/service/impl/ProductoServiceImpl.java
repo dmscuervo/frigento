@@ -85,10 +85,14 @@ public class ProductoServiceImpl implements ProductoService {
 			throw new FechaDesdeException("producto.edit.fecha.error", new Object[]{condicion, Utils.formatDate(maxFHastaPosible, Utils.SDF_DDMMYYYY_HHMM)});
 		}
 		//Primero actualizo productoCosto
-		ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(producto.getId(), productoActual.getFechaAlta());
-		prodCosto.setCosto(producto.getCostoActual());
-		prodCosto.setFechaDesde(producto.getFechaAlta());
-		productoCostoDao.update(prodCosto);
+		ProductoCosto prodCostoActual = productoCostoDao.findCostoActual(producto.getId());
+		prodCostoActual.setCosto(producto.getCostoActual());
+		Date maxFechaDesdeAnterior = productoCostoDao.findMaxFechaDesdeAnterior(producto.getId(), prodCostoActual.getFechaDesde());
+		if(maxFechaDesdeAnterior == null){
+			//No tiene otros productos costo. Igualo las fechas
+			prodCostoActual.setFechaDesde(producto.getFechaAlta());
+		}
+		productoCostoDao.update(prodCostoActual);
 		//Esto se hace para asociar al objecto producto a la sessión, ya que sino nos daria el siguiente error:
 		//A different object with the same identifier value was already associated with the session
 		//Debido a que tenemos otro objecto (productoActual) con el mismo id obtenido durante la session
@@ -137,6 +141,10 @@ public class ProductoServiceImpl implements ProductoService {
 				if(i == 0){
 					ControlPedidoVsCostoProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("prodCosto/").concat(String.valueOf(relProdCat.getProducto().getId())).concat("?estado=A"), "prodCosto.concurrencia.pedido.error");
 				}
+				ProductoCosto costoActual = productoCostoDao.findCostoActual(relProdCat.getProducto().getId());
+				if(Utils.esMenor(fechaDesde, costoActual.getFechaDesde())){
+					throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{Utils.formatDate(costoActual.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
+				}
 				if(!producto.getCostoActual().equals(costo)){
 					//Hubo cambio de costo
 					//Primero Controlo la fecha desde
@@ -145,7 +153,6 @@ public class ProductoServiceImpl implements ProductoService {
 						throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{prodCostoActual.getFechaDesde()});
 					}
 					producto.setCostoActual(costo);
-					producto.setFechaAlta(fechaDesde);
 					producto.setStockControlado(Boolean.TRUE);//No necesito control de stock
 					productoDao.update(producto);
 					//Finalizo la relacion actual y creo una nueva
@@ -154,7 +161,7 @@ public class ProductoServiceImpl implements ProductoService {
 					
 					ProductoCosto rpc = new ProductoCosto();
 					rpc.setCosto(producto.getCostoActual());
-					rpc.setFechaDesde(producto.getFechaAlta());
+					rpc.setFechaDesde(fechaDesde);
 					rpc.setProducto(producto);
 					productoCostoDao.save(rpc);
 					huboCambios = true;
@@ -164,7 +171,7 @@ public class ProductoServiceImpl implements ProductoService {
 					//Hubo cambios de incremento en categorias
 					//Primero Controlo la fecha desde
 					if(fechaDesde.before(relProdCat.getFechaDesde())){
-						throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{relProdCat.getFechaDesde()});
+						throw new FechaDesdeException("prodCosto.fecha.desde.error", new Object[]{Utils.formatDate(relProdCat.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
 					}
 					relProdCat.setFechaHasta(fechaDesde);
 					relProductoCategoriaDao.update(relProdCat);

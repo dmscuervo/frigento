@@ -22,4 +22,8 @@ public interface RelProductoCategoriaDao extends IDao<RelProductoCategoria, Inte
 
 	List<RelProductoCategoria> findAllActuales();
 
+	List<RelProductoCategoria> findBy(Integer idProd, Date fecha);
+
+	List<RelProductoCategoria> findPosterioresA(Integer idProd, Date fechaDesde);
+
 }

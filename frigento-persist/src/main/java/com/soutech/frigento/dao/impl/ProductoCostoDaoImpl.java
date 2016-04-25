@@ -123,4 +123,29 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		return query.list();
 	}
 
+	@Override
+	public ProductoCosto findFechaDesde(Integer idProd, Date fechaDesde) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc ");
+		hql.append("where pc.producto.id = :idProd ");
+		hql.append("and pc.fechaDesde = :fechaDesde ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		query.setParameter("fechaDesde", fechaDesde);
+		return (ProductoCosto) query.uniqueResult();
+	}
+	
+	@Override
+	public Date findMaxFechaDesdeAnterior(Integer idProd, Date fechaDesde) {
+		StringBuilder hql = new StringBuilder("select max(pc.fechaDesde) from ");
+		hql.append(ProductoCosto.class.getCanonicalName());
+		hql.append(" pc ");
+		hql.append("where pc.producto.id = :idProd ");
+		hql.append("and pc.fechaDesde < :fechaDesde ");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("idProd", idProd);
+		query.setParameter("fechaDesde", fechaDesde);
+		return (Date) query.uniqueResult();
+	}
 }

@@ -152,5 +152,32 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 		Query query = getSession().createQuery(hql.toString());
 		return query.list();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelProductoCategoria> findBy(Integer idProd, Date fecha) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.producto.id = :prodId ");
+		hql.append(" and r.fechaDesde <= :fecha");
+		hql.append(" and (r.fechaHasta is null or r.fechaHasta > :fecha)");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("prodId", idProd);
+		query.setParameter("fecha", fecha);
+		return query.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RelProductoCategoria> findPosterioresA(Integer idProd, Date fechaDesde) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(RelProductoCategoria.class.getCanonicalName());
+		hql.append(" r where r.producto.id = :prodId ");
+		hql.append(" and r.fechaDesde >= :fecha");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("prodId", idProd);
+		query.setParameter("fecha", fechaDesde);
+		return query.list();
+	}
 	
 }

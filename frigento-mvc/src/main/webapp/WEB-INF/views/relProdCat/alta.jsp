@@ -37,7 +37,7 @@
 		var rpcFechaDesde = $("#datetimepickerRPCAlta").find("input").val();
 		var incremento = $('#idIncremento').val();
 		if(codProd != '-1' && incremento != ''){
-			var costo = 0;
+			var costo = '';
 			//Recorro todas las relaciones productoCosto
 			$.each(costosMap[codProd], function(i,item){
 				var fechaDesde = costosMap[codProd][i].fechaDesde;
@@ -46,14 +46,12 @@
 				var mFechaDesde = moment(fechaDesde);
 				var mFechaHasta = moment(fechaHasta);
 				var mRpcFechaDesde = moment(rpcFechaDesde,'DD/MM/YYYY HH:mm');
-				
 				if(mFechaDesde.isSameOrBefore(moment(mRpcFechaDesde))
 						&& (fechaHasta == null || mFechaHasta.isAfter(moment(mRpcFechaDesde)))){
 					costo = costoFecha;
 				}
-				
 			});
-			if(costo == ''){
+			if(costo === ''){
 				//No hay un costo segun la fecha elegida
 				$('#idMessageError').text('No hay un costo para la fecha seleccionada');
 				$('#btAgregar').prop('disabled', true);

@@ -37,4 +37,8 @@ public interface RelProductoCategoriaService {
 
 	Map<Short, Integer> obtenerCantProductoVigentesXCat();
 
+	List<RelProductoCategoria> obtenerRelacion(Integer idProd, Date fecha);
+
+	List<RelProductoCategoria> obtenerRelacionesAPartirDe(Integer idProd, Date fechaDesde);
+
 }

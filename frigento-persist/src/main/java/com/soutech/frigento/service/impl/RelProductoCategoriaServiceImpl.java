@@ -94,7 +94,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 				if(!Utils.esMayorIgual(rpcAdd.getFechaDesde(), producto.getFechaAlta())){
 					logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcAdd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
 					logger.debug("Fecha alta del producto: " + Utils.formatDate(producto.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
-					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcAdd.getFechaDesde()});
+					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), Utils.formatDate(rpcAdd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
 					
 				}
 //				else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())){
@@ -115,15 +115,30 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 				if(!Utils.esMayorIgual(rpcUpd.getFechaDesde(), producto.getFechaAlta())){
 					logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
 					logger.debug("Fecha alta del producto: " + Utils.formatDate(producto.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
-					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcUpd.getFechaDesde()});
+					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
 					
 				}
+				//Chequeo si cambio la fecha desde
+				RelProductoCategoria rpcActual = relProductoCategoriaDao.findById(rpcUpd.getId());
+				if(!rpcActual.getFechaDesde().equals(rpcUpd.getFechaDesde())){
+					ProductoCosto productoCosto = productoCostoDao.findFechaDesde(producto.getId(), rpcUpd.getFechaDesde());
+					Date maxFechaDesdeAnterior = productoCostoDao.findMaxFechaDesdeAnterior(producto.getId(), rpcUpd.getFechaDesde());
+					if(maxFechaDesdeAnterior != null && !Utils.esMenor(maxFechaDesdeAnterior, rpcUpd.getFechaDesde())){
+						logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
+						logger.debug("Fecha Desde de la relacion anterior: " + Utils.formatDate(maxFechaDesdeAnterior, Utils.SDF_DDMMYYYY_HHMM));
+						throw new ProductoInexistenteException("relProdCatForm.fechaDesde.anterior", new Object[]{Utils.formatDate(maxFechaDesdeAnterior, Utils.SDF_DDMMYYYY_HHMM)});
+					}
+					productoCosto.setFechaDesde(rpcUpd.getFechaDesde());
+					productoCostoDao.update(productoCosto);
+				}
+				
 //				else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
 //						|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
 //					
 //					throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
 //					
 //				}
+				rpcUpd = relProductoCategoriaDao.merge(rpcUpd);
 				relProductoCategoriaDao.update(rpcUpd);
 			}
 			
@@ -177,6 +192,16 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 			mapa.put(rpc.getCategoria().getId(), mapa.get(rpc.getCategoria().getId())+1);
 		}
 		return mapa;
+	}
+
+	@Override
+	public List<RelProductoCategoria> obtenerRelacion(Integer idProd, Date fecha) {
+		return relProductoCategoriaDao.findBy(idProd, fecha);
+	}
+
+	@Override
+	public List<RelProductoCategoria> obtenerRelacionesAPartirDe(Integer idProd, Date fechaDesde) {
+		return relProductoCategoriaDao.findPosterioresA(idProd, fechaDesde);
 	}
 	
 }
