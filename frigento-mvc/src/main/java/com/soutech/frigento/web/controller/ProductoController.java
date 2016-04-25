@@ -2,6 +2,7 @@ package com.soutech.frigento.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
@@ -121,18 +123,36 @@ public class ProductoController extends GenericController {
         }
     	
     	prod.setStockPrevio(prod.getStock());
+    	prod.setCostoPrevio(prod.getCostoActual());
     	logger.info("La fechaAlta del producto a editar es: " + Utils.formatDate(prod.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
     	uiModel.addAttribute("productoForm", prod);
         return "producto/editar";
     }
-
-	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
-    public String edit(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    
+    @RequestMapping(value = "/validarEditar", method = RequestMethod.POST, produces = "text/html")
+    public String validarEditar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/editar";
         }
-        try {
+        //Si cambio el costo, me fijo si tiene categorias para advertir
+    	if(productoForm.getCostoPrevio() != null && !productoForm.getCostoPrevio().equals(productoForm.getCostoActual())){
+    		List<RelProductoCategoria> relaciones = relProductoCategoriaService.obtenerCategoriasProducto(productoForm.getId(), null);
+    		if(!relaciones.isEmpty()){
+    			uiModel.addAttribute("productoForm", productoForm);
+    	    	return "producto/editConfirmar";
+    		}
+    	}
+    	return edit(productoForm, bindingResult, uiModel, httpServletRequest);
+    }
+
+	@RequestMapping(value = "/editar", method = RequestMethod.POST, produces = "text/html")
+    public String edit(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+		formValidator.validate(productoForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+        	return "producto/editar";
+        }
+    	try {
 			productoService.actualizarProducto(productoForm);
 		} catch (StockAlteradoException e) {
 			logger.info("El producto a actualizar habia alterado su stock en pararelo. Se reintenta la edicion.");

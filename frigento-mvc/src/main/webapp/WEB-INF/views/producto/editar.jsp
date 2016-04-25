@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-
+<c:url var="pathBase" value="/" />
 
 <script type="text/javascript">
 	
@@ -12,6 +12,42 @@
         });
 		
 	});
+	
+	
+	function confirmarEdit(form){
+		
+		if(!bodyBlock){
+			blockControl($('#wrapper'));
+			bodyBlock = true;				
+		}
+		
+		$.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(result) {
+            	//Desbloqueo pantalla
+            	$('#wrapper').unblock();
+    			bodyBlock = false;
+    			//Cargo contenido
+    			//Si se requiere confirmacion, editConfirmar.jsp comienza con la etiqueta controlada a continuación 
+    			//Caso contrario es porque no requiere confirmacion y devuelve el resultado de la operacion directamente
+    			if(result.trim().startsWith('<!--CONFIRM')){
+    				$('#confirmacionEditar').html(result);
+    				$('#idModalAccion').modal('show');
+    			}else{
+    				//Desbloqueo pantalla
+                	$('#wrapper').unblock();
+        			bodyBlock = false;
+        			//Cargo contenido
+                	$('#page-wrapper').html(result);
+        			//Levanto Modal
+        			$('#idModalMensaje').modal('show');
+    			}
+			}
+		});
+	}
+
 </script>
 
 <div style="width: 50%; float: left; min-width: 300px">
@@ -21,10 +57,11 @@
 	<p class="form-validate">
 		${msgError}
 	</p>
-	<c:url var="urlEditar" value="/producto/editar" />
-	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+	<c:url var="urlValidarEditar" value="/producto/validarEditar" />
+	<form:form action="${urlValidarEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
 	<form:hidden path="id" />
 	<form:hidden path="stockPrevio"/>
+	<form:hidden path="costoPrevio"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -210,7 +247,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aplicar.cambios"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="confirmarEdit($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
 						onclick="javascript:loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')">
@@ -218,4 +255,6 @@
         </div>
     </div>
 	</form:form>
+</div>
+<div id="confirmacionEditar"></div>
 </div>

@@ -56,6 +56,8 @@ public class Producto implements Serializable {
     private Float stock;
     
     @Transient
+    private BigDecimal costoPrevio;
+    @Transient
     private Float stockPrevio;
     @Transient
     private Boolean stockControlado;
@@ -159,6 +161,14 @@ public class Producto implements Serializable {
 	public void setId(Integer id) {
         this.id = id;
     }
+
+	public BigDecimal getCostoPrevio() {
+		return costoPrevio;
+	}
+
+	public void setCostoPrevio(BigDecimal costoPrevio) {
+		this.costoPrevio = costoPrevio;
+	}
 
 	public Float getStockPrevio() {
 		return stockPrevio;

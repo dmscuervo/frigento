@@ -169,7 +169,8 @@ public class RelProductoCategoriaController extends GenericController {
     	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
     	//Vuelvo a incorporarlo como posible producto a seleccionar
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getCodigo().concat(" - ").concat(rpc.getProducto().getDescripcion()));
+    	//Value no lleva el codigo xq estoy obteniendo la descripcion desde la grilla, la cual ya contiene el codigo 
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
         return "relProdCat/editar";
     }
     
@@ -257,7 +258,8 @@ public class RelProductoCategoriaController extends GenericController {
     	//Fin Control de fecha
     	//Vuelvo a incorporarlo como posible producto a seleccionar
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getCodigo().concat(" - ").concat(rpc.getProducto().getDescripcion()));
+    	//Value no lleva el codigo xq estoy obteniendo la descripcion desde la grilla, la cual ya contiene el codigo 
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
     	lista.remove(index.intValue());
     	List<RelProductoCategoria> listaEliminados = (List<RelProductoCategoria>) uiModel.asMap().get("listaEliminados");
     	if(rpc.getId() != null){
