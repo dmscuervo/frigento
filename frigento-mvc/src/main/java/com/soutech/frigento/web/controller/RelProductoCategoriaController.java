@@ -52,14 +52,14 @@ import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 
 @Controller
 @RequestMapping(value="/relProdCat")
-@SessionAttributes(names={"categoria", "productosCategoria", "codProductosMap", "codProductosMasterMap", "codCostoJson"})
+@SessionAttributes(names={"categoria", "productosCategoria", "codProductosMap", "codProductosMasterMap", "codCostoJson", "listaAgregados", "listaModificados", "listaEliminados", "estadoSel"})
 @Secured({"ROLE_ADMIN"})
 public class RelProductoCategoriaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
     private final SimpleDateFormat sdf_desde_hasta = new SimpleDateFormat(Constantes.FORMATO_FECHA_DESDE_HASTA);
-    public static String BUSQUEDA_DEFAULT(Short idCat){
-    	return "relProdCat/"+idCat+"?listar=&estado=V";
+    public static String BUSQUEDA_DEFAULT(Short idCat, String estadoRel){
+    	return "relProdCat/"+idCat+"?listar=&estado="+estadoRel;
     }
     
     @InitBinder
@@ -144,9 +144,17 @@ public class RelProductoCategoriaController extends GenericController {
         //Habia una relacion vigente. La cierro
         if(relActual != null){
         	relActual.setFechaHasta(relProdCatForm.getFechaDesde());
+        	//La agrego a relaciones existentes en BD para borrar
+        	List<RelProductoCategoria> listaModificados = (List<RelProductoCategoria>) uiModel.asMap().get("listaModificados");
+        	if(listaModificados.contains(relActual)){
+        		listaModificados.remove(relActual);
+        	}
+            listaModificados.add(relActual);
         }
         //Fin Control de fecha
         lista.add(relProdCatForm);
+        List<RelProductoCategoria> listaAgregados = (List<RelProductoCategoria>) uiModel.asMap().get("listaAgregados");
+        listaAgregados.add(relProdCatForm);
         controlEditable(lista);
         codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
         return "relProdCat/grilla";
@@ -161,7 +169,7 @@ public class RelProductoCategoriaController extends GenericController {
     	uiModel.addAttribute("relProdCatForm", lista.get(index.intValue()));
     	//Vuelvo a incorporarlo como posible producto a seleccionar
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getCodigo().concat(" - ").concat(rpc.getProducto().getDescripcion()));
         return "relProdCat/editar";
     }
     
@@ -176,7 +184,6 @@ public class RelProductoCategoriaController extends GenericController {
     			return "ajax/value";
     		}
         }
-    	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
     	Map<String, String> codProductosMasterMap = (Map<String, String>) uiModel.asMap().get("codProductosMasterMap");
     	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
@@ -211,8 +218,25 @@ public class RelProductoCategoriaController extends GenericController {
         		
         }
         //Fin Control de fecha
-        codDescripcionMap.remove(relProdCatForm.getProducto().getCodigo());
         lista.set(relProdCatForm.getIndiceLista(), relProdCatForm);
+        List<RelProductoCategoria> listaModificados = (List<RelProductoCategoria>) uiModel.asMap().get("listaModificados");
+        if(relProdCatForm.getId() != null){
+        	//registro de la BD
+        	if(listaModificados.contains(relProdCatForm)){
+        		listaModificados.remove(relProdCatForm);
+        	}
+        	listaModificados.add(relProdCatForm);
+        }else{
+        	//registro nuevo. Lo actualizo en la lista de agregados
+        	List<RelProductoCategoria> listaAgregados = (List<RelProductoCategoria>) uiModel.asMap().get("listaAgregados");
+        	for (int i = 0; i < listaAgregados.size(); i++) {
+        		RelProductoCategoria relProdCatAgre = listaAgregados.get(i);
+        		if(relProdCatAgre.getProducto().getCodigo().equals(relProdCatForm.getProducto().getCodigo())){
+					listaAgregados.set(i, relProdCatForm);
+					break;
+				}
+			}
+        }
         controlEditable(lista);
         return "relProdCat/grilla";
     }
@@ -233,8 +257,23 @@ public class RelProductoCategoriaController extends GenericController {
     	//Fin Control de fecha
     	//Vuelvo a incorporarlo como posible producto a seleccionar
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getDescripcion());
+    	codDescripcionMap.put(rpc.getProducto().getCodigo(), rpc.getProducto().getCodigo().concat(" - ").concat(rpc.getProducto().getDescripcion()));
     	lista.remove(index.intValue());
+    	List<RelProductoCategoria> listaEliminados = (List<RelProductoCategoria>) uiModel.asMap().get("listaEliminados");
+    	if(rpc.getId() != null){
+        	//registro de la BD
+    		listaEliminados.add(rpc);
+        }else{
+        	//registro nuevo. Lo saco de la lista de agregados
+        	List<RelProductoCategoria> listaAgregados = (List<RelProductoCategoria>) uiModel.asMap().get("listaAgregados");
+        	for (int i = 0; i < listaAgregados.size(); i++) {
+        		RelProductoCategoria relProdCatAgre = listaAgregados.get(i);
+				if(relProdCatAgre.getProducto().getCodigo().equals(rpc.getProducto().getCodigo())){
+					listaAgregados.remove(i);
+					break;
+				}
+			}
+        }
     	controlEditable(lista);
         return "relProdCat/grilla";
     }
@@ -246,6 +285,26 @@ public class RelProductoCategoriaController extends GenericController {
     	RelProductoCategoria rpc = lista.get(index.intValue());
     	//Lo vuelvo a poner vigente
     	rpc.setFechaHasta(null);
+    	
+    	List<RelProductoCategoria> listaModificados = (List<RelProductoCategoria>) uiModel.asMap().get("listaModificados");
+    	if(rpc.getId() != null){
+        	//registro de la BD
+    		if(listaModificados.contains(rpc)){
+        		listaModificados.remove(rpc);
+        	}
+        	listaModificados.add(rpc);
+        }else{
+        	//registro nuevo. Lo actualizo en la lista de agregados
+        	List<RelProductoCategoria> listaAgregados = (List<RelProductoCategoria>) uiModel.asMap().get("listaAgregados");
+        	for (int i = 0; i < listaAgregados.size(); i++) {
+        		RelProductoCategoria relProdCatAgre = listaAgregados.get(i);
+        		if(relProdCatAgre.getProducto().getCodigo().equals(rpc.getProducto().getCodigo())){
+					listaAgregados.set(i, rpc);
+					break;
+				}
+			}
+        }
+    	
     	controlEditable(lista);
         return "relProdCat/grilla";
     }
@@ -253,11 +312,12 @@ public class RelProductoCategoriaController extends GenericController {
     @SuppressWarnings("unchecked")
     @RequestMapping(params = "confirmar", produces = "text/html", method = RequestMethod.GET)
     public String confirmar(Model uiModel, HttpServletRequest httpServletRequest) {
-    	List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
     	Categoria categoria = (Categoria)uiModel.asMap().get("categoria");
-    	String estadoVisualizado = (String) uiModel.asMap().get("estadoSel");
     	try{
-			relProductoCategoriaService.asignarProductos(categoria, lista, estadoVisualizado);
+    		List<RelProductoCategoria> listaAgregados = (List<RelProductoCategoria>) uiModel.asMap().get("listaAgregados");
+    		List<RelProductoCategoria> listaModificados = (List<RelProductoCategoria>) uiModel.asMap().get("listaModificados");
+    		List<RelProductoCategoria> listaEliminados = (List<RelProductoCategoria>) uiModel.asMap().get("listaEliminados");
+			relProductoCategoriaService.asignarProductos(categoria, listaAgregados, listaModificados, listaEliminados);
     	} catch (FechaDesdeException e) {
 			String key = e.getKeyMessage();
 			logger.info(getMessage(key, e.getArgs()));
@@ -269,7 +329,8 @@ public class RelProductoCategoriaController extends GenericController {
 			httpServletRequest.setAttribute("msgRespuesta", getMessage(key, e.getArgs()));
 			return "relProdCat/grilla";
 		}
-    	return "redirect:/".concat(BUSQUEDA_DEFAULT(categoria.getId())).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
+    	String estadoVisualizado = (String) uiModel.asMap().get("estadoSel");
+    	return "redirect:/".concat(BUSQUEDA_DEFAULT(categoria.getId(), estadoVisualizado)).concat("&informar=".concat(getMessage("relProdCat.confirmar.ok")));
     }
  
     @SuppressWarnings("unchecked")
@@ -341,7 +402,11 @@ public class RelProductoCategoriaController extends GenericController {
         uiModel.addAttribute("codProductosMasterMap", codDescripcionMap);
         uiModel.addAttribute("codCostoJson", json);
         uiModel.addAttribute("categoria", categoria);
-        uiModel.addAttribute("estadoSel", estado);
+    	uiModel.addAttribute("estadoSel", estado);
+        //Creo 3 listas para manejar los cambios
+        uiModel.addAttribute("listaAgregados", new ArrayList<RelProductoCategoria>());
+        uiModel.addAttribute("listaModificados", new ArrayList<RelProductoCategoria>());
+        uiModel.addAttribute("listaEliminados", new ArrayList<RelProductoCategoria>());
         if(informar != null){
         	uiModel.addAttribute("msgRespuesta", informar);
         }
@@ -372,10 +437,12 @@ public class RelProductoCategoriaController extends GenericController {
         		prodCodigoTemp = relProdCat.getProducto().getCodigo();
         	}
         }
-        RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
-        rpcUltimo.setEsEditable(Boolean.TRUE);
-		if(rpcUltimo.getFechaHasta() != null){
-			rpcUltimo.setEsNoVigente(Boolean.TRUE);
-		}
+        if(!relProdCats.isEmpty()){
+	        RelProductoCategoria rpcUltimo = relProdCats.get(relProdCats.size()-1);
+	        rpcUltimo.setEsEditable(Boolean.TRUE);
+			if(rpcUltimo.getFechaHasta() != null){
+				rpcUltimo.setEsNoVigente(Boolean.TRUE);
+			}
+        }
     }
 }

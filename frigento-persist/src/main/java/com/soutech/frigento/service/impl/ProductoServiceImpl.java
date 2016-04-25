@@ -1,7 +1,6 @@
 package com.soutech.frigento.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,16 +73,8 @@ public class ProductoServiceImpl implements ProductoService {
 		Producto productoActual = productoDao.load(producto.getId());
 		String condicion = "";
 		Date maxFHastaPosible = null;
-		List<ProductoCosto> prodCostoList = new ArrayList<ProductoCosto>();
 		if(productoActual.getFechaAlta().before(producto.getFechaAlta())){
-			Date fechaIni = productoActual.getFechaAlta();
-			Date fechaFin = producto.getFechaAlta();
-			prodCostoList = productoCostoDao.findAllFechaDesdeEntre(producto.getId(), fechaIni, fechaFin, "fechaDesde", "asc");
-			Date maxFHastaPC = null;
-			if(prodCostoList.size() > 1){
-				maxFHastaPC = prodCostoList.get(1).getFechaDesde();
-			}
-			
+			Date maxFHastaPC = productoCostoDao.getMinFechaHasta(producto.getId());
 			Date maxFHastaRPC = relProductoCategoriaDao.findMinDate(productoActual.getId());
 			Date maxFHastaPed = relPedidoProductoDao.findMinFechaPedidoNoAnulado(productoActual.getId());
 			maxFHastaPosible = Utils.dameFechaMasAnitgua(maxFHastaPC, maxFHastaRPC, maxFHastaPed);

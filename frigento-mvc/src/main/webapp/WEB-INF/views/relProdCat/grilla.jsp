@@ -5,7 +5,6 @@
 	$(document).ready(function() {
 		if(!$.fn.DataTable.isDataTable('#idGrillaRPCa')){
 		    $('#idGrillaRPCa').DataTable({
-		    	"paging": false,
 		    	ordering: false
 		    }); 
 		}

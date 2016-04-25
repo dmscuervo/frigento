@@ -114,15 +114,14 @@ public class ProductoController extends GenericController {
     	}
     	
     	uiModel.addAttribute("maxDateAlta", fechaMinD.getTime());
-    	Date fechaDesdeMin = productoCostoService.obtenerMinFechaDesde(id);
     	Producto prod = productoService.obtenerProducto(id);
     	if(prod.getFechaBaja() != null){
         	httpServletRequest.setAttribute("informar", getMessage("producto.editar.estado.error"));
         	return "pedido/grilla";
         }
     	
-    	prod.setFechaAlta(fechaDesdeMin);
     	prod.setStockPrevio(prod.getStock());
+    	logger.info("La fechaAlta del producto a editar es: " + Utils.formatDate(prod.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
     	uiModel.addAttribute("productoForm", prod);
         return "producto/editar";
     }

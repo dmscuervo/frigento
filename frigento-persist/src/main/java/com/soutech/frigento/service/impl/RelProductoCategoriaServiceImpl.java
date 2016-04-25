@@ -66,92 +66,72 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 
 	@Override
 	@Transactional
-	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> relaciones, String estadoRelVisualizadas) throws FechaDesdeException, ProductoInexistenteException {
+	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException {
 		//Aplico control de concurrencia entre ventas y cambio de precios
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
-			//Primero chequeo si algun producto fue dado de baja y no tiene un alta nueva
-			List<RelProductoCategoria> relacionesActual = relProductoCategoriaDao.findAllByCategoria(categoria.getId(), estadoRelVisualizadas, null, null);
-			for (RelProductoCategoria relProdCatActual : relacionesActual) {
-				Integer idRpcActual = relProdCatActual.getId();
-				Boolean relacionMantenida = Boolean.FALSE;
-				for (RelProductoCategoria relProdCatNuevo : relaciones) {
-					Integer idRpcNuevo = relProdCatNuevo.getId();
-					if(idRpcNuevo != null && idRpcNuevo.equals(idRpcActual)){
-						relacionMantenida = Boolean.TRUE;
-						break;
-					}
+			Producto producto;
+			//Primero las nuevas relaciones
+			for (RelProductoCategoria rpcAdd : listaAgregados) {
+				producto = productoDao.findByCodigo(rpcAdd.getProducto().getCodigo());
+				//Controlo fechas con ProductoCosto
+				Date fechaDesdeMin = productoCostoDao.getMinFechaDesde(producto.getId());
+				if(fechaDesdeMin != null && rpcAdd.getFechaDesde().before(fechaDesdeMin)){
+					Object[] args = new Object[]{producto.getCodigo(), Utils.formatDate(fechaDesdeMin, Utils.SDF_DDMMYYYY_HHMM)};
+					throw new FechaDesdeException("relProdCat.fecha.desde.min.producto.costo", args);
 				}
-				if(!relacionMantenida){
-					//Controlo fechas de ventas
-					Date primerFechaVenta = relVentaProductoDao.obtenerFechaPrimerVentaNoAnulada(relProdCatActual.getProducto().getId(), relProdCatActual.getCategoria().getId(), relProdCatActual.getFechaDesde(), relProdCatActual.getFechaHasta());
-					if(primerFechaVenta != null){
-						Object[] args = new Object[]{relProdCatActual.getProducto().getCodigo(), Utils.formatDate(primerFechaVenta, Utils.SDF_DDMMYYYY_HHMM)};
-						throw new FechaDesdeException("relProdCat.borrar.venta.existente", args);
-					}
-					//Se dio de baja. Aplico un baja fisica
-					relProductoCategoriaDao.delete(relProdCatActual);
+				//Controlo fechas de ventas
+				Date maxFechaVenta = relVentaProductoDao.findMaxFechaNoAnulada(producto.getId());
+				if(maxFechaVenta != null && rpcAdd.getFechaDesde().before(maxFechaVenta)){
+					Object[] args = new Object[]{producto.getCodigo(), Utils.formatDate(fechaDesdeMin, Utils.SDF_DDMMYYYY_HHMM)};
+					throw new FechaDesdeException("relProdCat.fecha.desde.min.venta", args);
+				}
+				//Controlo fechas con alta del producto
+				if(!Utils.esMayorIgual(rpcAdd.getFechaDesde(), producto.getFechaAlta())){
+					
+					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcAdd.getFechaDesde()});
 					
 				}
+//				else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())){
+//					
+//					throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
+//					
+//				}
+				
+				rpcAdd.setCategoria(categoriaDao.findById(categoria.getId()));
+				rpcAdd.setProducto(producto);
+				relProductoCategoriaDao.save(rpcAdd);
 			}
 			
-			for (RelProductoCategoria relProdCat : relaciones) {
-				//Si el id no es nulo, entonces es una relacion existente. No hago nada (recordar que no pueden modificarse)
-				//Si el id es nulo, entonces es una nueva relacion. Tengo que verificar si una relacion con mismo prod-cat fue dada de baja
-				Producto producto = productoDao.findByCodigo(relProdCat.getProducto().getCodigo());
-				if(relProdCat.getId() == null){
-					//Controlo fechas con ProductoCosto
-					Date fechaDesdeMin = productoCostoDao.getMinFechaDesde(producto.getId());
-					if(fechaDesdeMin != null && relProdCat.getFechaDesde().before(fechaDesdeMin)){
-						Object[] args = new Object[]{relProdCat.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMin, Utils.SDF_DDMMYYYY_HHMM)};
-						throw new FechaDesdeException("relProdCat.fecha.desde.min.producto.costo", args);
-					}
-					//Controlo fechas de ventas
-					Date maxFechaVenta = relVentaProductoDao.findMaxFechaNoAnulada(producto.getId());
-					if(maxFechaVenta != null && relProdCat.getFechaDesde().before(maxFechaVenta)){
-						Object[] args = new Object[]{relProdCat.getProducto().getCodigo(), Utils.formatDate(fechaDesdeMin, Utils.SDF_DDMMYYYY_HHMM)};
-						throw new FechaDesdeException("relProdCat.fecha.desde.min.venta", args);
-					}
-					//Controlo fechas con alta del producto
-					if(!Utils.esMayorIgual(relProdCat.getFechaDesde(), producto.getFechaAlta())){
-						
-						throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
-						
-					}
-//					else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())){
-//						
-//						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
-//						
-//					}
+			//Continuo con las modificaciones sobre registros ya existentes
+			for (RelProductoCategoria rpcUpd : listaModificados) {
+				producto = productoDao.findByCodigo(rpcUpd.getProducto().getCodigo());
+				//Controlo fechas con alta del producto
+				if(!Utils.esMayorIgual(rpcUpd.getFechaDesde(), producto.getFechaAlta())){
 					
-					RelProductoCategoria rpc = relProductoCategoriaDao.findActualByDupla(relProdCat.getCategoria().getId(), producto.getId());
-					if(rpc != null){
-						//Bajo relacion actual
-						rpc.setFechaHasta(relProdCat.getFechaDesde());
-						relProductoCategoriaDao.update(rpc);
-					}
-					relProdCat.setCategoria(categoriaDao.findById(relProdCat.getCategoria().getId()));
-					relProdCat.setProducto(producto);
-					relProductoCategoriaDao.save(relProdCat);
-				}else{
-					//Actualizo cambios
-					//Controlo fechas con alta del producto
-					if(!Utils.esMayorIgual(relProdCat.getFechaDesde(), producto.getFechaAlta())){
-						
-						throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaDesde()});
-						
-					}
-//					else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
-//							|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
-//						
-//						throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
-//						
-//					}
-					//Esto se hace para asociar al objecto relProdCat a la sessión, ya que sino nos daria el siguiente error:
-					//A different object with the same identifier value was already associated with the session
-					relProdCat = relProductoCategoriaDao.merge(relProdCat);
-					relProductoCategoriaDao.update(relProdCat);
+					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), rpcUpd.getFechaDesde()});
+					
 				}
+//				else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
+//						|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
+//					
+//					throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
+//					
+//				}
+				relProductoCategoriaDao.update(rpcUpd);
+			}
+			
+			//Por ultimo elimino los registros existentes en BD
+			for (RelProductoCategoria rpcDel : listaEliminados) {
+				producto = productoDao.findByCodigo(rpcDel.getProducto().getCodigo());
+				//Controlo fechas de ventas
+				Date primerFechaVenta = relVentaProductoDao.obtenerFechaPrimerVentaNoAnulada(producto.getId(), categoria.getId(), rpcDel.getFechaDesde(), rpcDel.getFechaHasta());
+				if(primerFechaVenta != null){
+					Object[] args = new Object[]{producto.getCodigo(), Utils.formatDate(primerFechaVenta, Utils.SDF_DDMMYYYY_HHMM)};
+					throw new FechaDesdeException("relProdCat.borrar.venta.existente", args);
+				}
+				//Se dio de baja. Aplico un baja fisica
+				relProductoCategoriaDao.delete(rpcDel);
 			}
 			
 		}finally{
