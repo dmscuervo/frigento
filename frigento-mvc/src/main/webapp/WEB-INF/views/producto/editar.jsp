@@ -124,6 +124,25 @@
 			</div>
         </div>
     </div>
+    <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idDescRemito" style="white-space: nowrap;">
+					<fmt:message key="producto.descripcion.venta" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+				<form:input path="descripcionVenta" cssClass="form-control" id="idDescRemito" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="descripcionVenta" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >

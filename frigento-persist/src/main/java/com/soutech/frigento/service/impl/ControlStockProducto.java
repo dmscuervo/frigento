@@ -243,6 +243,7 @@ public class ControlStockProducto {
 		RelVentaProducto rvpActual;
 		for (ItemVentaDTO item : ventaModificada.getItems()) {
 			if(item.getCantidad() != (short)0){
+				item.setCantidadModificada(item.getCantidad());
 				rvpActual = null;
 				prodNuevo = Boolean.TRUE;
 				//Inicializo precioTotal (solo la primera vez)
@@ -260,7 +261,6 @@ public class ControlStockProducto {
 				}
 				RelProductoCategoria relProductoCategoria = relProductoCategoriaDao.findByDupla(ventaModificada.getUsuario().getCategoriaProducto().getId(), item.getProducto().getId(), ventaModificada.getFecha());
 				if(prodNuevo){
-					item.setCantidadModificada(item.getCantidad());
 					RelVentaProducto rvp = new RelVentaProducto();
 					if(relProductoCategoria == null){
 						Object[] args = new Object[]{ventaModificada.getFecha(), item.getProducto().getCodigo(), ventaModificada.getUsuario().getCategoriaProducto().getDescripcion()};

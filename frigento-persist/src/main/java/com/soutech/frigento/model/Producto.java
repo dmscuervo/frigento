@@ -47,8 +47,14 @@ public class Producto implements Serializable {
     @NotNull
     @NotEmpty
     @Column(name = "DESCRIPCION")
-    @Size(max = 100)
+    @Size(max = 75)
     private String descripcion;
+    
+    @NotNull
+    @NotEmpty
+    @Column(name = "DESCRIPCION_VENTA")
+    @Size(max = 75)
+    private String descripcionVenta;
 
     @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
@@ -114,6 +120,14 @@ public class Producto implements Serializable {
 	public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+	public String getDescripcionVenta() {
+		return descripcionVenta;
+	}
+
+	public void setDescripcionVenta(String descripcionVenta) {
+		this.descripcionVenta = descripcionVenta;
+	}
 
 	public BigDecimal getCostoActual() {
         return this.costoActual;

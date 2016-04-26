@@ -103,7 +103,7 @@ public class ReportManager{
     	for (ItemVentaDTO item : venta.getItems()) {
 			RemitoDTO remito = new RemitoDTO();
 			remito.setCantidad(item.getCantidad());
-			remito.setProducto(item.getProducto().getCodigo().concat("-").concat(item.getProducto().getDescripcion()));
+			remito.setProducto(item.getProducto().getDescripcionVenta());
 			remito.setPu(item.getImporteVenta());
 			remito.setImporte(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad()).setScale(2, RoundingMode.HALF_UP)));
 			itemsRemito.add(remito);
@@ -121,7 +121,7 @@ public class ReportManager{
 			if(rvp.getPromocion() != null){
 				descripcion = messageSource.getMessage("venta.promocion", new Object[]{rvp.getPromocion().getCantidadMinima()}, locale);
 			}
-			descripcion = descripcion.concat(rvp.getRelProductoCategoria().getProducto().getDescripcion());
+			descripcion = descripcion.concat(rvp.getRelProductoCategoria().getProducto().getDescripcionVenta());
 			remito.setProducto(descripcion);
 			remito.setPu(rvp.getPrecioVenta());
 			remito.setImporte(new BigDecimal(rvp.getCantidad()).multiply(rvp.getPrecioVenta()).setScale(2, RoundingMode.HALF_UP));

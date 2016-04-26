@@ -137,8 +137,10 @@
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 			        			<form:hidden path="items[${status.index}].importeVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
-								<form:hidden path="items[${status.index}].promocion.id"/>
-								<form:hidden path="items[${status.index}].promocion.cantidadMinima"/>
+								<c:if test="${ not empty item.promocion }">
+									<form:hidden path="items[${status.index}].promocion.id"/>
+									<form:hidden path="items[${status.index}].promocion.cantidadMinima"/>
+								</c:if>
 			        		</td>
 			        		<td style="white-space: nowrap;">
 			        			<c:if test="${ not empty item.promocion }">
