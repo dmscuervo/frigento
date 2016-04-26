@@ -36,6 +36,10 @@ public class Promocion implements Serializable {
     @Column(name = "CANTIDAD_MINIMA")
 	private Float cantidadMinima;
 	
+	@NotNull
+	@Column(name = "ACTIVA")
+	private Boolean activa;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -53,6 +57,12 @@ public class Promocion implements Serializable {
 	}
 	public void setCantidadMinima(Float cantidadMinima) {
 		this.cantidadMinima = cantidadMinima;
+	}
+	public Boolean getActiva() {
+		return activa;
+	}
+	public void setActiva(Boolean activa) {
+		this.activa = activa;
 	}
 	
 }

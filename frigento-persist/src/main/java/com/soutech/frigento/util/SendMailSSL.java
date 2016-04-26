@@ -99,17 +99,17 @@ public class SendMailSSL {
 		if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
 			
 			if(venta.getVersion().shortValue() > 1){
-				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_modificado.html");
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_venta_modificado.html");
 				subject = subject.concat(" - MODIFICADO");
 			}else{
-				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_confirmado.html");
+				is = this.getClass().getClassLoader().getResourceAsStream("mail/body_venta_confirmado.html");
 			}
 			
 		}else if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
-			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_entregado.html");
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_venta_entregado.html");
 			subject = subject.concat(" - ENTREGADO");
 		}else if(venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ANULADO))){
-			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_pedido_anulado.html");
+			is = this.getClass().getClassLoader().getResourceAsStream("mail/body_venta_anulado.html");
 			subject = subject.concat(" - ANULADO");
 		}
 		try {

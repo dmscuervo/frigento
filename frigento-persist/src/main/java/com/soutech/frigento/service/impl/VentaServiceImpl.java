@@ -47,14 +47,15 @@ public class VentaServiceImpl implements VentaService {
 				if(item.getCantidad() != (short)0){
 					item.setCantidadModificada(item.getCantidad());
 					hayPedido = Boolean.TRUE;
-					RelVentaProducto rpp = new RelVentaProducto();
-					rpp.setVenta(venta);
+					RelVentaProducto rvp = new RelVentaProducto();
+					rvp.setVenta(venta);
 					RelProductoCategoria rpc = new RelProductoCategoria();
 					rpc.setId(item.getRelProductoCategoriaId());
-					rpp.setRelProductoCategoria(rpc);
-					rpp.setCantidad(item.getCantidad());
-					rpp.setPrecioVenta(item.getImporteVenta());
-					relaciones.add(rpp);
+					rvp.setRelProductoCategoria(rpc);
+					rvp.setCantidad(item.getCantidad());
+					rvp.setPrecioVenta(item.getImporteVenta());
+					rvp.setPromocion(item.getPromocion());
+					relaciones.add(rvp);
 					//Voy calculando el costo total del pedido
 					importeTotal = importeTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP));
 				}

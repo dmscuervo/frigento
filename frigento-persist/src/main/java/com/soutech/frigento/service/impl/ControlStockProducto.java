@@ -249,7 +249,10 @@ public class ControlStockProducto {
 				precioTotal = precioTotal == null ? BigDecimal.ZERO : precioTotal;
 				//Me fijo si es un producto nuevo o existente
 				for (RelVentaProducto rvp : relacionesActual) {
-					if(rvp.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())){
+					if(rvp.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())
+							&& (rvp.getPromocion() == null && item.getPromocion() == null
+							|| rvp.getPromocion() != null && item.getPromocion() != null
+							&& rvp.getPromocion().getId().equals(item.getPromocion().getId()))){
 						prodNuevo = Boolean.FALSE;
 						rvpActual = rvp;
 						break;
@@ -267,6 +270,7 @@ public class ControlStockProducto {
 					rvp.setRelProductoCategoria(relProductoCategoria);
 					rvp.setCantidad(item.getCantidad());
 					rvp.setPrecioVenta(item.getImporteVenta());
+					rvp.setPromocion(item.getPromocion());
 					relacionesNuevas.add(rvp);
 					//Voy calculando el importe total de la venta
 					precioTotal = precioTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP));
@@ -285,9 +289,12 @@ public class ControlStockProducto {
 				
 			}else{
 				//Se saco un producto de la venta. Elimino la relacion
-				for (RelVentaProducto rpc : relacionesActual) {
-					if(rpc.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())){
-						relacionesEliminadas.add(rpc);
+				for (RelVentaProducto rvp : relacionesActual) {
+					if(rvp.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())
+							&& (rvp.getPromocion() == null && item.getPromocion() == null
+							|| rvp.getPromocion() != null && item.getPromocion() != null
+							&& rvp.getPromocion().getId().equals(item.getPromocion().getId()))){
+						relacionesEliminadas.add(rvp);
 						break;
 					}
 				}

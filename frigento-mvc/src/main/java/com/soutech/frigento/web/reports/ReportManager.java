@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.soutech.frigento.dto.ItemVentaDTO;
@@ -27,6 +31,7 @@ import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.dto.RemitoDTO;
 
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -37,22 +42,30 @@ import net.sf.jasperreports.engine.util.JRLoader;
 @Component
 public class ReportManager{
 	
-	public ReportManager() {
-	}
-  
 	static Logger logger = Logger.getLogger(ReportManager.class);
+	protected static ResourceBundle reportsResourceBundle;
+	protected static Locale locale;
+	static{
+		locale = Locale.getDefault();
+		reportsResourceBundle = ResourceBundle.getBundle("i18n.reports.ReportesResource", locale);
+	}
+	@Autowired
+	private MessageSource messageSource;
 	
 	public ByteArrayOutputStream generarRemitoPedido(List<RelPedidoProducto> relPedProdList) throws ReporteException{
 		Pedido pedido = relPedProdList.get(0).getPedido();
 		Map<String, Object> parameters = new HashMap<String, Object>();
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(pedido.getFecha());
+    	parameters.put("header_cantidad", messageSource.getMessage("pedido.cantidad.caja", null, locale));
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
     	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
     	parameters.put("destinatario",Parametro.NOMBRE_PROVEEDOR);
     	parameters.put("domicilio","");
+    	parameters.put(JRParameter.REPORT_LOCALE, locale);
+    	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	
     	List<RemitoDTO> items = new ArrayList<RemitoDTO>();
     	for (RelPedidoProducto rpp : relPedProdList) {
@@ -104,7 +117,12 @@ public class ReportManager{
     	for (RelVentaProducto rvp : relVtaProdList) {
 			RemitoDTO remito = new RemitoDTO();
 			remito.setCantidad(rvp.getCantidad());
-			remito.setProducto(rvp.getRelProductoCategoria().getProducto().getCodigo().concat("-").concat(rvp.getRelProductoCategoria().getProducto().getDescripcion()));
+			String descripcion = "";
+			if(rvp.getPromocion() != null){
+				descripcion = messageSource.getMessage("venta.promocion", new Object[]{rvp.getPromocion().getCantidadMinima()}, locale);
+			}
+			descripcion = descripcion.concat(rvp.getRelProductoCategoria().getProducto().getDescripcion());
+			remito.setProducto(descripcion);
 			remito.setPu(rvp.getPrecioVenta());
 			remito.setImporte(new BigDecimal(rvp.getCantidad()).multiply(rvp.getPrecioVenta()).setScale(2, RoundingMode.HALF_UP));
 			itemsRemito.add(remito);
@@ -118,12 +136,15 @@ public class ReportManager{
 		Map<String, Object> parameters = new HashMap<String, Object>();
     	Calendar cal = Calendar.getInstance();
     	cal.setTime(venta.getFecha());
+    	parameters.put("header_cantidad", messageSource.getMessage("venta.cantidad.kg", null, locale));
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
     	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(venta));
     	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
     	parameters.put("domicilio","");
+    	parameters.put(JRParameter.REPORT_LOCALE, locale);
+    	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	
     	//El remito permite hasta 21 items
     	while(itemsRemito.size() % 21 != 0){

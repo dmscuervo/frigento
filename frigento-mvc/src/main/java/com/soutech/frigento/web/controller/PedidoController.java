@@ -327,7 +327,7 @@ public class PedidoController extends GenericController {
         	return "pedido/grilla";
         }
     	
-    	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(Constantes.ESTADO_REL_VIGENTE, pedido.getFecha(), "producto.codigo", "asc");
+    	List<ProductoCosto> prodCostoList = productoCostoService.obtenerProductosCosto(null, pedido.getFecha(), "producto.codigo", "asc");
     	pedido.setItems(new ArrayList<ItemPedidoDTO>(prodCostoList.size()));
     	for (ProductoCosto prodCosto : prodCostoList) {
     		ItemPedidoDTO item = new ItemPedidoDTO();

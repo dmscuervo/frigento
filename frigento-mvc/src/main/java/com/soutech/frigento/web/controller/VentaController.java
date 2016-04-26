@@ -127,7 +127,7 @@ public class VentaController extends GenericController {
 				item.setRelProductoCategoriaId(rpc.getId());
 				BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
 				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
-				item.setCantidadMinPromo(promo.getCantidadMinima());
+				item.setPromocion(promo);
 				venta.getItems().add(item);
 			}
 		}
@@ -152,9 +152,9 @@ public class VentaController extends GenericController {
 
 		String mensaje;
 		for (ItemVentaDTO item : ventaForm.getItems()) {
-			if(item.getCantidadMinPromo() != null && item.getCantidad() < item.getCantidadMinPromo()){
-				String nombrePromo = getMessage("venta.promocion", item.getCantidadMinPromo());
-				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, item.getCantidadMinPromo()});
+			if(item.getPromocion() != null && item.getCantidad() != 0 && item.getCantidad() < item.getPromocion().getCantidadMinima()){
+				String nombrePromo = getMessage("venta.promocion", item.getPromocion().getCantidadMinima());
+				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, item.getPromocion().getCantidadMinima()});
 				httpServletRequest.setAttribute("msgError", mensaje);
 				return "venta/alta";
 			}
@@ -221,18 +221,41 @@ public class VentaController extends GenericController {
 		}
 		
 		venta.setItems(new ArrayList<ItemVentaDTO>(relProdCatList.size()));
-		for (RelProductoCategoria relProdCat : relProdCatList) {
+		for (RelProductoCategoria rpc : relProdCatList) {
+			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
-			for (RelVentaProducto rpp : relVtaProdList) {
-				if (rpp.getRelProductoCategoria().getProducto().getId().equals(relProdCat.getProducto().getId())) {
-					item.setCantidad(rpp.getCantidad());
+			item.setProducto(producto);
+			item.setRelProductoCategoriaId(rpc.getId());
+			item.setImporteVenta(rpc.getProducto().getImporteVenta());
+			for (RelVentaProducto rvp : relVtaProdList) {
+				if (rvp.getRelProductoCategoria().getProducto().getId().equals(producto.getId())
+						&& rvp.getPromocion() == null) {
+					item.setCantidad(rvp.getCantidad());
 					break;
 				} else {
 					item.setCantidad((float) 0);
 				}
 			}
-			item.setProducto(relProdCat.getProducto());
 			venta.getItems().add(item);
+			for (Promocion promo : producto.getPromociones()) {
+				item = new ItemVentaDTO();
+				item.setProducto(producto);
+				item.setRelProductoCategoriaId(rpc.getId());
+				BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
+				item.setPromocion(promo);
+				for (RelVentaProducto rpp : relVtaProdList) {
+					if (rpp.getRelProductoCategoria().getProducto().getId().equals(producto.getId())) {
+						if(rpp.getPromocion() != null && rpp.getPromocion().getId().equals(promo.getId())){
+							item.setCantidad(rpp.getCantidad());
+							break;
+						}
+					} else {
+						item.setCantidad((float) 0);
+					}
+				}
+				venta.getItems().add(item);
+			}
 		}
 		
 		List<Estado> estadosPosibles = new ArrayList<Estado>();

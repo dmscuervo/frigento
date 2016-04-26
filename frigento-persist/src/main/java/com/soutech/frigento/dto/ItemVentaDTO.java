@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.Promocion;
 
 public class ItemVentaDTO implements Serializable {
 
@@ -21,8 +22,7 @@ public class ItemVentaDTO implements Serializable {
 	private Integer relProductoCategoriaId;
 	private Float cantidadModificada;
 	
-	//private BigDecimal descuentoPromo;
-	private Float cantidadMinPromo;
+	private Promocion promocion;
 	
 	public BigDecimal getImporteVenta() {
 		return importeVenta;
@@ -68,12 +68,12 @@ public class ItemVentaDTO implements Serializable {
 		this.cantidadModificada = cantidadModificada;
 	}
 
-	public Float getCantidadMinPromo() {
-		return cantidadMinPromo;
+	public Promocion getPromocion() {
+		return promocion;
 	}
 
-	public void setCantidadMinPromo(Float cantidadMinPromo) {
-		this.cantidadMinPromo = cantidadMinPromo;
+	public void setPromocion(Promocion promocion) {
+		this.promocion = promocion;
 	}
 
 }

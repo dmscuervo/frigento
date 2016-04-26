@@ -2,13 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="remitoAnulado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7242a6bb-de6e-4263-acfd-1b64c76b5926">
 	<property name="ireport.zoom" value="1.7715610000000022"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="87"/>
+	<property name="ireport.y" value="86"/>
 	<parameter name="dia" class="java.lang.String"/>
 	<parameter name="mes" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
 	<parameter name="nroPedido" class="java.lang.String"/>
 	<parameter name="destinatario" class="java.lang.String"/>
 	<parameter name="domicilio" class="java.lang.String"/>
+	<parameter name="header_cantidad" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Float"/>
 	<field name="producto" class="java.lang.String"/>
 	<field name="importe" class="java.math.BigDecimal"/>
@@ -156,13 +157,13 @@ info.frigento@gmail.com]]></text>
 			<line>
 				<reportElement x="545" y="251" width="1" height="24" uuid="29997323-89dc-4465-80db-1cf05c3a6645"/>
 			</line>
-			<staticText>
-				<reportElement mode="Opaque" x="11" y="251" width="39" height="23" forecolor="#FFFFFF" backcolor="#999999" uuid="d5d43987-0263-483b-bfc6-33b6b12b393b"/>
+			<textField>
+				<reportElement mode="Opaque" x="11" y="251" width="39" height="23" forecolor="#FFFFFF" backcolor="#999999" uuid="3a780051-1044-4ecb-97c9-305a7c3cb5ff"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Cant.]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{header_cantidad}]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement mode="Opaque" x="51" y="251" width="368" height="23" forecolor="#FFFFFF" backcolor="#999999" uuid="9446dc32-f38b-4d1c-b4aa-4ff02a2e92f7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
@@ -237,7 +238,7 @@ info.frigento@gmail.com]]></text>
 			<line>
 				<reportElement x="480" y="0" width="1" height="23" uuid="8ca1cd05-ab66-40e7-ab68-915c73f87643"/>
 			</line>
-			<textField isBlankWhenNull="true">
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
 				<reportElement x="11" y="1" width="39" height="21" uuid="e051f91b-3127-4e05-af31-07b7da47711a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>

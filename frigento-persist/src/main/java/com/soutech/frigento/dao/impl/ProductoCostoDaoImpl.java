@@ -79,15 +79,14 @@ public class ProductoCostoDaoImpl extends AbstractSpringDao<ProductoCosto, Integ
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(ProductoCosto.class.getCanonicalName());
 		hql.append(" pc ");
-		hql.append(" where pc.fechaHasta is ");
-		if(estadoRel.equals(Constantes.ESTADO_REL_VIGENTE)){
-			hql.append("null ");
-		}else if(estadoRel.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
-			hql.append("not null ");
+		if(estadoRel != null && estadoRel.equals(Constantes.ESTADO_REL_VIGENTE)){
+			hql.append(" where pc.fechaHasta is null ");
+		}else if(estadoRel != null && estadoRel.equals(Constantes.ESTADO_REL_NO_VIGENTE)){
+			hql.append(" where pc.fechaHasta is not null ");
 		}
 		if(fecha != null){
-			hql.append("and pc.fechaDesde <= :fecha ");
-			hql.append("and (pc.fechaHasta is null or pc.fechaHasta > :fecha) ");
+			hql.append(" where pc.fechaDesde <= :fecha ");
+			hql.append(" and (pc.fechaHasta is null or pc.fechaHasta > :fecha) ");
 		}
 		if(sortFieldName != null){
 			hql.append("order by pc.");

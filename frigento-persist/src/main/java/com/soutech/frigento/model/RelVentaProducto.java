@@ -44,6 +44,10 @@ public class RelVentaProducto implements Serializable {
     @NotNull
     @Column(name = "PRECIO")
     private BigDecimal precioVenta;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_PROMOCION")
+    private Promocion promocion;
 
 	public Venta getVenta() {
         return this.venta;
@@ -83,6 +87,14 @@ public class RelVentaProducto implements Serializable {
 
 	public void setPrecioVenta(BigDecimal precioVenta) {
 		this.precioVenta = precioVenta;
+	}
+
+	public Promocion getPromocion() {
+		return promocion;
+	}
+
+	public void setPromocion(Promocion promocion) {
+		this.promocion = promocion;
 	}
 	
 }

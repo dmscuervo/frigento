@@ -118,10 +118,16 @@
 			<c:forEach var="item" items="${relVtaProdList}" varStatus="status">
 				<tr>
 					<td style="white-space: nowrap;"><fmt:formatNumber
-							value="${item.cantidad}" maxFractionDigits="0"
-							minFractionDigits="0" /></td>
-					<td style="white-space: nowrap;">${item.relProductoCategoria.producto.codigo}
-						- ${item.relProductoCategoria.producto.descripcion}</td>
+							value="${item.cantidad}" maxFractionDigits="3"
+							minFractionDigits="3" /></td>
+					<td style="white-space: nowrap;">
+						<c:if test="${ not empty item.promocion }">
+	        				<fmt:message key="venta.promocion">
+	        					<fmt:param value="${item.promocion.cantidadMinima}" />
+	        				</fmt:message>
+	        			</c:if>
+						${item.relProductoCategoria.producto.codigo} - ${item.relProductoCategoria.producto.descripcion}
+					</td>
 					<td style="white-space: nowrap;"><fmt:formatNumber
 							currencySymbol="$" type="currency" value="${item.precioVenta}" /></td>
 					<td style="white-space: nowrap;"><fmt:formatNumber
