@@ -21,6 +21,9 @@ public class ItemVentaDTO implements Serializable {
 	private Integer relProductoCategoriaId;
 	private Float cantidadModificada;
 	
+	//private BigDecimal descuentoPromo;
+	private Float cantidadMinPromo;
+	
 	public BigDecimal getImporteVenta() {
 		return importeVenta;
 	}
@@ -63,6 +66,14 @@ public class ItemVentaDTO implements Serializable {
 	 */
 	public void setCantidadModificada(Float cantidadModificada) {
 		this.cantidadModificada = cantidadModificada;
+	}
+
+	public Float getCantidadMinPromo() {
+		return cantidadMinPromo;
+	}
+
+	public void setCantidadMinPromo(Float cantidadMinPromo) {
+		this.cantidadMinPromo = cantidadMinPromo;
 	}
 
 }

@@ -23,7 +23,7 @@
 <h3>
 	<fmt:message key="venta.grilla.title" />
 </h3>
-${msgError}
+<c:out value="${msgError}"/> 
 <table id="idGrillaVta" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>

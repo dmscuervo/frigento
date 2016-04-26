@@ -137,8 +137,16 @@
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 			        			<form:hidden path="items[${status.index}].importeVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
+								<form:hidden path="items[${status.index}].cantidadMinPromo"/>
 			        		</td>
-			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>
+			        		<td style="white-space: nowrap;">
+			        			<c:if test="${ not empty item.cantidadMinPromo }">
+			        				<fmt:message key="venta.promocion">
+			        					<fmt:param value="${item.cantidadMinPromo}" />
+			        				</fmt:message>
+			        			</c:if>
+			        			${item.producto.codigo} - ${item.producto.descripcion}
+			        		</td>
 			        	</tr>
 			        </c:forEach>
 			        </tbody>

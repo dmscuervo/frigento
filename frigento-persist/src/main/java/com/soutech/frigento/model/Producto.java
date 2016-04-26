@@ -3,12 +3,17 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -84,6 +89,10 @@ public class Producto implements Serializable {
     @NotNull
     @Column(name = "FECHA_ALTA")
     private Date fechaAlta;
+    
+    @OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=true)
+    private List<Promocion> promociones;
     
     @Transient
     private BigDecimal importeVenta;
@@ -216,6 +225,14 @@ public class Producto implements Serializable {
 
 	public void setCostoVenta(BigDecimal costoVenta) {
 		this.costoVenta = costoVenta;
+	}
+
+	public List<Promocion> getPromociones() {
+		return promociones;
+	}
+
+	public void setPromociones(List<Promocion> promociones) {
+		this.promociones = promociones;
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,7 @@ import com.soutech.frigento.dto.ItemVentaDTO;
 import com.soutech.frigento.exception.ProductoSinCategoriaException;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.Promocion;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.model.RelVentaProducto;
 import com.soutech.frigento.model.Usuario;
@@ -119,6 +121,15 @@ public class VentaController extends GenericController {
 			item.setRelProductoCategoriaId(rpc.getId());
 			item.setImporteVenta(rpc.getProducto().getImporteVenta());
 			venta.getItems().add(item);
+			for (Promocion promo : producto.getPromociones()) {
+				item = new ItemVentaDTO();
+				item.setProducto(producto);
+				item.setRelProductoCategoriaId(rpc.getId());
+				BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
+				item.setCantidadMinPromo(promo.getCantidadMinima());
+				venta.getItems().add(item);
+			}
 		}
 
 		List<Estado> estadosPosibles = new ArrayList<Estado>();
@@ -140,6 +151,15 @@ public class VentaController extends GenericController {
 		}
 
 		String mensaje;
+		for (ItemVentaDTO item : ventaForm.getItems()) {
+			if(item.getCantidadMinPromo() != null && item.getCantidad() < item.getCantidadMinPromo()){
+				String nombrePromo = getMessage("venta.promocion", item.getCantidadMinPromo());
+				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, item.getCantidadMinPromo()});
+				httpServletRequest.setAttribute("msgError", mensaje);
+				return "venta/alta";
+			}
+		}
+		
 		boolean ok = false;
 		try {
 			ok = ventaService.generarVenta(ventaForm);
