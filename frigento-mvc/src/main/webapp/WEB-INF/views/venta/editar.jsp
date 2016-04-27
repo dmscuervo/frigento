@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <script type="text/javascript">
+
+	var dataTableVentaUpdate;
 	
 	$(document).ready(function(){
 		
@@ -18,7 +20,7 @@
 		}
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
-		    $('#idGrillaItems').DataTable({
+			dataTableVentaUpdate = $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
@@ -53,6 +55,14 @@
 		}else{
 			$('#idConfirmar').hide();
 		}
+	}
+	
+	function actualizarVenta(form){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTableVentaUpdate != undefined){
+			dataTableVentaUpdate.search('').draw();
+		}
+		submitInBody(form);
 	}
 	
 </script>
@@ -189,6 +199,7 @@
 								<c:if test="${ not empty item.promocion }">
 									<form:hidden path="items[${status.index}].promocion.id"/>
 									<form:hidden path="items[${status.index}].promocion.cantidadMinima"/>
+									<form:hidden path="items[${status.index}].promocion.fechaDesde"/>
 								</c:if>
 			        		</td>
 			        		<td style="white-space: nowrap;">
@@ -216,7 +227,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aplicar.cambios"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:actualizarVenta($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
 						onclick="javascript:loadInBody('venta?sortFieldName=id&sortOrder=desc')">

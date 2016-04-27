@@ -3,6 +3,8 @@
 
 <script type="text/javascript">
 
+	var dataTableVentaAlta;
+	
 	$(document).ready(function(){
 		
 		$('#datetimepickerVentaFecha').datetimepicker({
@@ -14,6 +16,11 @@
 	});
 	
 	function cargarForm(form, type){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTableVentaAlta != undefined){
+			dataTableVentaAlta.search('').draw();
+		}
+		
 		if(!bodyBlock){
 			blockControl($('#wrapper'));
 			bodyBlock = true;				

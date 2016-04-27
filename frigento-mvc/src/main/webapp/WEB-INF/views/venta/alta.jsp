@@ -18,7 +18,7 @@
 		}
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
-		    $('#idGrillaItems').DataTable({
+			dataTableVentaAlta = $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
@@ -140,6 +140,7 @@
 								<c:if test="${ not empty item.promocion }">
 									<form:hidden path="items[${status.index}].promocion.id"/>
 									<form:hidden path="items[${status.index}].promocion.cantidadMinima"/>
+									<form:hidden path="items[${status.index}].promocion.fechaDesde"/>
 								</c:if>
 			        		</td>
 			        		<td style="white-space: nowrap;">

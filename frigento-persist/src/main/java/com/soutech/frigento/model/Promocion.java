@@ -2,6 +2,7 @@ package com.soutech.frigento.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.soutech.frigento.model.annotattions.Numeric;
 
@@ -37,8 +40,15 @@ public class Promocion implements Serializable {
 	private Float cantidadMinima;
 	
 	@NotNull
-	@Column(name = "ACTIVA")
-	private Boolean activa;
+    @Column(name = "F_DESDE")
+    //@Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
+    private Date fechaDesde;
+
+    @Column(name = "F_HASTA")
+    //@Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
+    private Date fechaHasta;
 	
 	public Integer getId() {
 		return id;
@@ -58,11 +68,17 @@ public class Promocion implements Serializable {
 	public void setCantidadMinima(Float cantidadMinima) {
 		this.cantidadMinima = cantidadMinima;
 	}
-	public Boolean getActiva() {
-		return activa;
+	public Date getFechaDesde() {
+		return fechaDesde;
 	}
-	public void setActiva(Boolean activa) {
-		this.activa = activa;
+	public void setFechaDesde(Date fechaDesde) {
+		this.fechaDesde = fechaDesde;
+	}
+	public Date getFechaHasta() {
+		return fechaHasta;
+	}
+	public void setFechaHasta(Date fechaHasta) {
+		this.fechaHasta = fechaHasta;
 	}
 	
 }

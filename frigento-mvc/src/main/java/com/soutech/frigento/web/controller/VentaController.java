@@ -119,17 +119,21 @@ public class VentaController extends GenericController {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
 			item.setProducto(producto);
+			item.setCantidad(0f);
 			item.setRelProductoCategoriaId(rpc.getId());
 			item.setImporteVenta(rpc.getProducto().getImporteVenta());
 			venta.getItems().add(item);
 			for (Promocion promo : producto.getPromociones()) {
-				item = new ItemVentaDTO();
-				item.setProducto(producto);
-				item.setRelProductoCategoriaId(rpc.getId());
-				BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
-				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
-				item.setPromocion(promo);
-				venta.getItems().add(item);
+				if(Utils.estaDentroDeRelacion(ventaForm.getFecha(), promo.getFechaDesde(), promo.getFechaHasta())){
+					item = new ItemVentaDTO();
+					item.setProducto(producto);
+					item.setCantidad(0f);
+					item.setRelProductoCategoriaId(rpc.getId());
+					BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+					item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
+					item.setPromocion(promo);
+					venta.getItems().add(item);
+				}
 			}
 		}
 
@@ -241,22 +245,24 @@ public class VentaController extends GenericController {
 			}
 			venta.getItems().add(item);
 			for (Promocion promo : producto.getPromociones()) {
-				item = new ItemVentaDTO();
-				item.setProducto(producto);
-				item.setRelProductoCategoriaId(rpc.getId());
-				BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
-				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
-				item.setPromocion(promo);
-				for (RelVentaProducto rpp : relVtaProdList) {
-					item.setCantidad((float) 0);
-					if (rpp.getRelProductoCategoria().getProducto().getId().equals(producto.getId())) {
-						if(rpp.getPromocion() != null && rpp.getPromocion().getId().equals(promo.getId())){
-							item.setCantidad(rpp.getCantidad());
-							break;
+				if(Utils.estaDentroDeRelacion(venta.getFecha(), promo.getFechaDesde(), promo.getFechaHasta())){
+					item = new ItemVentaDTO();
+					item.setProducto(producto);
+					item.setRelProductoCategoriaId(rpc.getId());
+					BigDecimal descuento = rpc.getProducto().getImporteVenta().multiply(promo.getDescuento()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+					item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
+					item.setPromocion(promo);
+					for (RelVentaProducto rpp : relVtaProdList) {
+						item.setCantidad((float) 0);
+						if (rpp.getRelProductoCategoria().getProducto().getId().equals(producto.getId())) {
+							if(rpp.getPromocion() != null && rpp.getPromocion().getId().equals(promo.getId())){
+								item.setCantidad(rpp.getCantidad());
+								break;
+							}
 						}
 					}
+					venta.getItems().add(item);
 				}
-				venta.getItems().add(item);
 			}
 		}
 		
