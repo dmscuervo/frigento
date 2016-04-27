@@ -82,7 +82,7 @@
 	        <div class='col-md-3'>    
 				<c:if test="${relVtaProdList[0].venta.estado.id eq 3}">
 					<label class="control-label" for="idEstado" style="white-space: nowrap;">
-						<fmt:message key="venta.fecha.entregador" />:
+						<fmt:message key="venta.fecha.entregado" />:
 					</label>
 				</c:if>
 				<c:if test="${relVtaProdList[0].venta.estado.id eq 4}">

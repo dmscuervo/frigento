@@ -17,6 +17,7 @@ import com.soutech.frigento.dto.ItemVentaDTO;
 import com.soutech.frigento.exception.ProductoSinCategoriaException;
 import com.soutech.frigento.exception.ProductoSinCostoException;
 import com.soutech.frigento.exception.StockAlteradoException;
+import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.ProductoCosto;
@@ -24,6 +25,7 @@ import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.model.RelVentaProducto;
 import com.soutech.frigento.model.Venta;
+import com.soutech.frigento.util.Constantes;
 
 @Component
 public class ControlStockProducto {
@@ -252,7 +254,14 @@ public class ControlStockProducto {
 		RelVentaProducto rvpActual;
 		for (ItemVentaDTO item : ventaModificada.getItems()) {
 			if(item.getCantidad() != (short)0){
-				item.setCantidadModificada(0f);
+				Estado estadoActual = relacionesActual.get(0).getVenta().getEstado();
+				//Me fijo si tengo que modificar el stock. Ocurre si cambio de estado Pendiente a posterior
+				if(estadoActual.getId().equals(new Short(Constantes.ESTADO_PEDIDO_PENDIENTE))
+						&& ventaModificada.getEstado().getId().shortValue() > estadoActual.getId().shortValue()){
+					item.setCantidadModificada(item.getCantidad());
+				}else{
+					item.setCantidadModificada(0f);
+				}
 				rvpActual = null;
 				prodNuevo = Boolean.TRUE;
 				//Inicializo precioTotal (solo la primera vez)

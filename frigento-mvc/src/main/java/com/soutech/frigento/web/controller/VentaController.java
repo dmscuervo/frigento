@@ -248,13 +248,12 @@ public class VentaController extends GenericController {
 				item.setImporteVenta(rpc.getProducto().getImporteVenta().subtract(descuento));
 				item.setPromocion(promo);
 				for (RelVentaProducto rpp : relVtaProdList) {
+					item.setCantidad((float) 0);
 					if (rpp.getRelProductoCategoria().getProducto().getId().equals(producto.getId())) {
 						if(rpp.getPromocion() != null && rpp.getPromocion().getId().equals(promo.getId())){
 							item.setCantidad(rpp.getCantidad());
 							break;
 						}
-					} else {
-						item.setCantidad((float) 0);
 					}
 				}
 				venta.getItems().add(item);
@@ -263,7 +262,11 @@ public class VentaController extends GenericController {
 		
 		List<Estado> estadosPosibles = new ArrayList<Estado>();
 		for (Estado estado : estados) {
-			if (estado.getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))) {
+			if(estado.getId().equals(new Short(Constantes.ESTADO_PEDIDO_PENDIENTE))
+					&& venta.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_PENDIENTE))){
+				estadosPosibles.add(estado);
+			}
+			if(estado.getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))) {
 				estadosPosibles.add(estado);
 			}
 		}

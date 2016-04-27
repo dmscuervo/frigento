@@ -86,7 +86,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-   				<input type="text" readonly="readonly" value="${ventaForm.fecha}" class="form-control">
+   				<input type="text" readonly="readonly" value='<fmt:formatDate value="${ventaForm.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/>' class="form-control">
 			</div>
         </div>
         <div class='col-sm-4'>

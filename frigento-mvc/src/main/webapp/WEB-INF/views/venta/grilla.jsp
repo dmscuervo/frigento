@@ -47,6 +47,8 @@
         			<i class="fa fa-list-ol" onclick="loadInBody('venta/${vta.id}?detalle')"></i>
         			<c:if test="${vta.estado.id eq 1 or vta.estado.id eq 2}">
         				&nbsp;&nbsp;<i class="fa fa-edit" onclick="loadInBody('venta/${vta.id}?editar')"></i>
+        			</c:if>
+        			<c:if test="${vta.estado.id eq 2}">
         				&nbsp;&nbsp;<i class="fa fa-check" onclick="confirmarAccion('venta/${vta.id}?cumplir')"></i>
         				&nbsp;&nbsp;<i class="fa fa-times" onclick="confirmarAccion('venta/${vta.id}?anular')"></i>
         			</c:if>
