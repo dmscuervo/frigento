@@ -68,6 +68,9 @@
 	<form:form action="${urlEditar}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm">
 	<form:hidden path="id"/>
 	<form:hidden path="usuario.email"/>
+	<form:hidden path="usuario.username"/>
+	<form:hidden path="usuario.nombre"/>
+	<form:hidden path="usuario.apellido"/>
 	<form:hidden path="importe"/>
 	<form:hidden path="version"/>
 	<form:hidden path="fecha"/>

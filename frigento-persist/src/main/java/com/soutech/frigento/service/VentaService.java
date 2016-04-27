@@ -1,5 +1,6 @@
 package com.soutech.frigento.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.soutech.frigento.exception.ProductoSinCategoriaException;
@@ -15,8 +16,8 @@ public interface VentaService {
 
 	boolean actualizarVenta(Venta venta) throws ProductoSinCategoriaException;
 
-	void anularVenta(Integer ventaId);
+	void anularVenta(Integer ventaId, Date fechaAnulado);
 
-	void cumplirVenta(Integer ventaId);
+	void cumplirVenta(Integer ventaId, Date fechaEntregado);
 
 }

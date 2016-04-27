@@ -1,5 +1,6 @@
 package com.soutech.frigento.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.soutech.frigento.exception.ProductoSinCostoException;
@@ -15,7 +16,7 @@ public interface PedidoService {
 
 	boolean actualizarPedido(Pedido pedido) throws ProductoSinCostoException;
 
-	void anularPedido(Integer pedidoId);
+	void anularPedido(Integer pedidoId, Date fechaAnulado);
 
 	void cumplirPedido(Pedido pedidoCumplido) throws ProductoSinCostoException;
 

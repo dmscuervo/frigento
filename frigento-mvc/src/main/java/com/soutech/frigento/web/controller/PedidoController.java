@@ -293,7 +293,10 @@ public class PedidoController extends GenericController {
     
     @RequestMapping(value = "/anular", method = RequestMethod.POST, produces = "text/html")
     public String anular(@Valid @ModelAttribute("pedidoForm") Pedido pedidoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	pedidoService.anularPedido(pedidoForm.getId());
+    	if (pedidoForm.getFechaAnulado().before(pedidoForm.getFecha())) {
+			return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("pedido.anular.fecha.error", Utils.formatDate(pedidoForm.getFecha(), Utils.SDF_DDMMYYYY_HHMM))));
+		}
+    	pedidoService.anularPedido(pedidoForm.getId(), pedidoForm.getFechaAnulado());
     	String mensaje = getMessage("pedido.anular.ok", pedidoForm.getId());
     	
 		List<RelPedidoProducto> relPedProdList = relPedidoProductoService.obtenerByPedido(pedidoForm.getId(), "productoCosto.producto.codigo", "asc");

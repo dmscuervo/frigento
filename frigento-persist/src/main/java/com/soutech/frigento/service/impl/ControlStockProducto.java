@@ -97,7 +97,10 @@ public class ControlStockProducto {
 		//Actualizo stock
 		for (ItemPedidoDTO item : pedidoCumplido.getItems()) {
 			Producto producto = productoDao.findById(item.getProducto().getId());
-			producto.setStock(producto.getStock() + (producto.getPesoCaja() * item.getCantidad()));
+			BigDecimal stock = new BigDecimal(producto.getStock());
+			BigDecimal pesoCaja = new BigDecimal(producto.getPesoCaja());
+			BigDecimal cantidad = new BigDecimal(item.getCantidad());
+			producto.setStock(pesoCaja.multiply(cantidad).add(stock).setScale(3, RoundingMode.HALF_UP).floatValue());
 			producto.setStockControlado(Boolean.TRUE);
 			productoDao.update(producto);
 			
@@ -116,9 +119,9 @@ public class ControlStockProducto {
 		
 		//Actualizo stock
 		for (ItemVentaDTO item : ventaConfirmada.getItems()) {
-			if(item.getCantidadModificada() != null){
+			if(item.getCantidadModificada() != null && item.getCantidadModificada() != 0){
 				Producto producto = productoDao.findById(item.getProducto().getId());
-				producto.setStock(producto.getStock() - item.getCantidadModificada());
+				producto.setStock(new BigDecimal(producto.getStock()).subtract(new BigDecimal(item.getCantidadModificada())).setScale(3, RoundingMode.HALF_UP).floatValue());
 				producto.setStockControlado(Boolean.TRUE);
 				productoDao.update(producto);
 			}
@@ -136,7 +139,9 @@ public class ControlStockProducto {
 		//Actualizo stock
 		for (RelVentaProducto relVtaProd : relVtaProdList) {
 			Producto producto = productoDao.findById(relVtaProd.getRelProductoCategoria().getProducto().getId());
-			producto.setStock(producto.getStock() + relVtaProd.getCantidad());
+			BigDecimal stock = new BigDecimal(producto.getStock());
+			BigDecimal cantidad = new BigDecimal(relVtaProd.getCantidad());
+			producto.setStock(cantidad.add(stock).setScale(3, RoundingMode.HALF_UP).floatValue());
 			producto.setStockControlado(Boolean.TRUE);
 			productoDao.update(producto);
 		}
@@ -187,16 +192,20 @@ public class ControlStockProducto {
 					if(item.getCostoCumplir() != null){
 						rpp.setCosto(item.getCostoCumplir());
 					}
-					rpp.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
+					BigDecimal pesoCaja = new BigDecimal(productoCosto.getProducto().getPesoCaja());
+					BigDecimal cantidad = new BigDecimal(item.getCantidad());
+					rpp.setCantidad(cantidad.multiply(pesoCaja).setScale(3, RoundingMode.HALF_UP).floatValue());
 					rpp.setPedido(relacionesActual.get(0).getPedido());
 					relacionesNuevas.add(rpp);
 					//Voy calculando el costo total del pedido
 					costoTotal = costoTotal.add(rpp.getCosto().multiply(new BigDecimal(rpp.getCantidad())).setScale(2, RoundingMode.HALF_UP));
 				}else{
 					//Me fijo si cambio la cantidad
-					Float cantidadNueva = item.getCantidad() * productoCosto.getProducto().getPesoCaja();
+					BigDecimal pesoCaja = new BigDecimal(productoCosto.getProducto().getPesoCaja());
+					BigDecimal cantidad = new BigDecimal(item.getCantidad());
+					Float cantidadNueva = cantidad.multiply(pesoCaja).setScale(3, RoundingMode.HALF_UP).floatValue();
 					if(!rppActual.getCantidad().equals(cantidadNueva)){
-						rppActual.setCantidad(item.getCantidad() * productoCosto.getProducto().getPesoCaja());
+						rppActual.setCantidad(cantidadNueva);
 						relacionesModificadas.add(rppActual);
 					}else if(item.getCostoCumplir() != null){
 						relacionesModificadas.add(rppActual);
@@ -243,7 +252,7 @@ public class ControlStockProducto {
 		RelVentaProducto rvpActual;
 		for (ItemVentaDTO item : ventaModificada.getItems()) {
 			if(item.getCantidad() != (short)0){
-				item.setCantidadModificada(item.getCantidad());
+				item.setCantidadModificada(0f);
 				rvpActual = null;
 				prodNuevo = Boolean.TRUE;
 				//Inicializo precioTotal (solo la primera vez)
@@ -261,6 +270,7 @@ public class ControlStockProducto {
 				}
 				RelProductoCategoria relProductoCategoria = relProductoCategoriaDao.findByDupla(ventaModificada.getUsuario().getCategoriaProducto().getId(), item.getProducto().getId(), ventaModificada.getFecha());
 				if(prodNuevo){
+					item.setCantidadModificada(item.getCantidad());
 					RelVentaProducto rvp = new RelVentaProducto();
 					if(relProductoCategoria == null){
 						Object[] args = new Object[]{ventaModificada.getFecha(), item.getProducto().getCodigo(), ventaModificada.getUsuario().getCategoriaProducto().getDescripcion()};
@@ -279,7 +289,7 @@ public class ControlStockProducto {
 					//Me fijo si cambio la cantidad
 					Float cantidadNueva = item.getCantidad();
 					if(!rvpActual.getCantidad().equals(cantidadNueva)){
-						item.setCantidadModificada(item.getCantidad()-rvpActual.getCantidad());
+						item.setCantidadModificada(new BigDecimal(item.getCantidad()).subtract(new BigDecimal(rvpActual.getCantidad())).setScale(3, RoundingMode.HALF_UP).floatValue());
 						rvpActual.setCantidad(item.getCantidad());
 						relacionesModificadas.add(rvpActual);
 					}

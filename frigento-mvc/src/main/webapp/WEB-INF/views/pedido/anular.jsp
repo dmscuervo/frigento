@@ -3,6 +3,15 @@
 
 <script type="text/javascript">
 
+	$(document).ready(function(){
+		$('#datetimepickerPedidoFechaAnulado').datetimepicker({
+			ignoreReadonly: true,
+			defaultDate: moment(),
+			maxDate: moment(),
+			locale: 'es'
+	    });
+	});
+
 	function confirmar(){
 		$('#idModalAccion').on('hidden.bs.modal', function () {
 			$('#idModalAccion').modal('hide');
@@ -20,6 +29,7 @@
 			<form:form action="${urlBorrar}" method="post"
 				class="form-horizontal" commandName="pedidoForm" id="idForm">
 			<form:hidden path="id" />
+			<form:hidden path="fecha" />
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
@@ -33,6 +43,25 @@
 						<fmt:param value='${pedidoForm.id}'/>
 					</fmt:message>
 				</p>
+				<div class='row'>
+			        <div class='col-sm-4'>    
+						<div class="form-group" >
+							<label class="col-sm-2 control-label" for="idFechaAnulado" style="white-space: nowrap;">
+								<fmt:message key="pedido.fecha.anulado" />
+							</label>
+						</div>
+			        </div>
+			        <div class='col-sm-4'>
+			        	<div class="form-group">
+	             			<div class='input-group date' id='datetimepickerPedidoFechaAnulado'>
+	             				<form:input path="fechaAnulado" cssClass="form-control" id="idFechaAnulado" readonly="true" />
+	                				<span class="input-group-addon">
+	                     			<span class="glyphicon glyphicon-calendar"></span>
+	                 			</span>
+	             			</div>
+						</div>
+			        </div>
+		    	</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"

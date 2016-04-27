@@ -144,13 +144,16 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 
 	@Override
-	public void anularPedido(Integer pedidoId) {
+	public void anularPedido(Integer pedidoId, Date fechaAnulado) {
 		Pedido pedido = pedidoDao.findById(pedidoId);
 		Estado estado = new Estado();
     	estado.setId(new Short(Constantes.ESTADO_PEDIDO_ANULADO));
 		pedido.setEstado(estado);
 		
 		pedido.setFechaAnulado(new Date());
+		if(fechaAnulado != null){
+			pedido.setFechaEntregado(fechaAnulado);
+		}
     	pedidoDao.update(pedido);
 	}
 

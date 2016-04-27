@@ -1,7 +1,12 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
+<c:url var="pathBase" value="/" />
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Dashboard</h1>
+        <h1 class="page-header">
+        	<sec:authorize access="!isAuthenticated()">
+        	<img src="${pathBase}/resources/images/frigento.png" alt="Frigento" height="120" width="195">
+        	</sec:authorize>
+        </h1>
     </div>
     <!-- /.col-lg-12 -->
 </div>

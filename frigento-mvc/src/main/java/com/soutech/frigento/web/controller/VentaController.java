@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.soutech.frigento.dto.ItemVentaDTO;
 import com.soutech.frigento.exception.ProductoSinCategoriaException;
 import com.soutech.frigento.model.Estado;
+import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.Promocion;
 import com.soutech.frigento.model.RelProductoCategoria;
@@ -152,9 +153,11 @@ public class VentaController extends GenericController {
 
 		String mensaje;
 		for (ItemVentaDTO item : ventaForm.getItems()) {
-			if(item.getPromocion() != null && item.getCantidad() != 0 && item.getCantidad() < item.getPromocion().getCantidadMinima()){
+			Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP).floatValue();
+			if(item.getPromocion() != null && item.getCantidad() != 0 && cantidadMinima < item.getPromocion().getCantidadMinima()){
 				String nombrePromo = getMessage("venta.promocion", item.getPromocion().getCantidadMinima());
-				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, item.getPromocion().getCantidadMinima()});
+				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA).setScale(3, RoundingMode.HALF_UP));
+				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, pesoMinimo});
 				httpServletRequest.setAttribute("msgError", mensaje);
 				return "venta/alta";
 			}
@@ -260,7 +263,7 @@ public class VentaController extends GenericController {
 		
 		List<Estado> estadosPosibles = new ArrayList<Estado>();
 		for (Estado estado : estados) {
-			if (estado.getId() <= new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+			if (estado.getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))) {
 				estadosPosibles.add(estado);
 			}
 		}
@@ -277,6 +280,16 @@ public class VentaController extends GenericController {
         }
 
     	String mensaje;
+    	for (ItemVentaDTO item : ventaForm.getItems()) {
+    		Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP).floatValue();
+			if(item.getPromocion() != null && item.getCantidad() != 0 && cantidadMinima < item.getPromocion().getCantidadMinima()){
+				String nombrePromo = getMessage("venta.promocion", item.getPromocion().getCantidadMinima());
+				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA).setScale(3, RoundingMode.HALF_UP));
+				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, pesoMinimo});
+				httpServletRequest.setAttribute("msgError", mensaje);
+				return "venta/editar";
+			}
+		}
     	boolean ok = false;
 		try {
 			ok = ventaService.actualizarVenta(ventaForm);
@@ -376,7 +389,10 @@ public class VentaController extends GenericController {
 	@RequestMapping(value = "/anular", method = RequestMethod.POST, produces = "text/html")
 	public String anular(@Valid @ModelAttribute("ventaForm") Venta ventaForm, BindingResult bindingResult,
 			Model uiModel, HttpServletRequest httpServletRequest) {
-		ventaService.anularVenta(ventaForm.getId());
+		if (ventaForm.getFechaAnulado().before(ventaForm.getFecha())) {
+			return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("venta.anular.fecha.error", Utils.formatDate(ventaForm.getFecha(), Utils.SDF_DDMMYYYY_HHMM))));
+		}
+		ventaService.anularVenta(ventaForm.getId(), ventaForm.getFechaAnulado());
 		String mensaje = getMessage("venta.anular.ok", ventaForm.getId());
 
 		if(ventaForm.getUsuario().getEmail() != null && !ventaForm.getUsuario().getEmail().equals("")){
@@ -417,7 +433,10 @@ public class VentaController extends GenericController {
 	@RequestMapping(value = "/cumplir", method = RequestMethod.POST, produces = "text/html")
 	public String cumplir(@Valid @ModelAttribute("ventaForm") Venta ventaForm, BindingResult bindingResult,
 			Model uiModel, HttpServletRequest httpServletRequest) {
-		ventaService.cumplirVenta(ventaForm.getId());
+		if (ventaForm.getFechaEntregado().before(ventaForm.getFecha())) {
+			return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("venta.cumplir.fecha.error", Utils.formatDate(ventaForm.getFecha(), Utils.SDF_DDMMYYYY_HHMM))));
+		}
+		ventaService.cumplirVenta(ventaForm.getId(), ventaForm.getFechaEntregado());
 		String mensaje = getMessage("venta.cumplir.ok", ventaForm.getId());
 
 		if(ventaForm.getUsuario().getEmail() != null && !ventaForm.getUsuario().getEmail().equals("")){

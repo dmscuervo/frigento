@@ -141,7 +141,7 @@ public class VentaServiceImpl implements VentaService {
 			}
 			
 			//Decrementar el stock
-			if(ventaActual.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
+			if(ventaModificada.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO))){
 				controlStockProducto.decrementarStockBy(ventaModificada);
 			}
 			
@@ -154,7 +154,7 @@ public class VentaServiceImpl implements VentaService {
 
 	@Transactional
 	@Override
-	public void anularVenta(Integer ventaId) {
+	public void anularVenta(Integer ventaId, Date fechaAnulado) {
 		List<RelVentaProducto> relVtaProdList = relVentaProductoDao.findAllByVenta(ventaId, null, null);
 		Venta venta = relVtaProdList.get(0).getVenta();
 		
@@ -168,17 +168,22 @@ public class VentaServiceImpl implements VentaService {
 		venta.setEstado(estado);
 		
 		venta.setFechaAnulado(new Date());
+		if(fechaAnulado != null){
+			venta.setFechaEntregado(fechaAnulado);
+		}
 		ventaDao.update(venta);
 	}
 
 	@Override
-	public void cumplirVenta(Integer ventaId) {
+	public void cumplirVenta(Integer ventaId, Date fechaEntregado) {
 		Venta venta = ventaDao.findById(ventaId);
 		Estado estado = new Estado();
     	estado.setId(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO));
 		venta.setEstado(estado);
-		
 		venta.setFechaEntregado(new Date());
+		if(fechaEntregado != null){
+			venta.setFechaEntregado(fechaEntregado);
+		}
 		ventaDao.update(venta);
 	}
 
