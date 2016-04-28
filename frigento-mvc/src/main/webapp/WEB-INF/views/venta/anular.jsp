@@ -6,7 +6,7 @@
 	$(document).ready(function(){
 		$('#datetimepickerVentaFechaAnulado').datetimepicker({
 			ignoreReadonly: true,
-			defaultDate: moment(),
+			defaultDate: ${ventaForm.fecha.time},
 			maxDate: moment(),
 			locale: 'es'
 	    });

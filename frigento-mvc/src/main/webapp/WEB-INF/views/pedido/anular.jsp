@@ -6,7 +6,7 @@
 	$(document).ready(function(){
 		$('#datetimepickerPedidoFechaAnulado').datetimepicker({
 			ignoreReadonly: true,
-			defaultDate: moment(),
+			defaultDate: ${pedidoForm.fecha.time},
 			maxDate: moment(),
 			locale: 'es'
 	    });
