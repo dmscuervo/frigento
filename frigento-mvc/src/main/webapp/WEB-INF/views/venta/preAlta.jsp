@@ -44,9 +44,8 @@
     			//La pantalla de preAlta comienza con el tag definido a continuación. 
     			//Caso contrario es porque finalizo el alta y cargo una nueva pantalla.
     			if(result.trim().startsWith('<!--PRE-ALTA')){
-	    			$('#divButton').slideUp();
+	    			$('#contenidoPreAlta').slideUp();
 	            	$('#contenidoAlta').html(result);
-	    			$('#divPreAlta').prop('disabled', true);
     			}else{
     				//Finaliza el proceso
     				$('#page-wrapper').html(result);
@@ -75,6 +74,7 @@
 		<label id="msgError">&nbsp;</label>
 	</p>
 	<c:url var="urlPreAlta" value="/venta?alta" />
+<div id="contenidoPreAlta">	
 	<form:form action="${urlPreAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idFormPreAlta">
 	<div class='row'>
         <div class='col-sm-4'>    
@@ -95,7 +95,7 @@
 			</div>
         </div>
     </div>
-    <div class='row' id="divPreAlta">
+    <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idUsu" style="white-space: nowrap;">
@@ -111,7 +111,7 @@
 			</div>
         </div>
    </div>
-    <div class='row' id="divButton">
+    <div class='row'>
     <br/>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -129,5 +129,6 @@
         </div>
     </div>
 	</form:form>
+</div>
 <div id="contenidoAlta"></div>
 </div>

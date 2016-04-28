@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <script type="text/javascript">
+
+	var dataTablePedidoEdit;
 	
 	$(document).ready(function(){
 		
@@ -14,7 +16,7 @@
 		}
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
-		    $('#idGrillaItems').DataTable({
+			dataTablePedidoEdit = $('#idGrillaItems').DataTable({
 		    	scrollY:        200,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
@@ -52,6 +54,14 @@
 		}else{
 			$('#idConfirmar').hide();
 		}
+	}
+	
+	function actualizarPedido(form){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTablePedidoEdit != undefined){
+			dataTablePedidoEdit.search('').draw();
+		}
+		submitInBody(form);
 	}
 	
 </script>
@@ -177,7 +187,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aplicar.cambios"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:actualizarPedido($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
 						onclick="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=desc')">

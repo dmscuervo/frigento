@@ -18,6 +18,13 @@
 		    }); 
 		}
 		
+		$('#datetimepickerPedidoFechaEntregado').datetimepicker({
+			ignoreReadonly: true,
+			defaultDate: moment(),
+			maxDate: moment(),
+			locale: 'es'
+	    });
+		
 		//Aplico restricciones
 		$("[id^=idCantidad-]").keyup(function(){
 			var value=$(this).val();
@@ -49,6 +56,30 @@
 	<form:hidden path="id"/>
 	<form:hidden path="fecha"/>
 	<form:hidden path="fechaAEntregar"/>
+	<div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idFechaEntrega" style="white-space: nowrap;">
+					<fmt:message key="pedido.fecha.entregado" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+           			<div class='input-group date' id='datetimepickerPedidoFechaEntregado'>
+           				<form:input path="fechaEntregado" cssClass="form-control" id="idFechaEntrega" readonly="true" />
+              				<span class="input-group-addon">
+                   			<span class="glyphicon glyphicon-calendar"></span>
+               			</span>
+           			</div>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="fechaEntregado" cssClass="form-validate" />
+			</div>
+        </div>
+   	</div>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >

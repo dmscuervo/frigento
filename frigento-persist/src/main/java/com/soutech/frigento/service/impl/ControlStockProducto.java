@@ -297,13 +297,15 @@ public class ControlStockProducto {
 				}else{
 					//Me fijo si cambio la cantidad
 					Float cantidadNueva = item.getCantidad();
-					if(!rvpActual.getCantidad().equals(cantidadNueva)){
+					if(!rvpActual.getCantidad().equals(cantidadNueva)
+							|| !rvpActual.getPrecioVenta().equals(item.getImporteVenta())){
 						item.setCantidadModificada(new BigDecimal(item.getCantidad()).subtract(new BigDecimal(rvpActual.getCantidad())).setScale(3, RoundingMode.HALF_UP).floatValue());
 						rvpActual.setCantidad(item.getCantidad());
+						rvpActual.setPrecioVenta(item.getImporteVenta());
 						relacionesModificadas.add(rvpActual);
 					}
 					//Voy calculando el importe total de la venta
-					precioTotal = precioTotal.add(rvpActual.getPrecioVenta().multiply(new BigDecimal(item.getCantidad())).setScale(2, RoundingMode.HALF_UP));
+					precioTotal = precioTotal.add(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad())).setScale(2, RoundingMode.HALF_UP));
 				}
 				
 			}else{

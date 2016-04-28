@@ -50,6 +50,8 @@
         			</c:if>
         			<c:if test="${vta.estado.id eq 2}">
         				&nbsp;&nbsp;<i class="fa fa-check" onclick="confirmarAccion('venta/${vta.id}?cumplir')"></i>
+        			</c:if>
+        			<c:if test="${vta.estado.id eq 1 or vta.estado.id eq 2}">
         				&nbsp;&nbsp;<i class="fa fa-times" onclick="confirmarAccion('venta/${vta.id}?anular')"></i>
         			</c:if>
         			<c:if test="${vta.estado.id gt 1}">

@@ -166,6 +166,9 @@ public class PedidoServiceImpl implements PedidoService {
 		pedido.setEstado(pedidoCumplido.getEstado());
 		
 		pedido.setFechaEntregado(new Date());
+		if(pedidoCumplido.getFechaEntregado() != null){
+			pedido.setFechaEntregado(pedidoCumplido.getFechaEntregado());
+		}
 		pedidoDao.update(pedido);
 	}
 

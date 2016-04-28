@@ -68,6 +68,44 @@
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idFecha" style="white-space: nowrap;">
+					<fmt:message key="venta.fecha" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+   				<input type="text" readonly="readonly" value='<fmt:formatDate value="${ventaForm.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/>' class="form-control">
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				&nbsp;
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idFecha" style="white-space: nowrap;">
+					<fmt:message key="venta.usuario" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+   				<input type="text" readonly="readonly" value="${ventaForm.usuario.identificadoWeb}" class="form-control">
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				&nbsp;
+			</div>
+        </div>
+    </div>
+	<div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idEstado" style="white-space: nowrap;">
 					<fmt:message key="venta.estado" />
 				</label>

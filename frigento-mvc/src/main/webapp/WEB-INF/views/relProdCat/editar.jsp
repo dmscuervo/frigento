@@ -109,8 +109,7 @@
             		return;
             	}
             	catch(err) {
-            		console.log("No JSON");
-	            	//Hago que se refresque el contenido al ocultar el modal
+            		//Hago que se refresque el contenido al ocultar el modal
 	            	$('#idModalAlta').on('hidden.bs.modal', function () {
 	            		//Cargo contenido
 	                	$('#page-wrapper').html(result);
