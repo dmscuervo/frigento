@@ -18,7 +18,7 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat) {
+	public List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat, String[] sortFieldName, String[] sortOrder) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" r where r.categoria.id = :catId");
@@ -26,7 +26,23 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 			hql.append(" and r.fechaDesde <= :fecha");
 			hql.append(" and (r.fechaHasta is null or r.fechaHasta > :fecha)");
 		}
-		hql.append(" order by r.producto.descripcion asc");
+		if(sortFieldName != null){
+			hql.append(" order by r.");
+			for (int i = 0; i < sortFieldName.length; i++) {
+				String sfn = sortFieldName[i];
+				String so;
+				try {
+					so = sortOrder[i];
+				} catch (Exception e) {
+					so = "asc";
+				}
+				hql.append(sfn);
+				hql.append(" ");
+				hql.append(so);
+				hql.append(", r.");
+			}
+			hql.replace(hql.length()-4, hql.length(), "");
+		}
 		Query query = getSession().createQuery(hql.toString());
 		query.setParameter("catId", idCat);
 		if(fecha != null){

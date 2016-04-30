@@ -41,4 +41,6 @@ public interface RelProductoCategoriaService {
 
 	List<RelProductoCategoria> obtenerRelacionesAPartirDe(Integer idProd, Date fechaDesde);
 
+	List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, Date fecha, String[] sortFieldName, String[] sortOrder);
+
 }

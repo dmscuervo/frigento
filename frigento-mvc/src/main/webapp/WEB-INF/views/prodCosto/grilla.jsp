@@ -14,7 +14,6 @@
 	    }
 		
 		$('#datetimepickerPC').datetimepicker({
-			//defaultDate: new Date(),
 			ignoreReadonly: true,
 			maxDate: moment(),
 			locale: 'es'

@@ -53,7 +53,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	
 	@Override
 	public List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado) {
-		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat);
+		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat, new String[]{"producto.descripcion"}, new String[]{"asc"});
 		for (RelProductoCategoria rpc : relProdCatList) {
 			ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(rpc.getProducto().getId(), fecha);
 			BigDecimal factor = rpc.getIncremento().divide(new BigDecimal(100)).add(BigDecimal.ONE);
@@ -202,6 +202,11 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	@Override
 	public List<RelProductoCategoria> obtenerRelacionesAPartirDe(Integer idProd, Date fechaDesde) {
 		return relProductoCategoriaDao.findPosterioresA(idProd, fechaDesde);
+	}
+
+	@Override
+	public List<RelProductoCategoria> obtenerProductosCategoria(Short idCat, Date fecha, String[] sortFieldName, String[] sortOrder) {
+		return relProductoCategoriaDao.findAllByCategoria(fecha, idCat, sortFieldName, sortOrder);
 	}
 	
 }

@@ -77,9 +77,6 @@ public class Producto implements Serializable {
     @Column(name = "STOCK_MINIMO")
     private Float stockMinimo;
 
-    @Column(name = "IMAGEN")
-    private Blob imagen;
-
     @NotNull
     @Numeric(regexp = Numeric.decimal_positivo)
     @Column(name = "PESO_CAJA")
@@ -151,14 +148,6 @@ public class Producto implements Serializable {
 
 	public void setStockMinimo(Float stockMinimo) {
         this.stockMinimo = stockMinimo;
-    }
-
-	public Blob getImagen() {
-        return this.imagen;
-    }
-
-	public void setImagen(Blob imagen) {
-        this.imagen = imagen;
     }
 
 	public Float getPesoCaja() {
