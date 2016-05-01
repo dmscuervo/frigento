@@ -61,6 +61,11 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
+	public List<Producto> obtenerProductos() {
+		return productoDao.findAll();
+	}
+
+	@Override
 	public List<Producto> obtenerProductos(String estado, String sortFieldName, String sortOrder) {
 		return productoDao.findAll(estado, sortFieldName, sortOrder);
 	}

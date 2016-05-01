@@ -1,4 +1,4 @@
-package com.soutech.frigento.web.dto;
+package com.soutech.frigento.web.dto.reports;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +12,7 @@ public class PlanillaClienteDTO implements Serializable{
 	
 	private Date fecha;
 	private Short idCategoria;
-	private List<String> columns;
+	private List<ColumnReporteDTO> columns;
 	private List<Producto> rows;
 	
 	public Date getFecha() {
@@ -27,10 +27,10 @@ public class PlanillaClienteDTO implements Serializable{
 	public void setIdCategoria(Short idCategoria) {
 		this.idCategoria = idCategoria;
 	}
-	public List<String> getColumns() {
+	public List<ColumnReporteDTO> getColumns() {
 		return columns;
 	}
-	public void setColumns(List<String> columns) {
+	public void setColumns(List<ColumnReporteDTO> columns) {
 		this.columns = columns;
 	}
 	public List<Producto> getRows() {
@@ -39,5 +39,4 @@ public class PlanillaClienteDTO implements Serializable{
 	public void setRows(List<Producto> rows) {
 		this.rows = rows;
 	}
-
 }

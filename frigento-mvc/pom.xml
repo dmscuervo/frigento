@@ -100,6 +100,19 @@
 			<version>5.5.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>ar.com.fdvs</groupId>
+			<artifactId>DynamicJasper</artifactId>
+			<version>5.0.7</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>1.7</version>
+		</dependency>
+		
 		<!-- slf4j-api-1.4.2 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

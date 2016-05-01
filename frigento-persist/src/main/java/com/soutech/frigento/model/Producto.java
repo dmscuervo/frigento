@@ -1,7 +1,6 @@
 package com.soutech.frigento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 

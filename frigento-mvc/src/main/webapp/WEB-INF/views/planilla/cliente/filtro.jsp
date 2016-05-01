@@ -38,7 +38,7 @@
 		$('.selected td:first-child').each(function(){
 			codigos = codigos + $(this).text() + ",";
 		});
-		codigos = codigos.substring(0, codigos.length-2);
+		codigos = codigos.substring(0, codigos.length-1);
 		console.log(codigos);
 		
 		//Bloqueo contenido
