@@ -53,6 +53,32 @@
 			$('#contenidoFiltro').prop('disabled', true);
 		});
 	}
+	
+	function generar(){
+		var indices = '';
+		$('.selected').find('td input:hidden').each(function(){
+			indices = indices + $(this).val() + ",";
+		});
+		indices = indices.substring(0, indices.length-1);
+		console.log(indices);
+		
+		var url = '${pathBase}' + 'planilla/cliente/generar/'+indices;
+		window.location=url;
+		/*
+		$.ajax({
+            url: url,
+            type: 'GET',
+            success: function(result) {
+            	console.log(result);
+            	//Desbloqueo pantalla
+            	$('#wrapper').unblock();
+    			bodyBlock = false;
+    			//Cargo contenido
+            	$('#page-wrapper').html(result);
+            }
+        });
+		*/
+	}
 
 </script>
 

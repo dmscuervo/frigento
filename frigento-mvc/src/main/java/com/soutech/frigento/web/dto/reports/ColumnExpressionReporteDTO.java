@@ -1,9 +1,9 @@
 package com.soutech.frigento.web.dto.reports;
 
-import java.util.Map;
+import ar.com.fdvs.dj.domain.CustomExpression;
 
-public abstract class ColumnExpressionReporteDTO extends ColumnReporteDTO {
+public abstract class ColumnExpressionReporteDTO extends ColumnReporteDTO implements CustomExpression{
 
-	@SuppressWarnings("rawtypes")
-	public abstract Object evaluate(Map fields, Map variables, Map parameters);
+	private static final long serialVersionUID = -5264578408627344888L;
+
 }

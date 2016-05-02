@@ -61,6 +61,7 @@ public class LoginController extends GenericController {
         return "generic/mensajeException";
     }
 	
+	@SuppressWarnings("unused")
 	private String getPrincipal(){
         String userName = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

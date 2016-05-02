@@ -7,6 +7,7 @@ public class ColumnReporteDTO {
 	private String className;
 	private int ancho;
 	private boolean ajustarAncho;
+	private String pattern;
 	
 	public String getNombre() {
 		return nombre;
@@ -37,6 +38,12 @@ public class ColumnReporteDTO {
 	}
 	public void setAjustarAncho(boolean ajustarAncho) {
 		this.ajustarAncho = ajustarAncho;
+	}
+	public String getPattern() {
+		return pattern;
+	}
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
 	}
 	
 }

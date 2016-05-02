@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class ColumnPrecioCajaConIvaDTO extends ColumnExpressionReporteDTO {
 
+	private static final long serialVersionUID = -243120026630947229L;
 	private BigDecimal iva;
 	
 	public ColumnPrecioCajaConIvaDTO(Float iva){
