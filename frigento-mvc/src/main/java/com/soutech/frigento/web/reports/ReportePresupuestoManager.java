@@ -93,7 +93,8 @@ public class ReportePresupuestoManager {
 			}
 			Set<Object> keySet = System.getProperties().keySet();
 			for (Object object : keySet) {
-				System.getProperty((String)object);
+				String property = System.getProperty((String)object);
+				System.out.println(((String)object).concat(": ").concat(property));
 			}
 			String fileName = "ireport/presupuesto.jrxml" ;	
     		String path = this.getClass().getClassLoader().getResource(fileName).getPath();
