@@ -125,7 +125,7 @@ public class PlanillaController extends GenericController {
     	columna.setClassName(Float.class.getName());
     	columna.setAncho(30);
     	columna.setAjustarAncho(false);
-    	columna.setPattern("#.##0.00");
+    	columna.setPattern("###,###.##");
     	columnas.add(columna);
     	
     	columna = new ColumnReporteDTO();
@@ -134,7 +134,7 @@ public class PlanillaController extends GenericController {
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setAjustarAncho(false);
-    	columna.setPattern("$ #.##0.00");
+    	columna.setPattern("$ ###,###.##");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioConIvaDTO(21f);
@@ -142,21 +142,21 @@ public class PlanillaController extends GenericController {
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setAjustarAncho(false);
-    	columna.setPattern("$ #.##0.00");
+    	columna.setPattern("$ ###,###.##");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioCajaDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja"));
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(50);
-    	columna.setPattern("$ #.##0.00");
+    	columna.setPattern("$ ###,###.##");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioCajaConIvaDTO(21f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(50);
-    	columna.setPattern("$ #.##0.00");
+    	columna.setPattern("$ ###,###.##");
     	columnas.add(columna);
     	
     	planilla.setColumns(columnas);
