@@ -1,6 +1,13 @@
 package com.soutech.frigento.web.dto.reports;
 
-public class ColumnReporteDTO {
+import java.io.Serializable;
+
+import ar.com.fdvs.dj.domain.Style;
+import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
+
+public class ColumnReporteDTO implements Serializable{
+	
+	private static final long serialVersionUID = -1433683483297484407L;
 	
 	private String nombre;
 	private String property;
@@ -8,6 +15,7 @@ public class ColumnReporteDTO {
 	private int ancho;
 	private boolean ajustarAncho;
 	private String pattern;
+	private HorizontalAlign alineacionHorizontal = HorizontalAlign.CENTER;
 	
 	public String getNombre() {
 		return nombre;
@@ -45,5 +53,22 @@ public class ColumnReporteDTO {
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
 	}
-	
+	public HorizontalAlign getAlineacionHorizontal() {
+		return alineacionHorizontal;
+	}
+	public void setAlineacionHorizontal(HorizontalAlign alineacionHorizontal) {
+		this.alineacionHorizontal = alineacionHorizontal;
+	}
+	public Style generarStyle(Style base){
+		if(alineacionHorizontal == null)	return base;
+		
+		Style style;
+		try {
+			style = (Style) base.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+		style.setHorizontalAlign(alineacionHorizontal);
+		return style;
+	}
 }

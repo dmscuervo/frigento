@@ -2,9 +2,11 @@
 
 <script type="text/javascript">
 
+	var dataTablePlanillaColumnas;
+
 	$(document).ready(function() {
 		if(!$.fn.DataTable.isDataTable('#idGrillaColumnas')){
-	    	$('#idGrillaColumnas').DataTable({
+			dataTablePlanillaColumnas = $('#idGrillaColumnas').DataTable({
 	    		scrollY:        400,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
@@ -16,7 +18,8 @@
 		        ],
 		        select: {
 	                style: 'multi'
-	            }
+	            },
+	            searching: false
 	    	});
 		}
 	    
@@ -28,9 +31,19 @@
 	
 			
 </script>
-<span class="messageBlue">
-	<fmt:message key="planilla.cliente.seleccionar.producto" /><input type="button" value='<fmt:message key="boton.generar" />' onclick="generar()">
-</span>
+
+<div class='row'>
+	<div class='col-sm-8'>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" style="white-space: nowrap;"> 
+				<fmt:message key="planilla.cliente.seleccionar.producto" />&nbsp;<input type="button" class="btn btn-default btn-primary" value='<fmt:message key="boton.generar" />' onclick="generar()">
+			</label>
+		</div>
+	</div>
+</div>
+<div id="idMsgError" class="form-validate" style="display: none;">
+	<label style="white-space: nowrap;"></label>
+</div>
 <table id="idGrillaColumnas" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>

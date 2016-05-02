@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.CategoriaService;
@@ -33,6 +34,8 @@ import com.soutech.frigento.web.dto.reports.ColumnPrecioConIvaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnReporteDTO;
 import com.soutech.frigento.web.dto.reports.PlanillaClienteDTO;
 import com.soutech.frigento.web.reports.ReportePresupuestoManager;
+
+import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 
 @Controller
 @RequestMapping(value="/planilla")
@@ -55,9 +58,14 @@ public class PlanillaController extends GenericController {
     
     @RequestMapping(value = "/cliente", params = "filtro", produces = "text/html")
     public String filtroCliente(Model uiModel) {
-    	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
+    	List<Categoria> categorias = categoriaService.obtenerCategorias();
+    	uiModel.addAttribute("categoriaList", categorias);
     	PlanillaClienteDTO planilla = new PlanillaClienteDTO();
     	uiModel.addAttribute("planillaDTO", planilla);
+    	if(!categorias.isEmpty()){
+    		List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoria(categorias.get(0).getId(), new Date(), new String[]{"producto.descripcion"}, new String[]{"asc"});
+    		uiModel.addAttribute("rpcList", rpcList);
+    	}
     	return "planilla/cliente/filtro";
     }
     
@@ -92,11 +100,13 @@ public class PlanillaController extends GenericController {
     	columna.setProperty("codigo");
     	columna.setClassName(String.class.getName());
     	columna.setAncho(30);
+    	columna.setAjustarAncho(false);
     	columnas.add(columna);
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcion"));
     	columna.setProperty("descripcion");
+    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
     	columna.setAncho(100);
     	columnas.add(columna);
@@ -104,6 +114,7 @@ public class PlanillaController extends GenericController {
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcionCliente"));
     	columna.setProperty("descripcionVenta");
+    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
     	columna.setAncho(100);
     	columnas.add(columna);
@@ -112,36 +123,40 @@ public class PlanillaController extends GenericController {
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.peso.caja"));
     	columna.setProperty("pesoCaja");
     	columna.setClassName(Float.class.getName());
-    	columna.setAncho(50);
+    	columna.setAncho(30);
+    	columna.setAjustarAncho(false);
+    	columna.setPattern("#.##0.00");
     	columnas.add(columna);
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.kg"));
     	columna.setProperty("importeVenta");
     	columna.setClassName(BigDecimal.class.getName());
-    	columna.setAncho(50);
-    	columna.setPattern("$ 0.00");
+    	columna.setAncho(30);
+    	columna.setAjustarAncho(false);
+    	columna.setPattern("$ #.##0.00");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioConIvaDTO(21f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.kg.iva"));
     	columna.setClassName(BigDecimal.class.getName());
-    	columna.setAncho(50);
-    	columna.setPattern("$ 0.00");
+    	columna.setAncho(30);
+    	columna.setAjustarAncho(false);
+    	columna.setPattern("$ #.##0.00");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioCajaDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja"));
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(50);
-    	columna.setPattern("$ 0.00");
+    	columna.setPattern("$ #.##0.00");
     	columnas.add(columna);
     	
     	columna = new ColumnPrecioCajaConIvaDTO(21f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(50);
-    	columna.setPattern("$ 0.00");
+    	columna.setPattern("$ #.##0.00");
     	columnas.add(columna);
     	
     	planilla.setColumns(columnas);

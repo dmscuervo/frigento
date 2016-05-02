@@ -2,17 +2,35 @@
 
 <script type="text/javascript">
 
+	var dataTablePlanillaProductos;
+
 	$(document).ready(function() {
 		if(!$.fn.DataTable.isDataTable('#idGrillaPlanilla')){
-	    	$('#idGrillaPlanilla').DataTable({
+			dataTablePlanillaProductos = $('#idGrillaPlanilla').DataTable({
 	    		scrollY:        400,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
 		        paging: false,
 	    		order: [[ 0, "asc" ]],
+		    	dom: 'Bfrtip',
 	    		select: {
-	                style: 'multi'
-	            }
+	    			style: 'multi'
+	            },
+		        //select: true,
+		        buttons: [
+		            {
+		                text: '<fmt:message key="database.grilla.button.select.all" />',
+		                action: function () {
+		                	dataTablePlanillaProductos.rows().select();
+		                }
+		            },
+		            {
+		                text: '<fmt:message key="database.grilla.button.select.none" />',
+		                action: function () {
+		                	dataTablePlanillaProductos.rows().deselect();
+		                }
+		            }
+		        ]
 	    	});
 		}
 	    
@@ -24,9 +42,19 @@
 	
 			
 </script>
-<span class="messageBlue">
-	<fmt:message key="planilla.cliente.seleccionar.producto" /><input type="button" class="btn btn-default btn-primary" value='<fmt:message key="boton.listo" />' onclick="cargarColumnas()">
-</span>
+
+<div class='row'>
+	<div class='col-sm-8'>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" style="white-space: nowrap;">
+				<fmt:message key="planilla.cliente.seleccionar.producto" />&nbsp;<input type="button" class="btn btn-default btn-primary" value='<fmt:message key="boton.listo" />' onclick="cargarColumnas()">
+			</label>
+		</div>
+	</div>
+</div>
+<div id="idMsgError" class="form-validate" style="display: none;">
+	<label style="white-space: nowrap;"></label>
+</div>
 <table id="idGrillaPlanilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>

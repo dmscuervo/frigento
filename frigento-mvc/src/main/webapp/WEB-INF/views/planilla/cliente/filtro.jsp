@@ -34,12 +34,26 @@
 	}
 	
 	function cargarColumnas(){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTablePlanillaProductos != undefined){
+			dataTablePlanillaProductos.search('').draw();
+		}
+		
+		$('#idMsgError').text('');
+		$('#idMsgError').hide();
+		
 		var codigos = '';
 		$('.selected td:first-child').each(function(){
 			codigos = codigos + $(this).text() + ",";
 		});
+		
+		if(codigos == ''){
+			$('#idMsgError').text('<fmt:message key="planilla.cliente.sin.producto"/>');
+			$('#idMsgError').slideDown("slow");
+			return;
+		}
+		
 		codigos = codigos.substring(0, codigos.length-1);
-		console.log(codigos);
 		
 		//Bloqueo contenido
 		blockControl($('#wrapperContenidoGrilla'));
@@ -50,15 +64,31 @@
 			//Desbloqueo contenido
         	$('#wrapperContenidoGrilla').unblock();
 			//Ya no puedo cambiar la fecha o categoria
-			$('#contenidoFiltro').prop('disabled', true);
+			$('#idCat').prop('disabled',true);
+			$('.input-group-addon').remove();
 		});
 	}
 	
 	function generar(){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTablePlanillaColumnas != undefined){
+			dataTablePlanillaColumnas.search('').draw();
+		}
+		
+		$('#idMsgError').text('');
+		$('#idMsgError').hide();
+		
 		var indices = '';
 		$('.selected').find('td input:hidden').each(function(){
 			indices = indices + $(this).val() + ",";
 		});
+		
+		if(indices == ''){
+			$('#idMsgError').text('<fmt:message key="planilla.cliente.sin.columna"/>');
+			$('#idMsgError').slideDown("slow");
+			return;
+		}
+		
 		indices = indices.substring(0, indices.length-1);
 		console.log(indices);
 		
@@ -129,6 +159,8 @@
    </div>
 </div>
 <div id="wrapperContenidoGrilla">
-<div id="contenidoGrilla" style="text-align: center;"></div>
+<div id="contenidoGrilla" style="text-align: center;">
+	<jsp:include page="grilla.jsp"></jsp:include>
+</div>
 </div>
 </div>

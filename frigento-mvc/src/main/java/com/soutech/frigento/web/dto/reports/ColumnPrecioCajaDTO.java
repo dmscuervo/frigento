@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class ColumnPrecioCajaDTO extends ColumnExpressionReporteDTO {
 
+	private static final long serialVersionUID = -8721143193568365369L;
+
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Object evaluate(Map fields, Map variables, Map parameters) {

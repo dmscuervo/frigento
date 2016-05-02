@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,8 @@ import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.Border;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Transparency;
+import ar.com.fdvs.dj.domain.constants.VerticalAlign;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -47,31 +50,52 @@ public class ReportePresupuestoManager {
 			headerStyle.setBorder(new Border(1, Border.BORDER_STYLE_SOLID, Color.BLACK));
 			//headerStyle.setBorderColor(Color.black);
 			headerStyle.setHorizontalAlign(HorizontalAlign.CENTER);
+			headerStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 			headerStyle.setTransparency(Transparency.OPAQUE);
 			
 			Style rowStyle = new Style();
 			rowStyle.setBorder(new Border(1, Border.BORDER_STYLE_SOLID, Color.BLACK));
 			rowStyle.setHorizontalAlign(HorizontalAlign.CENTER);
+			rowStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 			rowStyle.setTransparency(Transparency.TRANSPARENT);
 			
 			drb
+			//.setDefaultStyles(headerStyle, headerStyle, headerStyle, rowStyle)
+			//.setMargins(20, 20, 20, 20)
 			//.setPrintBackgroundOnOddRows(true)
 			.setUseFullPageWidth(true);
 			
 			//Agrego las columnas
+			AbstractColumn abstactColumn;
 			for (int i = 0; i < indicesSel.length; i++) {
 				Integer indice = indicesSel[i];
 				ColumnReporteDTO column = contenido.getColumns().get(indice);
 				if(column instanceof ColumnExpressionReporteDTO){
-					//drb.addColumn(ColumnBuilder.getNew().setCustomExpression((ColumnExpressionReporteDTO)column).build());
-					drb.addColumn(column.getNombre(), (ColumnExpressionReporteDTO)column, column.getAncho(), column.isAjustarAncho(), column.getPattern(), rowStyle);
+					abstactColumn = ColumnBuilder.getNew().setCustomExpression((ColumnExpressionReporteDTO)column).build();
+					abstactColumn.setTitle(column.getNombre());
+					abstactColumn.setWidth(column.getAncho());
+					abstactColumn.setFixedWidth(column.isAjustarAncho());
+					abstactColumn.setPattern(column.getPattern());
+					abstactColumn.setStyle(column.generarStyle(rowStyle));
+					abstactColumn.setHeaderStyle(headerStyle);
+					drb.addColumn(abstactColumn);
+					
 				}else{
-					drb.addColumn(ColumnBuilder.getNew().setColumnProperty(column.getProperty(), column.getClassName()).setTitle(column.getNombre()).setWidth(column.getAncho()).build());
-					//drb.addColumn(column.getNombre(), column.getProperty(), column.getClassName(), column.getAncho(), column.isAjustarAncho());
+					abstactColumn = ColumnBuilder.getNew().setColumnProperty(column.getProperty(), column.getClassName()).build();
+					abstactColumn.setTitle(column.getNombre());
+					abstactColumn.setWidth(column.getAncho());
+					abstactColumn.setFixedWidth(column.isAjustarAncho());
+					abstactColumn.setPattern(column.getPattern());
+					abstactColumn.setStyle(column.generarStyle(rowStyle));
+					abstactColumn.setHeaderStyle(headerStyle);
+					drb.addColumn(abstactColumn);
 				}
 			}
-			
-			String fileName = "ireport/presupuesto.jasper" ;	
+			Set<Object> keySet = System.getProperties().keySet();
+			for (Object object : keySet) {
+				System.getProperty((String)object);
+			}
+			String fileName = "ireport/presupuesto.jrxml" ;	
     		String path = this.getClass().getClassLoader().getResource(fileName).getPath();
 			drb.setTemplateFile(path);
 			
