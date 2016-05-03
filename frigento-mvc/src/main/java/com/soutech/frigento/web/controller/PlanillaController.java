@@ -158,7 +158,7 @@ public class PlanillaController extends GenericController {
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja"));
     	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja"));
     	columna.setClassName(BigDecimal.class.getName());
-    	columna.setAncho(50);
+    	columna.setAncho(30);
     	columna.setPattern("$ #,##0.00");
     	columnas.add(columna);
     	
@@ -166,7 +166,7 @@ public class PlanillaController extends GenericController {
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
     	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
     	columna.setClassName(BigDecimal.class.getName());
-    	columna.setAncho(50);
+    	columna.setAncho(30);
     	columna.setPattern("$ #,##0.00");
     	columnas.add(columna);
     	

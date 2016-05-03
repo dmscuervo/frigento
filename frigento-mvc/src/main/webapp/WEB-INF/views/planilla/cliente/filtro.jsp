@@ -118,7 +118,7 @@
 	            	$('#wrapper').unblock();
 	    			bodyBlock = false;
 	    			//Cargo contenido
-                	$('#page-wrapper').html(result);
+                	//$('#page-wrapper').html(result);
             	}
             }
         });
