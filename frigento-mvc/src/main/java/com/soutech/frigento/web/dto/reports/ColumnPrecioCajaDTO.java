@@ -11,9 +11,9 @@ public class ColumnPrecioCajaDTO extends ColumnExpressionReporteDTO {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Object evaluate(Map fields, Map variables, Map parameters) {
-		BigDecimal precioVenta = (BigDecimal) fields.get("precioVenta");
+		BigDecimal importeVenta = (BigDecimal) fields.get("importeVenta");
 		Float pesoCaja = (Float) fields.get("pesoCaja");
-        return precioVenta.multiply(new BigDecimal(pesoCaja)).setScale(2, RoundingMode.HALF_UP);
+        return importeVenta.multiply(new BigDecimal(pesoCaja)).setScale(2, RoundingMode.HALF_UP);
 	}
 
 }

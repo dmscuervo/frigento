@@ -2,6 +2,7 @@ package com.soutech.frigento.web.reports;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.soutech.frigento.util.PrinterStack;
+import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.dto.reports.ColumnExpressionReporteDTO;
 import com.soutech.frigento.web.dto.reports.ColumnReporteDTO;
 import com.soutech.frigento.web.dto.reports.PlanillaClienteDTO;
@@ -72,7 +74,7 @@ public class ReportePresupuestoManager {
 				ColumnReporteDTO column = contenido.getColumns().get(indice);
 				if(column instanceof ColumnExpressionReporteDTO){
 					abstactColumn = ColumnBuilder.getNew().setCustomExpression((ColumnExpressionReporteDTO)column).build();
-					abstactColumn.setTitle(column.getNombre());
+					abstactColumn.setTitle(column.getNombreElegido());
 					abstactColumn.setWidth(column.getAncho());
 					abstactColumn.setFixedWidth(column.isAjustarAncho());
 					abstactColumn.setPattern(column.getPattern());
@@ -82,7 +84,7 @@ public class ReportePresupuestoManager {
 					
 				}else{
 					abstactColumn = ColumnBuilder.getNew().setColumnProperty(column.getProperty(), column.getClassName()).build();
-					abstactColumn.setTitle(column.getNombre());
+					abstactColumn.setTitle(column.getNombreElegido());
 					abstactColumn.setWidth(column.getAncho());
 					abstactColumn.setFixedWidth(column.isAjustarAncho());
 					abstactColumn.setPattern(column.getPattern());
@@ -96,15 +98,27 @@ public class ReportePresupuestoManager {
 				String property = System.getProperty((String)object);
 				System.out.println(((String)object).concat(": ").concat(property));
 			}
-			String fileName = "ireport/presupuesto.jrxml" ;	
-    		String path = this.getClass().getClassLoader().getResource(fileName).getPath();
-			drb.setTemplateFile(path);
+			String fileName = null;
+			if(contenido.getOrientacion().equals(PlanillaClienteDTO.ORIENTACION_VERTICAL)){
+				fileName = "ireport/presupuesto.jrxml" ;
+			}else if(contenido.getOrientacion().equals(PlanillaClienteDTO.ORIENTACION_HORIZONTAL)){
+				fileName = "ireport/presupuestoHorizontal.jrxml" ;	
+			}
+			if(fileName != null){
+	    		String path = this.getClass().getClassLoader().getResource(fileName).getPath();
+				drb.setTemplateFile(path);
+			}
 			
 			DynamicReport dr = drb.build();
 	
 			JRDataSource ds = new JRBeanCollectionDataSource(contenido.getRows());
 			
 			Map<String, Object> params = new HashMap<String, Object>();
+			
+			String path = this.getClass().getClassLoader().getResource("ireport/frigento.png").getPath();
+			byte[] bytes = Utils.getByteArray(path);
+			params.put("LOGO", bytes);
+			params.put("FECHA", Utils.formatDate(new Date(), Utils.SDF_DDMMYYYY));
 			JasperReport jr = DynamicJasperHelper.generateJasperReport(dr, new ClassicLayoutManager(), params);
 			JasperPrint jp = JasperFillManager.fillReport(jr, params, ds);
 			

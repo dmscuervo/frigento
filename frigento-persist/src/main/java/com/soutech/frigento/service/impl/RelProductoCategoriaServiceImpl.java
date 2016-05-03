@@ -52,7 +52,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 	}
 	
 	@Override
-	public List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado) {
+	public List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat) {
 		List<RelProductoCategoria> relProdCatList = relProductoCategoriaDao.findAllByCategoria(fecha, idCat, new String[]{"producto.descripcion"}, new String[]{"asc"});
 		for (RelProductoCategoria rpc : relProdCatList) {
 			ProductoCosto prodCosto = productoCostoDao.findByProductoFecha(rpc.getProducto().getId(), fecha);

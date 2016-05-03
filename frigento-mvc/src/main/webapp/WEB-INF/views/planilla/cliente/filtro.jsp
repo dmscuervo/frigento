@@ -69,7 +69,7 @@
 		});
 	}
 	
-	function generar(){
+	function generar(form){
 		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
 		if(dataTablePlanillaColumnas != undefined){
 			dataTablePlanillaColumnas.search('').draw();
@@ -92,22 +92,36 @@
 		indices = indices.substring(0, indices.length-1);
 		console.log(indices);
 		
-		var url = '${pathBase}' + 'planilla/cliente/generar/'+indices;
-		window.location=url;
-		/*
+		if(!bodyBlock){
+			blockControl($('#wrapper'));
+			bodyBlock = true;				
+		}
+		
 		$.ajax({
-            url: url,
-            type: 'GET',
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
             success: function(result) {
-            	console.log(result);
-            	//Desbloqueo pantalla
-            	$('#wrapper').unblock();
-    			bodyBlock = false;
-    			//Cargo contenido
-            	$('#page-wrapper').html(result);
+            	//Si tengo respuesta JSON es porque contiene errores 
+            	try {
+            		var obj = JSON.parse(result);
+            		$('#msgError').html(obj.mensajeGenerico);
+	            	//Desbloqueo pantalla
+	            	$('#wrapper').unblock();
+	    			bodyBlock = false;
+            		return;
+            	}
+            	catch(err) {
+					var url = '${pathBase}' + 'planilla/cliente/generar/'+indices;
+					window.location=url;
+					//Desbloqueo pantalla
+	            	$('#wrapper').unblock();
+	    			bodyBlock = false;
+	    			//Cargo contenido
+                	$('#page-wrapper').html(result);
+            	}
             }
         });
-		*/
 	}
 
 </script>

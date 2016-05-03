@@ -10,6 +10,7 @@ public class ColumnReporteDTO implements Serializable{
 	private static final long serialVersionUID = -1433683483297484407L;
 	
 	private String nombre;
+	private String nombreElegido;
 	private String property;
 	private String className;
 	private int ancho;
@@ -22,6 +23,12 @@ public class ColumnReporteDTO implements Serializable{
 	}
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+	public String getNombreElegido() {
+		return nombreElegido;
+	}
+	public void setNombreElegido(String nombreElegido) {
+		this.nombreElegido = nombreElegido;
 	}
 	public String getProperty() {
 		return property;

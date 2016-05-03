@@ -1,5 +1,7 @@
 package com.soutech.frigento.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import com.soutech.frigento.model.Venta;
 
 public class Utils {
 
+	public static final SimpleDateFormat SDF_DDMMYYYY = new SimpleDateFormat("dd/MM/yyyy");
 	public static final SimpleDateFormat SDF_DDMMYYYY_HHMM = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
 	public static String formatDate(Date fecha, SimpleDateFormat sdf){
@@ -121,5 +124,21 @@ public class Utils {
     		fechaMinD = fechaMinD.before(fecha3) ? fechaMinD : fecha3;
     	}
 		return fechaMinD;
+	}
+
+	public static byte[] getByteArray(String path) {
+		FileInputStream fileInputStream = null;
+		File file = new File(path);
+		byte[] bFile = new byte[(int) file.length()];
+
+		try {
+			// convert file into array of bytes
+			fileInputStream = new FileInputStream(file);
+			fileInputStream.read(bFile);
+			fileInputStream.close();
+		} catch (Exception e) {
+			
+		}
+		return bFile;
 	}
 }

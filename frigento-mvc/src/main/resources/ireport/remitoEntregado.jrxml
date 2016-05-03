@@ -10,6 +10,7 @@
 	<parameter name="destinatario" class="java.lang.String"/>
 	<parameter name="domicilio" class="java.lang.String"/>
 	<parameter name="header_cantidad" class="java.lang.String"/>
+	<parameter name="LOGO" class="byte[]"/>
 	<field name="cantidad" class="java.lang.Float"/>
 	<field name="producto" class="java.lang.String"/>
 	<field name="importe" class="java.math.BigDecimal"/>
@@ -29,8 +30,8 @@
 	<columnHeader>
 		<band height="275" splitType="Stretch">
 			<image>
-				<reportElement x="61" y="7" width="150" height="92" uuid="a62f3db1-4709-4194-a4eb-927214fa14e6"/>
-				<imageExpression><![CDATA["ireport/Logo.jpg"]]></imageExpression>
+				<reportElement x="61" y="7" width="150" height="92" />
+				<imageExpression><![CDATA[new java.io.ByteArrayInputStream ($P{LOGO})]]></imageExpression>
 			</image>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="835f4a5a-bd18-4474-ac8a-ff8efefbc2cd"/>

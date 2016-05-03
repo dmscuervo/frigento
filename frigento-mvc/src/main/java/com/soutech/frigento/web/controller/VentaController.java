@@ -105,7 +105,7 @@ public class VentaController extends GenericController {
 		Usuario usuario = usuarioService.obtenerUsuario(ventaForm.getUsuario().getId());
 
 		List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(
-				ventaForm.getFecha(), usuario.getCategoriaProducto().getId(), Constantes.ESTADO_REL_VIGENTE);
+				ventaForm.getFecha(), usuario.getCategoriaProducto().getId());
 		List<Estado> estados = estadoService.obtenerEstadosVenta();
 		Venta venta = new Venta();
 		venta.setUsuario(usuario);
@@ -218,7 +218,7 @@ public class VentaController extends GenericController {
 		
 		Usuario usuario = usuarioService.obtenerUsuario(venta.getUsuario().getId());
 
-		List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(venta.getFecha(), usuario.getCategoriaProducto().getId(), Constantes.ESTADO_REL_VIGENTE);
+		List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(venta.getFecha(), usuario.getCategoriaProducto().getId());
 		List<Estado> estados = estadoService.obtenerEstadosVenta();
 		
 		if (venta.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {

@@ -18,10 +18,9 @@ public interface RelProductoCategoriaService {
 	 * Ademas, setea dentro del producto el valor de importeVenta obtenido de la relacion producto-costo para la fecha de venta.
 	 * @param fecha
 	 * @param idCat
-	 * @param estado
 	 * @return
 	 */
-	List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat, String estado);
+	List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat);
 
 	void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException;
 

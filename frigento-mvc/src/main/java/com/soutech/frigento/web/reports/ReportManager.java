@@ -67,6 +67,10 @@ public class ReportManager{
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	
+    	String path = this.getClass().getClassLoader().getResource("ireport/frigento.png").getPath();
+		byte[] bytesLogo = Utils.getByteArray(path);
+		parameters.put("LOGO", bytesLogo);
+    	
     	List<RemitoDTO> items = new ArrayList<RemitoDTO>();
     	for (RelPedidoProducto rpp : relPedProdList) {
 			RemitoDTO remito = new RemitoDTO();
@@ -146,6 +150,10 @@ public class ReportManager{
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	
+    	String path = this.getClass().getClassLoader().getResource("ireport/frigento.png").getPath();
+		byte[] bytesLogo = Utils.getByteArray(path);
+		parameters.put("LOGO", bytesLogo);
+    	
     	//El remito permite hasta 21 items
     	while(itemsRemito.size() % 21 != 0){
     		RemitoDTO remitos = new RemitoDTO();
@@ -189,10 +197,6 @@ public class ReportManager{
 			JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(items);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jrbcds);
 			logger.info("fin de la escritura del reporte" );
-			
-			if(parameters.get("newFileName")!= null){
-				reportName = (String)parameters.get("newFileName");
-			}
 			
 			JRPdfExporter exporter = new JRPdfExporter();
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

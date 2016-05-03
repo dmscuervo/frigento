@@ -17,8 +17,8 @@ public class ColumnPrecioConIvaDTO extends ColumnExpressionReporteDTO {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Object evaluate(Map fields, Map variables, Map parameters) {
-		BigDecimal precioVenta = (BigDecimal) fields.get("precioVenta");
-		return precioVenta.multiply(iva).setScale(2, RoundingMode.HALF_UP);
+		BigDecimal importeVenta = (BigDecimal) fields.get("importeVenta");
+		return importeVenta.multiply(iva).setScale(2, RoundingMode.HALF_UP);
 	}
 
 }

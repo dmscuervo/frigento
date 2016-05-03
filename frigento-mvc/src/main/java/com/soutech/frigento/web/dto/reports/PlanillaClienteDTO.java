@@ -9,11 +9,14 @@ import com.soutech.frigento.model.Producto;
 public class PlanillaClienteDTO implements Serializable{
 
 	private static final long serialVersionUID = 7931613162990576379L;
+	public final static Short ORIENTACION_VERTICAL = 0;
+	public final static Short ORIENTACION_HORIZONTAL = 1;
 	
 	private Date fecha;
 	private Short idCategoria;
 	private List<ColumnReporteDTO> columns;
 	private List<Producto> rows;
+	private Short orientacion = ORIENTACION_VERTICAL;
 	
 	public Date getFecha() {
 		return fecha;
@@ -38,5 +41,11 @@ public class PlanillaClienteDTO implements Serializable{
 	}
 	public void setRows(List<Producto> rows) {
 		this.rows = rows;
+	}
+	public Short getOrientacion() {
+		return orientacion;
+	}
+	public void setOrientacion(Short orientacion) {
+		this.orientacion = orientacion;
 	}
 }

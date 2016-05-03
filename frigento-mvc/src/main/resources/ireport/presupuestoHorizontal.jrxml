@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="presupuesto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a42bbf3c-e6fa-4b72-9572-254008bf42dc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="presupuestoHorizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a42bbf3c-e6fa-4b72-9572-254008bf42dc">
 	<property name="ireport.zoom" value="2.853116706110003"/>
-	<property name="ireport.x" value="737"/>
+	<property name="ireport.x" value="451"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="LOGO" class="byte[]"/>
 	<parameter name="FECHA" class="java.lang.String"/>
 	<pageHeader>
 		<band height="60" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="555" height="60" forecolor="#000000" backcolor="#E6E6E6" uuid="199b896a-d15d-45b0-9001-bcc0eb45090d"/>
+				<reportElement x="0" y="0" width="802" height="60" forecolor="#000000" backcolor="#E6E6E6" uuid="199b896a-d15d-45b0-9001-bcc0eb45090d"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="98" y="27" width="234" height="33" uuid="f4c04545-a264-4386-804b-0a48b8f0e17f"/>
+				<reportElement x="208" y="27" width="234" height="33" uuid="f4c04545-a264-4386-804b-0a48b8f0e17f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="20" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Productos congelados]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="334" y="0" width="206" height="27" uuid="4766f5b5-eb4c-4722-9d4e-17e71ee8574d"/>
+				<reportElement x="574" y="0" width="206" height="27" uuid="4766f5b5-eb4c-4722-9d4e-17e71ee8574d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tel. 4584-6581]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="334" y="28" width="206" height="27" uuid="cd7ebdc6-bb31-44bd-bcf7-c912534707fc"/>
+				<reportElement x="574" y="28" width="206" height="27" uuid="cd7ebdc6-bb31-44bd-bcf7-c912534707fc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -36,7 +36,7 @@
 				<imageExpression><![CDATA[new java.io.ByteArrayInputStream ($P{LOGO})]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="114" y="0" width="206" height="27" uuid="27557ab1-b134-4c79-843a-c75119c53b6f"/>
+				<reportElement x="224" y="0" width="206" height="27" uuid="19a8aa23-790a-4688-bf51-cc450a1cacfa"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="true"/>
 				</textElement>
