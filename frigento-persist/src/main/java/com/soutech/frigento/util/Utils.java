@@ -3,6 +3,7 @@ package com.soutech.frigento.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.soutech.frigento.model.Pedido;
@@ -140,5 +141,36 @@ public class Utils {
 			
 		}
 		return bFile;
+	}
+
+	public static Date[] getFechaDesdeYHasta(String periodo) {
+		Date[] fechas = new Date[2];
+		String[] split = periodo.split("-");
+		//Solo año
+		Calendar cal = Calendar.getInstance();
+		if(split.length == 1){
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.YEAR, Integer.parseInt(split[0]));
+			fechas[0] = cal.getTime();
+			
+			cal = Calendar.getInstance();
+			cal.set(Calendar.DAY_OF_MONTH, 31);
+			cal.set(Calendar.MONTH, 11);
+			cal.set(Calendar.YEAR, Integer.parseInt(split[0]));
+			fechas[1] = cal.getTime();
+		}else{
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.MONTH, Integer.parseInt(split[0])-1);
+			cal.set(Calendar.YEAR, Integer.parseInt(split[1]));
+			fechas[0] = cal.getTime();
+			
+			cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, Integer.parseInt(split[0])-1);
+			cal.set(Calendar.YEAR, Integer.parseInt(split[1]));
+			cal.set(Calendar.DAY_OF_MONTH, cal.getMaximum(Calendar.DAY_OF_MONTH));
+			fechas[1] = cal.getTime();
+		}
+		return fechas;
 	}
 }

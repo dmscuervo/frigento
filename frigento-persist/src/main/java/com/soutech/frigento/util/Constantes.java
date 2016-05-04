@@ -14,4 +14,11 @@ public class Constantes {
 	public static final String ESTADO_PEDIDO_CONFIRMADO = "2";
 	public static final String ESTADO_PEDIDO_ENTREGADO = "3";
 	public static final String ESTADO_PEDIDO_ANULADO = "4";
+	
+	public static final Short CONSULTA_TIPO_RESUMEN = new Short("1");
+	public static final Short CONSULTA_TIPO_DETALLADO = new Short("2");
+	
+	public static final Short CONSULTA_GANANCIA_PRODUCTO = new Short("1");
+	public static final Short CONSULTA_GANANCIA_VENTA = new Short("2");
+	public static final Short CONSULTA_GANANCIA_AMBOS = new Short("3");
 }

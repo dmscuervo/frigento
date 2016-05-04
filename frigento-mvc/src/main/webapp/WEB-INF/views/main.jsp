@@ -299,6 +299,15 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        <li>
+                            <a href="#"><i class="fa fa-table fa-fw"></i> <fmt:message key="menu.consulta"/><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="javascript:loadInBody('consulta/ganancia?filtro')"><fmt:message key="menu.consulta.ganancia"/></a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
