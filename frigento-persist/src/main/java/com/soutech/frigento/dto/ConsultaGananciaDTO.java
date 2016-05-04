@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.Venta;
+import com.soutech.frigento.util.Utils;
 
 public class ConsultaGananciaDTO implements Serializable {
 
@@ -75,5 +76,7 @@ public class ConsultaGananciaDTO implements Serializable {
 	public void setGanancia(BigDecimal ganancia) {
 		this.ganancia = ganancia;
 	}
-	
+	public String getNroVenta(){
+		return Utils.generarNroRemito(venta);
+	}
 }

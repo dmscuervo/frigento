@@ -46,11 +46,11 @@ public class ConsultaController extends GenericController {
 				
 			}else if(idAgrupamiento.equals(Constantes.CONSULTA_GANANCIA_VENTA)){
 				
-				
+				return "consulta/ganancia/grillaGananciaVenta";
 				
 			}else if(idAgrupamiento.equals(Constantes.CONSULTA_GANANCIA_AMBOS)){
 				
-				
+				return "consulta/ganancia/grillaGananciaAmbos";
 				
 			}
 		}

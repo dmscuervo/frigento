@@ -88,6 +88,23 @@
     		});
     	}
     	
+    	function loadInBody(path, urlBack){
+    		if(!bodyBlock){
+				blockControl($('#wrapper'));
+				bodyBlock = true;				
+			}
+    		var url = '${pathBase}' + path;
+    		$('#page-wrapper').load(url, {urlBack: urlBack }, function(data){
+    			$('#page-wrapper').html(data);
+    			$('#idModalAccion').modal('show');
+    			//Desbloqueo pantalla
+            	$('#wrapper').unblock();
+    			bodyBlock = false;
+    			//En caso mobile, collapsa el menu luego de elegir una opcion
+    			$('.sidebar-nav').attr('class', 'sidebar-nav navbar-collapse collapse');
+    		});
+    	}
+    	
     	function confirmarAccion(path){
     		var url = '${pathBase}' + path;
     		$('#divVentanaGrilla').load(url, function(data){

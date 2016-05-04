@@ -3,14 +3,13 @@ package com.soutech.frigento.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.BigDecimalType;
+import org.hibernate.type.DateType;
 import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
-import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +17,7 @@ import com.soutech.frigento.dao.RelVentaProductoDao;
 import com.soutech.frigento.dto.ConsultaGananciaDTO;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelVentaProducto;
+import com.soutech.frigento.model.Venta;
 import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.Utils;
 
@@ -120,36 +120,36 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		StringBuilder sql = new StringBuilder("");
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
-			sql.append("select date_part('month', v.fecha) as mes, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
+			sql.append("select date_part('month', venta.fecha) as mes, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){
 			if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_PRODUCTO)){
 				
-				sql.append("select producto.*, rvp.id_promocion as promo, sum(pc.costo) as costo, sum(rvp.cantidad) as cantidad, sum(rvp.precio) as importeVenta, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
+				sql.append("select producto.*, rvp.id_promocion as promo, sum(pc.costo) as costo, sum(rvp.cantidad) as cantidad, sum(rvp.precio*rvp.cantidad) as importeVenta, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_VENTA)){
 				
-				
+				sql.append("select venta.*, sum(rvp.precio*rvp.cantidad) as importeVenta, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_AMBOS)){
 				
-				
+				sql.append("select venta.*, producto.*, sum(pc.costo) as costo, sum(rvp.cantidad) as cantidad, sum(rvp.precio*rvp.cantidad) as importeVenta, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
 				
 			}
 		}
 		
 		sql.append("from rel_venta_producto rvp ");
-		sql.append("inner join venta v on v.id_venta = rvp.id_venta ");
+		sql.append("inner join venta venta on venta.id_venta = rvp.id_venta ");
 		sql.append("inner join rel_producto_categoria rpc on rvp.id_rel_prod_cat = rpc.id_rel_prod_cat ");
 		sql.append("inner join producto_costo pc on pc.id_producto = rpc.id_producto ");
 		sql.append("inner join producto producto on producto.id_producto = rpc.id_producto ");
-		sql.append("and (pc.f_desde <= v.fecha and pc.f_hasta is null ");
-				sql.append("or pc.f_desde <= v.fecha and pc.f_hasta > v.fecha) ");
-		sql.append("where v.fecha between :fechaDesde and :fechaHasta ");
+		sql.append("and (pc.f_desde <= venta.fecha and pc.f_hasta is null ");
+				sql.append("or pc.f_desde <= venta.fecha and pc.f_hasta > venta.fecha) ");
+		sql.append("where venta.fecha between :fechaDesde and :fechaHasta ");
 		
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
-			sql.append("group by date_part('month', v.fecha)");
+			sql.append("group by date_part('month', venta.fecha)");
 			sql.append("order by 1");
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){
@@ -160,11 +160,13 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_VENTA)){
 				
-				
+				sql.append("group by venta.id_venta, venta.fecha ");
+				sql.append("order by venta.id_venta, venta.fecha");
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_AMBOS)){
 				
-				
+				sql.append("group by venta.fecha, venta.id_venta, producto.id_producto, producto.codigo, producto.descripcion ");
+				sql.append("order by venta.fecha, venta.id_venta, producto.codigo, producto.descripcion");
 				
 			}
 		}
@@ -189,11 +191,18 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_VENTA)){
 				
-				
+				query.addEntity("venta", Venta.class);
+				query.addScalar("importeVenta", new BigDecimalType());
+				query.addScalar("ganancia", new BigDecimalType());
 				
 			}else if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_AMBOS)){
 				
-				
+				query.addEntity("producto", Producto.class);
+				query.addEntity("venta", Venta.class);
+				query.addScalar("costo", new BigDecimalType());
+				query.addScalar("cantidad", new FloatType());
+				query.addScalar("importeVenta", new BigDecimalType());
+				query.addScalar("ganancia", new BigDecimalType());
 				
 			}
 		}
