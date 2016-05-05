@@ -18,6 +18,7 @@ import com.soutech.frigento.dao.ProductoCostoDao;
 import com.soutech.frigento.dao.ProductoDao;
 import com.soutech.frigento.dao.RelProductoCategoriaDao;
 import com.soutech.frigento.dao.RelVentaProductoDao;
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.ProductoInexistenteException;
 import com.soutech.frigento.model.Categoria;
@@ -70,7 +71,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 
 	@Override
 	@Transactional
-	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException {
+	public void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException, EntityExistException {
 		//Aplico control de concurrencia entre ventas y cambio de precios
 		ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("relProdCat/"+categoria.getId()+"?listar"), "relProdCat.concurrencia.venta.error");
 		try{
@@ -115,7 +116,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 				if(!Utils.esMayorIgual(rpcUpd.getFechaDesde(), producto.getFechaAlta())){
 					logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
 					logger.debug("Fecha alta del producto: " + Utils.formatDate(producto.getFechaAlta(), Utils.SDF_DDMMYYYY_HHMM));
-					throw new ProductoInexistenteException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
+					throw new FechaDesdeException("relProdCat.producto.inexistente.fecha", new Object[]{producto.getCodigo(), Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM)});
 					
 				}
 				//Chequeo si cambio la fecha desde
@@ -126,18 +127,33 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 					if(maxFechaDesdeAnterior != null && !Utils.esMenor(maxFechaDesdeAnterior, rpcUpd.getFechaDesde())){
 						logger.debug("Fecha Desde de la relacion: " + Utils.formatDate(rpcUpd.getFechaDesde(), Utils.SDF_DDMMYYYY_HHMM));
 						logger.debug("Fecha Desde de la relacion anterior: " + Utils.formatDate(maxFechaDesdeAnterior, Utils.SDF_DDMMYYYY_HHMM));
-						throw new ProductoInexistenteException("relProdCatForm.fechaDesde.anterior", new Object[]{Utils.formatDate(maxFechaDesdeAnterior, Utils.SDF_DDMMYYYY_HHMM)});
+						throw new FechaDesdeException("relProdCatForm.fechaDesde.anterior", new Object[]{Utils.formatDate(maxFechaDesdeAnterior, Utils.SDF_DDMMYYYY_HHMM)});
 					}
 					productoCosto.setFechaDesde(rpcUpd.getFechaDesde());
 					productoCostoDao.update(productoCosto);
 				}
 				
-//				else if(!Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaDesde())
-//						|| (relProdCat.getFechaHasta() != null && !Utils.esMenor(producto.getFechaAlta(), relProdCat.getFechaHasta()))){
-//					
-//					throw new ProductoInexistenteException("relProdCat.producto.baja.fecha", new Object[]{relProdCat.getProducto().getCodigo(), relProdCat.getFechaHasta()});
-//					
-//				}
+				//Chequeo si cambio fecha hasta
+				if(Utils.esDiferenteFecha(rpcActual.getFechaHasta(), rpcUpd.getFechaHasta())){
+					//Chequeo si cerraron la relacion
+					if(rpcUpd.getFechaHasta() != null && Utils.esMenor(rpcUpd.getFechaHasta(), rpcActual.getFechaHasta())){
+						//Verifico si existe una venta entre la fechaHasta actual y la nueva
+						Date ultimaFecha = relVentaProductoDao.obtenerFechaUltimaVentaNoAnulada(rpcActual.getProducto().getId(), rpcActual.getCategoria().getId(), rpcUpd.getFechaHasta(), rpcActual.getFechaHasta());
+						if(ultimaFecha == null ){
+							throw new FechaDesdeException("relProdCatForm.fechaHasta.anterior", new Object[]{Utils.formatDate(ultimaFecha, Utils.SDF_DDMMYYYY_HHMM)});
+						}
+					}
+				}
+				
+				//Chequeo si cambio incremento para saber si existian ventas
+				if(!rpcActual.getIncremento().equals(rpcUpd.getIncremento())){
+					//Verifico si existe una venta durante el periodo de la relacion
+					Date ultimaFecha = relVentaProductoDao.obtenerFechaUltimaVentaNoAnulada(rpcActual.getProducto().getId(), rpcActual.getCategoria().getId(), rpcUpd.getFechaDesde(), rpcUpd.getFechaHasta());
+					if(ultimaFecha != null ){
+						throw new EntityExistException("relProdCatForm.incremento.existe.venta");
+					}
+				}
+				
 				rpcUpd = relProductoCategoriaDao.merge(rpcUpd);
 				relProductoCategoriaDao.update(rpcUpd);
 			}

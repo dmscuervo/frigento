@@ -76,6 +76,12 @@ public class Utils {
 	 * @return
 	 */
 	public static Boolean esMayorIgual(Date fecha1, Date fecha2) {
+		if(fecha1 == null && fecha2 != null){
+			return Boolean.TRUE;
+		}
+		if(fecha1 != null && fecha2 == null){
+			return Boolean.FALSE;
+		}
 		if(fecha1.equals(fecha2) || fecha1.after(fecha2)){
 			return Boolean.TRUE;
 		}
@@ -89,6 +95,12 @@ public class Utils {
 	 * @return
 	 */
 	public static Boolean esMenor(Date fecha1, Date fecha2) {
+		if(fecha1 == null && fecha2 != null){
+			return Boolean.FALSE;
+		}
+		if(fecha1 != null && fecha2 == null){
+			return Boolean.TRUE;
+		}
 		if(fecha1.before(fecha2)){
 			return Boolean.TRUE;
 		}
@@ -172,5 +184,16 @@ public class Utils {
 			fechas[1] = cal.getTime();
 		}
 		return fechas;
+	}
+
+	public static Boolean esDiferenteFecha(Date fechaHasta, Date fechaHasta2) {
+		Boolean resultado = Boolean.FALSE;
+		if(fechaHasta == null && fechaHasta2 != null
+				|| fechaHasta != null && fechaHasta2 == null 
+				|| (fechaHasta != null && fechaHasta2 != null 
+					&& !fechaHasta.equals(fechaHasta2))){
+			resultado = Boolean.TRUE;
+		}
+		return resultado;
 	}
 }

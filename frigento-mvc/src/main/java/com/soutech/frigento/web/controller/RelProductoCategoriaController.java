@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.ProductoInexistenteException;
 import com.soutech.frigento.model.Categoria;
@@ -320,6 +321,11 @@ public class RelProductoCategoriaController extends GenericController {
     		List<RelProductoCategoria> listaModificados = (List<RelProductoCategoria>) uiModel.asMap().get("listaModificados");
     		List<RelProductoCategoria> listaEliminados = (List<RelProductoCategoria>) uiModel.asMap().get("listaEliminados");
 			relProductoCategoriaService.asignarProductos(categoria, listaAgregados, listaModificados, listaEliminados);
+    	} catch (EntityExistException e) {
+			String key = e.getField();
+			logger.info(getMessage(key));
+			httpServletRequest.setAttribute("msgRespuesta", getMessage(key));
+			return "relProdCat/grilla";
     	} catch (FechaDesdeException e) {
 			String key = e.getKeyMessage();
 			logger.info(getMessage(key, e.getArgs()));

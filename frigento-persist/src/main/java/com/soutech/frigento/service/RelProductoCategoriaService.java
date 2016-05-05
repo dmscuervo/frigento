@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.ProductoInexistenteException;
 import com.soutech.frigento.model.Categoria;
@@ -22,7 +23,7 @@ public interface RelProductoCategoriaService {
 	 */
 	List<RelProductoCategoria> obtenerProductosCategoriaParaVenta(Date fecha, Short idCat);
 
-	void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException;
+	void asignarProductos(Categoria categoria, List<RelProductoCategoria> listaAgregados, List<RelProductoCategoria> listaModificados, List<RelProductoCategoria> listaEliminados) throws FechaDesdeException, ProductoInexistenteException, EntityExistException;
 
 	Date obtenerMinFechaDesde(Integer idProd);
 
