@@ -21,7 +21,7 @@
 		    	scrollX: 		false,
 		        scrollCollapse: true,
 		        paging: false,
-		    	order: [[ 1, "asc" ]],
+		    	order: [[ 2, "asc" ]],
 		    	columnDefs: [
 		                       { "orderable": false, "targets": 0 }
 		                     ]
@@ -168,6 +168,7 @@
 			        <thead>
 			            <tr>
 			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.cantidad.caja" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="producto.pesoCaja" /></th>
 			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.producto" /></th>
 			            </tr>
 			        </thead>
@@ -180,6 +181,7 @@
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
 			        		</td>
+			        		<td style="white-space: nowrap;">${item.producto.pesoCaja}</td>
 			        		<td style="white-space: nowrap;">${item.producto.codigo} - ${item.producto.descripcion}</td>
 			        	</tr>
 			        </c:forEach>
