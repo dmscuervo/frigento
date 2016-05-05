@@ -77,7 +77,6 @@
 				bodyBlock = true;				
 			}
     		var url = '${pathBase}' + path;
-    		console.log(url);
     		$('#page-wrapper').load(url, function(data){
     			$('#page-wrapper').html(data);
     			$('#idModalAccion').modal('show');

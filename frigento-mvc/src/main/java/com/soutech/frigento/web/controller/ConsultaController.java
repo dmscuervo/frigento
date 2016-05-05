@@ -57,4 +57,21 @@ public class ConsultaController extends GenericController {
         return "consulta/ganancia/grilla";
     }
     
+    @RequestMapping(value = "/ganancia/volver/{tipo}/{periodo}/{idAgrupamiento}", produces = "text/html")
+    public String buscarGananciaBack(@PathVariable("tipo") Short tipo, @PathVariable("periodo") String periodo, @PathVariable("idAgrupamiento") Short idAgrupamiento, Model uiModel) {
+    	//Tratamiento volver
+    	uiModel.addAttribute("regresoDetalle", Boolean.TRUE);
+    	uiModel.addAttribute("tipoBack", tipo);
+//    	String[] split = periodo.split("-");
+//    	Calendar cal = Calendar.getInstance();
+//    	if(split.length == 1){
+//    		cal.set(Calendar.YEAR, Integer.valueOf(split[0]));
+//    	}else if(split.length > 1){
+//    		cal.set(Calendar.MONTH, Integer.valueOf(split[0]));
+//    		cal.set(Calendar.YEAR, Integer.valueOf(split[1]));
+//    	}
+    	uiModel.addAttribute("periodoBack", periodo);
+    	uiModel.addAttribute("agrupamientoBack", idAgrupamiento);
+        return "consulta/ganancia/filtro";
+    }
 }

@@ -472,8 +472,12 @@ public class VentaController extends GenericController {
 	}
 
 	@RequestMapping(params = "detalle", value = "/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String detalle(@PathVariable("id") Integer idVenta, Model uiModel) {
+	public String detalle(@PathVariable("id") Integer idVenta, @RequestParam(value="urlBack", required=false) String urlBack, Model uiModel) {
+		if(urlBack == null){
+			urlBack = "venta?sortFieldName=id&sortOrder=desc";
+		}
 		uiModel.addAttribute("relVtaProdList", relVentaProductoService.obtenerByVenta(idVenta, "relProductoCategoria.producto.codigo", "asc"));
+		uiModel.addAttribute("urlVolver", urlBack);
 		return "venta/detalle";
 	}
 

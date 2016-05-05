@@ -143,7 +143,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.volver"/>'
-						onclick="javascript:loadInBody('venta?sortFieldName=id&sortOrder=desc')">
+						onclick="javascript:loadInBody('${urlVolver}')">
 			</div>
         </div>
     </div>

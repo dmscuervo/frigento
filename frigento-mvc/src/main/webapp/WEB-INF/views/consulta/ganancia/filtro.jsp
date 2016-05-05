@@ -27,8 +27,20 @@
 				$('#divAgrupamiento').slideDown();
 			}
 		});
-		
-		
+		//Caso de un retorno de ver detalle
+		if('${regresoDetalle}'){
+			$('#idTipo').val('${tipoBack}');
+			if($('#idTipo').val() == 1){
+				$('#datetimepickerPeriodo').data("DateTimePicker").format('YYYY');
+				$('#divAgrupamiento').slideUp();
+			}else{
+				$('#datetimepickerPeriodo').data("DateTimePicker").format('MM-YYYY');
+				$('#divAgrupamiento').slideDown();
+			}
+			$("#datetimepickerPeriodo input").val('${periodoBack}');
+			$('#idAgrupamiento').val('${agrupamientoBack}');
+			buscar();
+		}
 		
 	});
 	
@@ -42,97 +54,6 @@
 		});
 	}
 	
-	function cargarColumnas(){
-		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
-		if(dataTablePlanillaProductos != undefined){
-			dataTablePlanillaProductos.search('').draw();
-		}
-		
-		$('#idMsgError').text('');
-		$('#idMsgError').hide();
-		
-		var codigos = '';
-		$('.selected td:first-child').each(function(){
-			codigos = codigos + $(this).text() + ",";
-		});
-		
-		if(codigos == ''){
-			$('#idMsgError').text('<fmt:message key="planilla.cliente.sin.producto"/>');
-			$('#idMsgError').slideDown("slow");
-			return;
-		}
-		
-		codigos = codigos.substring(0, codigos.length-1);
-		
-		//Bloqueo contenido
-		blockControl($('#wrapperContenidoGrilla'));
-		
-		var url = '${pathBase}' + 'planilla/cliente/'+moment($('#idFecha').val(),'DD/MM/YYYY HH:mm')+'/'+$('#idCat').val()+'/'+codigos;
-		console.log(url);
-		$('#contenidoGrilla').load(url, function(){
-			//Desbloqueo contenido
-        	$('#wrapperContenidoGrilla').unblock();
-			//Ya no puedo cambiar la fecha o categoria
-			$('#idCat').prop('disabled',true);
-			$('.input-group-addon').remove();
-		});
-	}
-	
-	function generar(form){
-		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
-		if(dataTablePlanillaColumnas != undefined){
-			dataTablePlanillaColumnas.search('').draw();
-		}
-		
-		$('#idMsgError').text('');
-		$('#idMsgError').hide();
-		
-		var indices = '';
-		$('.selected').find('td input:hidden').each(function(){
-			indices = indices + $(this).val() + ",";
-		});
-		
-		if(indices == ''){
-			$('#idMsgError').text('<fmt:message key="planilla.cliente.sin.columna"/>');
-			$('#idMsgError').slideDown("slow");
-			return;
-		}
-		
-		indices = indices.substring(0, indices.length-1);
-		console.log(indices);
-		
-		if(!bodyBlock){
-			blockControl($('#wrapper'));
-			bodyBlock = true;				
-		}
-		
-		$.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            success: function(result) {
-            	//Si tengo respuesta JSON es porque contiene errores 
-            	try {
-            		var obj = JSON.parse(result);
-            		$('#msgError').html(obj.mensajeGenerico);
-	            	//Desbloqueo pantalla
-	            	$('#wrapper').unblock();
-	    			bodyBlock = false;
-            		return;
-            	}
-            	catch(err) {
-					var url = '${pathBase}' + 'planilla/cliente/generar/'+indices;
-					window.location=url;
-					//Desbloqueo pantalla
-	            	$('#wrapper').unblock();
-	    			bodyBlock = false;
-	    			//Cargo contenido
-                	//$('#page-wrapper').html(result);
-            	}
-            }
-        });
-	}
-
 </script>
 
 <div style="width: 80%; float: left; min-width: 300px">

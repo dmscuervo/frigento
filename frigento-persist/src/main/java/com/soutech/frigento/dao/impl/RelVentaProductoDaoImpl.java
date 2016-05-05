@@ -172,10 +172,11 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		sql.append("and (pc.f_desde <= venta.fecha and pc.f_hasta is null ");
 				sql.append("or pc.f_desde <= venta.fecha and pc.f_hasta > venta.fecha) ");
 		sql.append("where venta.fecha between :fechaDesde and :fechaHasta ");
+		sql.append("and venta.id_estado != :estadoAnulado ");
 		
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
-			sql.append("group by date_part('month', venta.fecha)");
+			sql.append("group by date_part('month', venta.fecha) ");
 			sql.append("order by 1");
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){
@@ -200,6 +201,7 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		Date fechas[] = Utils.getFechaDesdeYHasta(periodo);
 		query.setParameter("fechaDesde", fechas[0]);
 		query.setParameter("fechaHasta", fechas[1]);
+		query.setParameter("estadoAnulado", Short.valueOf(Constantes.ESTADO_PEDIDO_ANULADO));
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
 			query.addScalar("mes", new IntegerType());
