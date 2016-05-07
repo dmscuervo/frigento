@@ -3,10 +3,12 @@
 
 <script type="text/javascript">
 	
+	var dataTablePedidoCumplir;
+	
 	$(document).ready(function(){
 		
 		if(!$.fn.DataTable.isDataTable('#idGrillaCumplir')){
-		    $('#idGrillaCumplir').DataTable({
+			dataTablePedidoCumplir = $('#idGrillaCumplir').DataTable({
 		    	scrollY:        200,
 		    	scrollX: 		false,
 		        scrollCollapse: true,
@@ -39,6 +41,14 @@
 		});
 		
 	});
+	
+	function cumplirPedido(form){
+		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
+		if(dataTablePedidoCumplir != undefined){
+			dataTablePedidoCumplir.search('').draw();
+		}
+		submitInBody(form);
+	}
 	
 </script>
 
@@ -145,7 +155,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cumplir.pedido"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:cumplirPedido($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
 						onclick="javascript:loadInBody('pedido?sortFieldName=id&sortOrder=desc')">
