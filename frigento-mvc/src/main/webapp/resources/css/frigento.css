@@ -23,3 +23,18 @@
   background-color: #fff;
   background-image: none;
 }
+
+.txtlink {
+	color: green;
+	text-decoration:none;
+	margin-left:20px;
+	font-size:16px;
+}
+
+.txtlink:hover {
+	text-decoration:underline;
+}
+
+.txtlink2:hover {
+	color:#008CBA;
+}

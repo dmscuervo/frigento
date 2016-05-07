@@ -7,7 +7,6 @@ import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.BigDecimalType;
-import org.hibernate.type.DateType;
 import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
 import org.springframework.stereotype.Repository;
@@ -96,6 +95,33 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		return (Date) query.uniqueResult();
 	}
 
+	@Override
+	public Date obtenerFechaUltimaVentaNoAnulada(Integer prodId, Short catId, Date fechaIni, Date fechaFin) {
+		StringBuilder hql = new StringBuilder("select max(v.fecha) from ");
+		hql.append(RelVentaProducto.class.getCanonicalName());
+		hql.append(" rvp inner join rvp.venta v ");
+		hql.append("inner join rvp.relProductoCategoria rpc ");
+		hql.append("where v.fechaAnulado is null ");
+		hql.append("and rpc.categoria.id = :catId ");
+		hql.append("and rpc.producto.id = :prodId ");
+		if(fechaIni != null){
+			hql.append("and v.fecha >= :fechaIni ");
+		}
+		if(fechaFin != null){
+			hql.append("and v.fecha < :fechaFin ");
+		}
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("prodId", prodId);
+		query.setParameter("catId", catId);
+		if(fechaIni != null){
+			query.setParameter("fechaIni", fechaIni);
+		}
+		if(fechaFin != null){
+			query.setParameter("fechaFin", fechaFin);
+		}
+		return (Date) query.uniqueResult();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RelVentaProducto> findAllByVenta(Integer idVta, String sortFieldName, String sortOrder) {
@@ -146,10 +172,11 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		sql.append("and (pc.f_desde <= venta.fecha and pc.f_hasta is null ");
 				sql.append("or pc.f_desde <= venta.fecha and pc.f_hasta > venta.fecha) ");
 		sql.append("where venta.fecha between :fechaDesde and :fechaHasta ");
+		sql.append("and venta.id_estado != :estadoAnulado ");
 		
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
-			sql.append("group by date_part('month', venta.fecha)");
+			sql.append("group by date_part('month', venta.fecha) ");
 			sql.append("order by 1");
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){
@@ -174,6 +201,7 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		Date fechas[] = Utils.getFechaDesdeYHasta(periodo);
 		query.setParameter("fechaDesde", fechas[0]);
 		query.setParameter("fechaHasta", fechas[1]);
+		query.setParameter("estadoAnulado", Short.valueOf(Constantes.ESTADO_PEDIDO_ANULADO));
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
 			query.addScalar("mes", new IntegerType());

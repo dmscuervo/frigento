@@ -26,7 +26,6 @@
 		blockControl($('#wrapperContenidoGrilla'));
 		
 		var url = '${pathBase}' + 'planilla/cliente/'+moment($('#idFecha').val(),'DD/MM/YYYY HH:mm')+'/'+$('#idCat').val();
-		console.log(url);
 		$('#contenidoGrilla').load(url, function(){
 			//Desbloqueo contenido
         	$('#wrapperContenidoGrilla').unblock();
@@ -59,7 +58,6 @@
 		blockControl($('#wrapperContenidoGrilla'));
 		
 		var url = '${pathBase}' + 'planilla/cliente/'+moment($('#idFecha').val(),'DD/MM/YYYY HH:mm')+'/'+$('#idCat').val()+'/'+codigos;
-		console.log(url);
 		$('#contenidoGrilla').load(url, function(){
 			//Desbloqueo contenido
         	$('#wrapperContenidoGrilla').unblock();
@@ -90,7 +88,6 @@
 		}
 		
 		indices = indices.substring(0, indices.length-1);
-		console.log(indices);
 		
 		if(!bodyBlock){
 			blockControl($('#wrapper'));

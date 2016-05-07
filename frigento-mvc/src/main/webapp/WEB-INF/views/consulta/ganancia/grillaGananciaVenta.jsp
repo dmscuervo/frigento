@@ -8,12 +8,21 @@
 		if(!$.fn.DataTable.isDataTable('#idGrillaGananVta')){
 			dataTablePlanillaProductos = $('#idGrillaGananVta').DataTable({
 	    		order: [[ 0, "asc" ],
-	    		        [ 1, "asc" ]]
+	    		        [ 1, "asc" ]],
+  		        scrollX: 		true,
+ 		    	scrollCollapse: true,
 	    	});
 		}
 	    
 	});
 	
+	function verDetalle(idVenta){
+		var tipo = encodeURI($('#idTipo').val());
+		var periodo = $('#idPeriodo').val().replace('-', '%2D');
+		var agrupamiento = encodeURI($('#idAgrupamiento').val());
+		var urlBack = 'consulta/ganancia%2Fvolver%2F'+tipo+'%2F'+periodo+'%2F'+agrupamiento;
+		loadInBody('venta/'+idVenta+'?detalle&urlBack='+urlBack);
+	}
 	
 			
 </script>
@@ -30,7 +39,7 @@
         <c:forEach var="reg" items="${registros}">
         	<tr>
         		<td style="white-space: nowrap;">
-        			<a href="#" onclick="loadInBody('venta/${reg.venta.id}?detalle')">${reg.nroVenta}</a>
+        			<a href="#" ><i onclick="verDetalle(${reg.venta.id})">${reg.nroVenta}</i></a>
         		</td>
         		<td style="white-space: nowrap;">${reg.venta.fecha}</td>
         		<td style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${reg.importeVenta}" /></td>

@@ -76,6 +76,12 @@ public class Utils {
 	 * @return
 	 */
 	public static Boolean esMayorIgual(Date fecha1, Date fecha2) {
+		if(fecha1 == null && fecha2 != null){
+			return Boolean.TRUE;
+		}
+		if(fecha1 != null && fecha2 == null){
+			return Boolean.FALSE;
+		}
 		if(fecha1.equals(fecha2) || fecha1.after(fecha2)){
 			return Boolean.TRUE;
 		}
@@ -89,6 +95,12 @@ public class Utils {
 	 * @return
 	 */
 	public static Boolean esMenor(Date fecha1, Date fecha2) {
+		if(fecha1 == null && fecha2 != null){
+			return Boolean.FALSE;
+		}
+		if(fecha1 != null && fecha2 == null){
+			return Boolean.TRUE;
+		}
 		if(fecha1.before(fecha2)){
 			return Boolean.TRUE;
 		}
@@ -152,25 +164,52 @@ public class Utils {
 			cal.set(Calendar.DAY_OF_MONTH, 1);
 			cal.set(Calendar.MONTH, 0);
 			cal.set(Calendar.YEAR, Integer.parseInt(split[0]));
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 			fechas[0] = cal.getTime();
 			
 			cal = Calendar.getInstance();
 			cal.set(Calendar.DAY_OF_MONTH, 31);
 			cal.set(Calendar.MONTH, 11);
 			cal.set(Calendar.YEAR, Integer.parseInt(split[0]));
+			cal.set(Calendar.HOUR, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			cal.set(Calendar.MILLISECOND, 999);
 			fechas[1] = cal.getTime();
 		}else{
 			cal.set(Calendar.DAY_OF_MONTH, 1);
 			cal.set(Calendar.MONTH, Integer.parseInt(split[0])-1);
 			cal.set(Calendar.YEAR, Integer.parseInt(split[1]));
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 			fechas[0] = cal.getTime();
 			
 			cal = Calendar.getInstance();
 			cal.set(Calendar.MONTH, Integer.parseInt(split[0])-1);
 			cal.set(Calendar.YEAR, Integer.parseInt(split[1]));
 			cal.set(Calendar.DAY_OF_MONTH, cal.getMaximum(Calendar.DAY_OF_MONTH));
+			cal.set(Calendar.HOUR, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			cal.set(Calendar.MILLISECOND, 999);
 			fechas[1] = cal.getTime();
 		}
 		return fechas;
+	}
+
+	public static Boolean esDiferenteFecha(Date fechaHasta, Date fechaHasta2) {
+		Boolean resultado = Boolean.FALSE;
+		if(fechaHasta == null && fechaHasta2 != null
+				|| fechaHasta != null && fechaHasta2 == null 
+				|| (fechaHasta != null && fechaHasta2 != null 
+					&& !fechaHasta.equals(fechaHasta2))){
+			resultado = Boolean.TRUE;
+		}
+		return resultado;
 	}
 }

@@ -9,7 +9,9 @@
 			dataTablePlanillaProductos = $('#idGrillaGananProd').DataTable({
 	    		order: [[ 0, "asc" ],
 	    		        [ 1, "asc" ]
-	    			]
+	    			],
+  		        scrollX: 		true,
+ 		    	scrollCollapse: true,
 	    	});
 		}
 	    
