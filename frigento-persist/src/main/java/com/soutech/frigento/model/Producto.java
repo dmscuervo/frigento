@@ -62,6 +62,11 @@ public class Producto implements Serializable {
     
     @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
+    @Column(name = "IVA")
+    private Float iva;
+    
+    @Numeric(regexp = Numeric.decimal_positivo)
+    @NotNull
     @Column(name = "STOCK")
     private Float stock;
     
@@ -132,6 +137,14 @@ public class Producto implements Serializable {
 	public void setCostoActual(BigDecimal costoActual) {
         this.costoActual = costoActual;
     }
+
+	public Float getIva() {
+		return iva;
+	}
+
+	public void setIva(Float iva) {
+		this.iva = iva;
+	}
 
 	public Float getStock() {
         return this.stock;

@@ -119,6 +119,25 @@
 			</div>
         </div>
     </div>
+    <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idIVA" style="white-space: nowrap;">
+					<fmt:message key="producto.iva" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+				<form:input path="iva" cssClass="form-control" id="idIVA" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="iva" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
