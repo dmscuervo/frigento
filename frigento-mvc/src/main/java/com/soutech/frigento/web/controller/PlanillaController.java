@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -78,21 +77,16 @@ public class PlanillaController extends GenericController {
     }
     
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/cliente/{time}/{idCat}/{productos}", produces = "text/html")
-    public String getColumnas(@PathVariable("time") Long time, @PathVariable("idCat") Short idCat, @PathVariable("productos") String[] codigosProd, Model uiModel) {
+	@RequestMapping(value = "/cliente/{time}/{idCat}/{indices}", produces = "text/html")
+    public String getColumnas(@PathVariable("time") Long time, @PathVariable("idCat") Short idCat, @PathVariable("indices") Integer[] indices, Model uiModel) {
     	PlanillaClienteDTO planilla = (PlanillaClienteDTO) uiModel.asMap().get("planillaDTO");
     	planilla.setFecha(new Date(time));
     	planilla.setIdCategoria(idCat);
     	
     	List<RelProductoCategoria> rpcList = (List<RelProductoCategoria>) uiModel.asMap().get("rpcList");
     	List<Producto> productos = new ArrayList<Producto>();
-    	List<String> prodSeleccionados = Arrays.asList(codigosProd);
-    	for (int i = 0; i < rpcList.size(); i++) {
-    		RelProductoCategoria rpc = rpcList.get(i);
-    		Producto producto = rpc.getProducto();
-    		if(prodSeleccionados.contains(producto.getCodigo())){
-    			productos.add(producto);
-    		}
+    	for (Integer indice : indices) {
+    		productos.add(rpcList.get(indice).getProducto());
 		}
     	planilla.setRows(productos);
     	

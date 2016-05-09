@@ -11,7 +11,12 @@
 		    	scrollX: 		false,
 		        scrollCollapse: true,
 		        paging: false,
-	    		order: [[ 0, "asc" ]],
+		        rowReorder: true,
+		        columnDefs: [
+		            { orderable: true, className: 'reorder', targets: 0 },
+		            { orderable: false, targets: '_all' }
+		        ],
+	    		//order: [[ 0, "asc" ]],
 		    	dom: 'Bfrtip',
 	    		select: {
 	    			style: 'multi'
@@ -58,14 +63,21 @@
 <table id="idGrillaPlanilla" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
+            	<th style="white-space: nowrap;"><fmt:message key="planilla.cliente.columna0" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="planilla.cliente.prod.codigo" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="planilla.cliente.prod.descripcion" /></th>
             </tr>
         </thead>
         <tbody>
-        <c:forEach var="rpc" items="${rpcList}">
+        <c:forEach var="rpc" items="${rpcList}" varStatus="index">
         	<tr>
-        		<td style="white-space: nowrap;">${rpc.producto.codigo}</td>
+        		<td style="white-space: nowrap;">
+        			${index.index+1}
+        		</td>
+        		<td style="white-space: nowrap;">
+        			${rpc.producto.codigo}
+        			<input type="hidden" id="idRow-${index.index}" value="${index.index}">
+        		</td>
         		<td style="white-space: nowrap;">${rpc.producto.descripcion}</td>
         	</tr>
         </c:forEach>

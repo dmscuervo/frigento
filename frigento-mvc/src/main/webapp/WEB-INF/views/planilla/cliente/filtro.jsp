@@ -41,23 +41,23 @@
 		$('#idMsgError').text('');
 		$('#idMsgError').hide();
 		
-		var codigos = '';
-		$('.selected td:first-child').each(function(){
-			codigos = codigos + $(this).text() + ",";
+		var indices = '';
+		$('.selected').find('td input:hidden').each(function(){
+			indices = indices + $(this).val() + ",";
 		});
 		
-		if(codigos == ''){
+		if(indices == ''){
 			$('#idMsgError').text('<fmt:message key="planilla.cliente.sin.producto"/>');
 			$('#idMsgError').slideDown("slow");
 			return;
 		}
-		
-		codigos = codigos.substring(0, codigos.length-1);
+		//Elimino el ultimo ;
+		indices = indices.substring(0, indices.length-1);
 		
 		//Bloqueo contenido
 		blockControl($('#wrapperContenidoGrilla'));
 		
-		var url = '${pathBase}' + 'planilla/cliente/'+moment($('#idFecha').val(),'DD/MM/YYYY HH:mm')+'/'+$('#idCat').val()+'/'+codigos;
+		var url = '${pathBase}' + 'planilla/cliente/'+moment($('#idFecha').val(),'DD/MM/YYYY HH:mm')+'/'+$('#idCat').val()+'/'+indices;
 		$('#contenidoGrilla').load(url, function(){
 			//Desbloqueo contenido
         	$('#wrapperContenidoGrilla').unblock();
@@ -86,7 +86,7 @@
 			$('#idMsgError').slideDown("slow");
 			return;
 		}
-		
+		//Elimino el ultimo ;
 		indices = indices.substring(0, indices.length-1);
 		
 		if(!bodyBlock){
