@@ -73,6 +73,25 @@
         </div>
     </div>
     <div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idCuitCuil">
+					<fmt:message key="usuario.cuitCuil" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+				<form:input path="cuitCuil" cssClass="form-control" id="idCuitCuil" for="idCuitCuilError" maxlength="11" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="cuitCuil" cssClass="form-validate" id="idCuitCuilError"/>
+			</div>
+        </div>
+    </div>
+    <div class='row'>
         <div class='col-sm-4' style="white-space: nowrap;">    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idEmail">

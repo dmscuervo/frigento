@@ -44,6 +44,20 @@
 	    </div>
 	    <div class='row'>
 	        <div class='col-md-6'>    
+				<label class="control-label" for="idCuitCuil" style="white-space: nowrap;">
+					<fmt:message key="usuario.cuitCuil" />:
+				</label>
+	        	<span id="idCuitCuil" style="white-space: nowrap;">${usuario.cuitCuil}</span>
+	        </div>
+	        <div class='col-md-6'>    
+				<label class="control-label" for="idEmail" style="white-space: nowrap;">
+					<fmt:message key="usuario.email" />:
+				</label>
+	        	<span id="idEmail" style="white-space: nowrap;">${usuario.email}</span>
+	        </div>
+	    </div>
+	    <div class='row'>
+	        <div class='col-md-6'>    
 				<label class="control-label" for="idTel" style="white-space: nowrap;">
 					<fmt:message key="usuario.telefono" />:
 				</label>
@@ -57,19 +71,13 @@
 	        </div>
 	    </div>
 	    <div class='row'>
-	        <div class='col-md-6'>    
+	        <div class='col-md-12'>    
 				<label class="control-label" for="idTel" style="white-space: nowrap;">
 					<fmt:message key="usuario.calle" />:
 				</label>
 	        	<span id="idCalle" style="white-space: nowrap;">${usuario.calle}</span>
 	        	<span id="idAlt" style="white-space: nowrap;">${usuario.altura}</span>
 	        	<span id="idDepto" style="white-space: nowrap;">${usuario.depto}</span>
-	        </div>
-	        <div class='col-md-6'>    
-				<label class="control-label" for="idEmail" style="white-space: nowrap;">
-					<fmt:message key="usuario.email" />:
-				</label>
-	        	<span id="idEmail" style="white-space: nowrap;">${usuario.email}</span>
 	        </div>
 	    </div>
     </div>

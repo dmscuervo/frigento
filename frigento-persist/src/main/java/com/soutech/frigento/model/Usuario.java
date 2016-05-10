@@ -13,6 +13,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -54,6 +56,11 @@ public class Usuario implements Serializable {
     @Column(name = "APPELLIDO")
     @Size(max = 20)
     private String apellido;
+    
+    @Column(name = "CUIT_CUIL")
+    @DecimalMin(value = "20000000000")
+    @DecimalMax(value = "36999999999")
+    private Long cuitCuil;
 
     @Column(name = "TELEFONO")
     @Size(max = 15)
@@ -119,6 +126,14 @@ public class Usuario implements Serializable {
 	public void setApellido(String apellido) {
         this.apellido = apellido;
     }
+
+	public Long getCuitCuil() {
+		return cuitCuil;
+	}
+
+	public void setCuitCuil(Long cuitCuil) {
+		this.cuitCuil = cuitCuil;
+	}
 
 	public String getTelefono() {
         return this.telefono;
