@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="presupuestoHorizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a42bbf3c-e6fa-4b72-9572-254008bf42dc">
 	<property name="ireport.zoom" value="2.853116706110003"/>
-	<property name="ireport.x" value="451"/>
+	<property name="ireport.x" value="1651"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="LOGO" class="byte[]"/>
 	<parameter name="FECHA" class="java.lang.String"/>
@@ -18,14 +18,14 @@
 				<text><![CDATA[Productos congelados]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="574" y="0" width="206" height="27" uuid="4766f5b5-eb4c-4722-9d4e-17e71ee8574d"/>
+				<reportElement x="574" y="41" width="206" height="18" uuid="4766f5b5-eb4c-4722-9d4e-17e71ee8574d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tel. 4584-6581]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="574" y="28" width="206" height="27" uuid="cd7ebdc6-bb31-44bd-bcf7-c912534707fc"/>
+				<reportElement x="574" y="21" width="206" height="18" uuid="cd7ebdc6-bb31-44bd-bcf7-c912534707fc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -42,6 +42,13 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Fecha: ".concat($P{FECHA})]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="574" y="1" width="206" height="18" uuid="8b089579-1ca1-4d00-97d7-2237e7d8d73d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[info.frigento@gmail.com]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 </jasperReport>

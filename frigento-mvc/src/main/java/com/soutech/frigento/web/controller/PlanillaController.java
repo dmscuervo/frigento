@@ -94,7 +94,7 @@ public class PlanillaController extends GenericController {
     	
     	ColumnReporteDTO columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.codigo"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.codigo"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.codigo").toUpperCase());
     	columna.setProperty("codigo");
     	columna.setClassName(String.class.getName());
     	columna.setAncho(30);
@@ -103,7 +103,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcion"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcion"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcion").toUpperCase());
     	columna.setProperty("descripcion");
     	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
@@ -112,7 +112,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcionCliente"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcionCliente"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcionCliente").toUpperCase());
     	columna.setProperty("descripcionVenta");
     	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
@@ -121,7 +121,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.peso.caja"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.peso.caja"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.peso.caja").toUpperCase());
     	columna.setProperty("pesoCaja");
     	columna.setClassName(Float.class.getName());
     	columna.setAncho(30);
@@ -131,7 +131,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnReporteDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.kg"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.kg"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.kg").toUpperCase());
     	columna.setProperty("importeVenta");
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
@@ -141,7 +141,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnPrecioConIvaDTO(21f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.kg.iva"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.kg.iva"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.kg.iva").toUpperCase());
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setAjustarAncho(false);
@@ -150,7 +150,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnPrecioCajaDTO();
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja").toUpperCase());
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setPattern("$ #,##0.00");
@@ -158,7 +158,7 @@ public class PlanillaController extends GenericController {
     	
     	columna = new ColumnPrecioCajaConIvaDTO(21f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
-    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja.iva"));
+    	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.caja.iva").toUpperCase());
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setPattern("$ #,##0.00");

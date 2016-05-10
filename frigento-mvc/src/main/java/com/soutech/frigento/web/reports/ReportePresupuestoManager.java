@@ -2,7 +2,7 @@ package com.soutech.frigento.web.reports;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +69,10 @@ public class ReportePresupuestoManager {
 			
 			//Agrego las columnas
 			AbstractColumn abstactColumn;
+			//En caso de que no sean seleccionados por el usuario, agregao estos 
+			//campos xq son obligatorios para poder calcular precios con IVA.
+			drb.addField("importeVenta", BigDecimal.class);
+			drb.addField("pesoCaja", Float.class);
 			for (int i = 0; i < indicesSel.length; i++) {
 				Integer indice = indicesSel[i];
 				ColumnReporteDTO column = contenido.getColumns().get(indice);
@@ -118,7 +122,7 @@ public class ReportePresupuestoManager {
 			String path = this.getClass().getClassLoader().getResource("ireport/frigento.png").getPath();
 			byte[] bytes = Utils.getByteArray(path);
 			params.put("LOGO", bytes);
-			params.put("FECHA", Utils.formatDate(new Date(), Utils.SDF_DDMMYYYY));
+			params.put("FECHA", Utils.formatDate(contenido.getFecha(), Utils.SDF_DDMMYYYY));
 			JasperReport jr = DynamicJasperHelper.generateJasperReport(dr, new ClassicLayoutManager(), params);
 			JasperPrint jp = JasperFillManager.fillReport(jr, params, ds);
 			

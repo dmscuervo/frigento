@@ -11,7 +11,6 @@
 		$('#datetimepickerPlanilla').datetimepicker({
 			ignoreReadonly: true,
 			defaultDate: moment(),
-			maxDate: moment(),
 			format: 'DD/MM/YYYY',
 			locale: 'es'
 	    });
