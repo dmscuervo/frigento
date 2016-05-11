@@ -59,6 +59,7 @@
                 <th style="white-space: nowrap;"><fmt:message key="producto.descripcion" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="producto.costoActual" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="producto.stock" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="producto.stockMinimo" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="producto.pesoCaja" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="producto.grilla.acciones" /></th>
             </tr>
@@ -70,6 +71,7 @@
         		<td style="white-space: nowrap;">${prod.descripcion}</td>
         		<td style="white-space: nowrap;">${prod.costoActual}</td>
         		<td style="white-space: nowrap;">${prod.stock}</td>
+        		<td style="white-space: nowrap;">${prod.stockMinimo}</td>
         		<td style="white-space: nowrap;">${prod.pesoCaja}</td>
         		<td style="white-space: nowrap;">
         			<c:if test="${estadoSel eq 'A'}">

@@ -65,7 +65,7 @@ public class Producto implements Serializable {
     @Column(name = "IVA")
     private Float iva;
     
-    @Numeric(regexp = Numeric.decimal_positivo)
+    @Numeric(regexp = Numeric.decimal_positivo_3decimal)
     @NotNull
     @Column(name = "STOCK")
     private Float stock;

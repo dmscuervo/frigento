@@ -20,14 +20,18 @@
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="consulta.ganancia.grilla.mes" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="consulta.ganancia.grilla.importe" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="consulta.ganancia.grilla.ganancia" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="consulta.ganancia.grilla.ganancia.porcentaje" /></th>
             </tr>
         </thead>
         <tbody>
         <c:forEach var="reg" items="${registros}">
         	<tr>
         		<td style="white-space: nowrap;"><fmt:formatNumber value="${reg.mes}" /></td>
+        		<td style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${reg.importeVenta}" /></td>
         		<td style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${reg.ganancia}" /></td>
+        		<td style="white-space: nowrap;"><fmt:formatNumber type="percent" value="${reg.procentajeGanancia}" minFractionDigits="2" maxFractionDigits="2" /></td>
         	</tr>
         </c:forEach>
         </tbody>

@@ -12,6 +12,7 @@ public abstract @interface Numeric {
 	public final String entero_positivo = "\\d";
 	public final String decimal = "-?\\d+(\\.\\d{1,2})?";
 	public final String decimal_positivo = "\\d+(\\.\\d{1,2})?";
+	public final String decimal_positivo_3decimal = "\\d+(\\.\\d{1,3})?";
 
 	/**
 	 * Valores permitidos: entero, decimal

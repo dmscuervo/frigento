@@ -146,7 +146,7 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		StringBuilder sql = new StringBuilder("");
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
-			sql.append("select date_part('month', venta.fecha) as mes, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
+			sql.append("select date_part('month', venta.fecha) as mes, sum(rvp.precio*rvp.cantidad) as importeVenta, sum((rvp.precio-pc.costo)*rvp.cantidad) as ganancia ");
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){
 			if(agrupamiento.equals(Constantes.CONSULTA_GANANCIA_PRODUCTO)){
@@ -205,6 +205,7 @@ public class RelVentaProductoDaoImpl extends AbstractSpringDao<RelVentaProducto,
 		if(Constantes.CONSULTA_TIPO_RESUMEN.equals(tipo)){
 			
 			query.addScalar("mes", new IntegerType());
+			query.addScalar("importeVenta", new BigDecimalType());
 			query.addScalar("ganancia", new BigDecimalType());
 			
 		}else if(Constantes.CONSULTA_TIPO_DETALLADO.equals(tipo)){

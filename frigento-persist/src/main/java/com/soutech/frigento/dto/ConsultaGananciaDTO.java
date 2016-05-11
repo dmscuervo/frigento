@@ -2,6 +2,7 @@ package com.soutech.frigento.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import com.soutech.frigento.model.Producto;
@@ -78,5 +79,8 @@ public class ConsultaGananciaDTO implements Serializable {
 	}
 	public String getNroVenta(){
 		return Utils.generarNroRemito(venta);
+	}
+	public BigDecimal getProcentajeGanancia(){
+		return ganancia.divide(importeVenta, 4, RoundingMode.HALF_UP);
 	}
 }
