@@ -21,4 +21,7 @@ public class Constantes {
 	public static final Short CONSULTA_GANANCIA_PRODUCTO = new Short("1");
 	public static final Short CONSULTA_GANANCIA_VENTA = new Short("2");
 	public static final Short CONSULTA_GANANCIA_AMBOS = new Short("3");
+	
+	public static final Float IVA_105 = 10.5f;
+	public static final Float IVA_21 = 21f;
 }

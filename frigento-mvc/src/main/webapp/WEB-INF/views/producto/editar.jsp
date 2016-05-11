@@ -172,7 +172,10 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="iva" cssClass="form-control" id="idIVA" />
+        		<form:select path="iva" cssClass="form-control" id="idIVA" onchange="visualizarEnvioMail()">
+        			<form:option value="VENTIUNO" >21%</form:option>
+        			<form:option value="DIEZYMEDIO" >10.5%</form:option>
+        		</form:select>
 			</div>
         </div>
         <div class='col-sm-4'>

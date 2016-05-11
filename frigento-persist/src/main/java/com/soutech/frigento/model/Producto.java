@@ -20,8 +20,10 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.soutech.frigento.enums.IVAEnum;
 import com.soutech.frigento.model.annotattions.Numeric;
 
 
@@ -60,10 +62,10 @@ public class Producto implements Serializable {
     @Column(name = "COSTO_ACTUAL")
     private BigDecimal costoActual;
     
-    @Numeric(regexp = Numeric.decimal_positivo)
     @NotNull
-    @Column(name = "IVA")
-    private Float iva;
+    @Type(type="com.soutech.frigento.model.type.IVAEnumType")
+	@Column(name="IVA")
+	private IVAEnum iva;
     
     @Numeric(regexp = Numeric.decimal_positivo_3decimal)
     @NotNull
@@ -138,11 +140,11 @@ public class Producto implements Serializable {
         this.costoActual = costoActual;
     }
 
-	public Float getIva() {
+	public IVAEnum getIva() {
 		return iva;
 	}
 
-	public void setIva(Float iva) {
+	public void setIva(IVAEnum iva) {
 		this.iva = iva;
 	}
 

@@ -43,6 +43,7 @@
 			<form:hidden path="codigo"/>
 			<form:hidden path="descripcion"/>
 			<form:hidden path="costoActual"/>
+			<form:hidden path="iva"/>
 			<form:hidden path="stock"/>
 			<form:hidden path="stockMinimo"/>
 			<form:hidden path="pesoCaja"/>

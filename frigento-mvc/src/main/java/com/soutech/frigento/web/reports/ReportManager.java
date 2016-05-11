@@ -118,6 +118,8 @@ public class ReportManager{
 	
 	public ByteArrayOutputStream generarRemitoVenta(List<RelVentaProducto> relVtaProdList) throws ReporteException{
 		List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
+		BigDecimal iva105 = BigDecimal.ZERO;
+		BigDecimal iva21 = BigDecimal.ZERO;
     	for (RelVentaProducto rvp : relVtaProdList) {
 			RemitoDTO remito = new RemitoDTO();
 			remito.setCantidad(rvp.getCantidad());
@@ -129,6 +131,7 @@ public class ReportManager{
 			remito.setProducto(descripcion);
 			remito.setPu(rvp.getPrecioVenta());
 			remito.setImporte(new BigDecimal(rvp.getCantidad()).multiply(rvp.getPrecioVenta()).setScale(2, RoundingMode.HALF_UP));
+			
 			itemsRemito.add(remito);
 		}
     	
