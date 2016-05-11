@@ -117,7 +117,7 @@ public class ProductoServiceImpl implements ProductoService {
 		List<RelProductoCategoria> relProdCats = relProductoCategoriaDao.findAllByProducto(productoId, Constantes.ESTADO_REL_VIGENTE);
 		if(!relProdCats.isEmpty()){
 			logger.info("El producto contiene relaciones con RelProductoCategoria. Se procede a su baja logica.");
-			}
+		}
 		for (RelProductoCategoria relProdCategoria : relProdCats) {
 			relProductoCategoriaDao.delete(relProdCategoria);
 		}

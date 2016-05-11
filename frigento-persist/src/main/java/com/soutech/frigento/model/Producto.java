@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -99,7 +98,7 @@ public class Producto implements Serializable {
     @Column(name = "FECHA_ALTA")
     private Date fechaAlta;
     
-    @OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=true)
     private List<Promocion> promociones;
     
