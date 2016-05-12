@@ -82,6 +82,7 @@
 	<form:hidden path="usuario.nombre"/>
 	<form:hidden path="usuario.apellido"/>
 	<form:hidden path="importe"/>
+	<form:hidden path="incrementoIva"/>
 	<form:hidden path="version"/>
 	<form:hidden path="fecha"/>
 	<form:hidden path="usuario.id"/>
@@ -96,7 +97,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-   				<input type="text" readonly="readonly" value='<fmt:formatDate value="${ventaForm.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/>' class="form-control">
+   				<fmt:formatDate value="${ventaForm.fecha}" pattern="dd/MM/yyyy HH:mm:ss"/>
 			</div>
         </div>
         <div class='col-sm-4'>
@@ -115,7 +116,7 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-   				<input type="text" readonly="readonly" value="${ventaForm.usuario.identificadoWeb}" class="form-control">
+   				${ventaForm.usuario.identificadoWeb}
 			</div>
         </div>
         <div class='col-sm-4'>
@@ -150,6 +151,14 @@
         <div class='col-sm-8'>    
 			<div class="form-group" id="idConfirmarContenido">
 				<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="venta.enviar.mail" />
+			</div>
+        </div>
+    </div>
+    <div class='row' >
+    	<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'>    
+			<div class="form-group" id="idIva">
+				<form:checkbox path="conIva" value="false" /><fmt:message key="venta.con.iva" />
 			</div>
         </div>
     </div>
@@ -194,6 +203,7 @@
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
+			        			<form:hidden path="items[${status.index}].producto.iva"/>
 			        			<form:hidden path="items[${status.index}].importeVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
 								<c:if test="${ not empty item.promocion }">

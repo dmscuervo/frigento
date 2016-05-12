@@ -148,6 +148,11 @@ public class ReportManager{
     	parameters.put("nroPedido", Utils.generarNroRemito(venta));
     	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
     	parameters.put("domicilio","");
+    	if(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO)){
+    		parameters.put("iva", venta.getIncrementoIva());
+    	}else{
+    		parameters.put("iva", BigDecimal.ZERO);
+    	}
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	

@@ -8,14 +8,14 @@ public enum IVAEnum {
 
 	VENTIUNO(21f), DIEZYMEDIO(10.5f);
 	
-	private Float codigo;
+	private Float iva;
 	
-	IVAEnum(Float codigo){
-		this.codigo = codigo;
+	IVAEnum(Float iva){
+		this.iva = iva;
 	}
 
-	public Float getCodigo() {
-		return codigo;
+	public Float getIva() {
+		return iva;
 	}
 
 	public static IVAEnum valueOf(Float valor){

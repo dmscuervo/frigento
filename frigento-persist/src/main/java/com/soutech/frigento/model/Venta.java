@@ -58,8 +58,11 @@ public class Venta implements Serializable {
 
     @NotNull
     @Column(name = "IMPORTE")
-    @DateTimeFormat(style = "M-")
     private BigDecimal importe;
+    
+    @NotNull
+    @Column(name = "INCREMENTO_IVA")
+    private BigDecimal incrementoIva;
 
     @Column(name = "F_ENTREGAR")
     @Temporal(TemporalType.TIMESTAMP)
@@ -83,6 +86,9 @@ public class Venta implements Serializable {
     @NotNull
     @Column(name = "VERSION")
     private Short version;
+    
+    @Transient
+    private Boolean conIva;
 
     @Valid
 	@Transient
@@ -191,5 +197,21 @@ public class Venta implements Serializable {
 	public void setVersion(Short version) {
 		this.version = version;
 	}
-	
+
+	public Boolean getConIva() {
+		return conIva;
+	}
+
+	public void setConIva(Boolean conIva) {
+		this.conIva = conIva;
+	}
+
+	public BigDecimal getIncrementoIva() {
+		return incrementoIva;
+	}
+
+	public void setIncrementoIva(BigDecimal incrementoIva) {
+		this.incrementoIva = incrementoIva;
+	}
+
 }

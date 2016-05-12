@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="remitoConfirmado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7242a6bb-de6e-4263-acfd-1b64c76b5926">
 	<property name="ireport.zoom" value="4.5949729863572255"/>
-	<property name="ireport.x" value="2073"/>
+	<property name="ireport.x" value="1936"/>
 	<property name="ireport.y" value="1391"/>
 	<parameter name="dia" class="java.lang.String"/>
 	<parameter name="mes" class="java.lang.String"/>
@@ -283,7 +283,7 @@ info.frigento@gmail.com]]></text>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<line>
-				<reportElement x="419" y="-1" width="1" height="43" uuid="b7dec1d4-6938-4a9b-99de-284e723d3a5c"/>
+				<reportElement x="419" y="0" width="1" height="42" uuid="b7dec1d4-6938-4a9b-99de-284e723d3a5c"/>
 			</line>
 			<line>
 				<reportElement x="480" y="0" width="1" height="42" uuid="f9ba991b-86c0-4f3e-92d0-ef5c57396fe8"/>

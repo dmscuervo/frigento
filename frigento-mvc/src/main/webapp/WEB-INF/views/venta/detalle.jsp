@@ -19,7 +19,7 @@
 </script>
 
 <div style="width: 80%; min-width: 300px">
-	<div style="display: table; float: left; margin: 0 auto; min-width: 50%">
+	<div style="display: table; float: left; margin: 0 auto; min-width: 80%">
 		<h3>
 			<fmt:message key="venta.detalle.title" />
 		</h3>
@@ -53,6 +53,14 @@
 	        </div>
 	    </div>
 	    <div class='row'>
+	    	<div class='col-md-3'>    
+				<label class="control-label" for="idEstado" style="white-space: nowrap;">
+					<fmt:message key="venta.estado" />:
+				</label>
+	        </div>
+	        <div class='col-md-3'>
+				<span id="idEstado" style="white-space: nowrap;">${relVtaProdList[0].venta.estado.descripcion}</span>
+	        </div>
 	        <div class='col-md-3'>    
 				<label class="control-label" for="idCosto" style="white-space: nowrap;">
 					<fmt:message key="venta.importe" />:
@@ -61,6 +69,39 @@
 	        <div class='col-md-3'>
 				<span id="idCosto" style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${relVtaProdList[0].venta.importe}" /></span>
 	        </div>
+	    </div>
+	    <div class='row'>
+	    	<div class='col-md-3'>    
+				&nbsp;
+	        </div>
+	    	<div class='col-md-3'>    
+				<label class="control-label" for="idEstado" style="white-space: nowrap;">
+					<fmt:message key="venta.iva" >
+						<c:if test="${relVtaProdList[0].venta.incrementoIva.unscaledValue() != 0}">
+							<fmt:param >
+								<fmt:message key="venta.iva.con" />
+							</fmt:param>
+						</c:if>
+						<c:if test="${relVtaProdList[0].venta.incrementoIva.unscaledValue() == 0}">
+							<fmt:param >
+								<fmt:message key="venta.iva.sin" />
+							</fmt:param>
+						</c:if>
+					</fmt:message>
+				</label>
+	        </div>
+	        <div class='col-md-3'>    
+				<label class="control-label" for="idCosto" style="white-space: nowrap;">
+					<fmt:message key="venta.importe.con.iva" />
+				</label>
+	        </div>
+	        <div class='col-md-3'>
+	        	<c:if test="${relVtaProdList[0].venta.incrementoIva.unscaledValue() != 0}">
+					<span id="idCosto" style="white-space: nowrap;"><fmt:formatNumber currencySymbol="$" type="currency" value="${relVtaProdList[0].venta.importe + relVtaProdList[0].venta.incrementoIva}" /></span>
+	        	</c:if>
+	        </div>
+	    </div>
+	    <div class='row'>
 	        <div class='col-md-3'>    
 				<label class="control-label" for="idCosto" style="white-space: nowrap;">
 					<fmt:message key="venta.fecha.entregar" />:
@@ -68,16 +109,6 @@
 	        </div>
 	        <div class='col-md-3'>
 				<span id="idDesc2" style="white-space: nowrap;"><fmt:formatDate value="${relVtaProdList[0].venta.fechaAEntregar}" pattern="dd/MM/yyyy HH:mm:ss"/></span>
-	        </div>
-	    </div>
-	    <div class='row'>
-	        <div class='col-md-3'>    
-				<label class="control-label" for="idEstado" style="white-space: nowrap;">
-					<fmt:message key="venta.estado" />:
-				</label>
-	        </div>
-	        <div class='col-md-3'>
-				<span id="idEstado" style="white-space: nowrap;">${relVtaProdList[0].venta.estado.descripcion}</span>
 	        </div>
 	        <div class='col-md-3'>    
 				<c:if test="${relVtaProdList[0].venta.estado.id eq 3}">

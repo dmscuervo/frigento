@@ -42,6 +42,7 @@ public class VentaServiceImpl implements VentaService {
 		try{
 			ControlVentaVsPrecioProducto.aplicarFlags(Boolean.TRUE, "redirect:/".concat("venta?estado=A&sortFieldName=id&sortOrder=desc"), "relProdCat.concurrencia.precio.error");
 			BigDecimal importeTotal = BigDecimal.ZERO;
+			BigDecimal incrementoIva = BigDecimal.ZERO;
 			List<RelVentaProducto> relaciones = new ArrayList<RelVentaProducto>();
 			for (ItemVentaDTO item : venta.getItems()) {
 				if(item.getCantidad() != (short)0){
@@ -57,7 +58,13 @@ public class VentaServiceImpl implements VentaService {
 					rvp.setPromocion(item.getPromocion());
 					relaciones.add(rvp);
 					//Voy calculando el costo total del pedido
-					importeTotal = importeTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP));
+					BigDecimal importeTotalProducto = new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP);
+					importeTotal = importeTotal.add(importeTotalProducto);
+					if(venta.getConIva()){
+						Float ivaProd = item.getProducto().getIva().getIva();
+						BigDecimal ivaProdPorc = new BigDecimal(ivaProd).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+						incrementoIva = incrementoIva.add(importeTotalProducto.multiply(ivaProdPorc)).setScale(2, RoundingMode.HALF_UP);
+					}
 				}
 			}
 			if(!hayPedido){
@@ -65,6 +72,7 @@ public class VentaServiceImpl implements VentaService {
 			}
 			
 			venta.setImporte(importeTotal);
+			venta.setIncrementoIva(incrementoIva);
 			venta.setVersion(new Short("1"));
 			ventaDao.save(venta);
 			//Guardo las relaciones
@@ -107,9 +115,9 @@ public class VentaServiceImpl implements VentaService {
 			List<RelVentaProducto> relacionesEliminadas = new ArrayList<RelVentaProducto>();
 			Venta ventaActual = relacionesActuales.get(0).getVenta();
 			
-			BigDecimal importeTotal = controlStockProducto.verificarCambiosVenta(ventaModificada, relacionesActuales, relacionesNuevas, relacionesModificadas, relacionesEliminadas);
+			BigDecimal importes[] = controlStockProducto.verificarCambiosVenta(ventaModificada, relacionesActuales, relacionesNuevas, relacionesModificadas, relacionesEliminadas);
 			
-			if(importeTotal == null){
+			if(importes == null){
 				return hayPedido;
 			}
 			hayPedido = Boolean.TRUE;
@@ -119,7 +127,8 @@ public class VentaServiceImpl implements VentaService {
 			ventaActual.setFecha(ventaModificada.getFecha());
 			ventaActual.setEstado(ventaModificada.getEstado());
 			ventaActual.setFechaAEntregar(ventaModificada.getFechaAEntregar());
-			ventaActual.setImporte(importeTotal);
+			ventaActual.setImporte(importes[0]);
+			ventaActual.setIncrementoIva(importes[1]);
 			if(!relacionesEliminadas.isEmpty() || !relacionesModificadas.isEmpty() || !relacionesNuevas.isEmpty()){
 				if(ventaModificada.getEstado().getId() > new Short(Constantes.ESTADO_PEDIDO_PENDIENTE)){
 					ventaActual.setVersion((short)(ventaActual.getVersion()+1));
