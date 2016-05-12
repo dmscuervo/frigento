@@ -23,8 +23,8 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.model.Estado;
-import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.Venta;
 import com.sun.xml.ws.util.ByteArrayDataSource;
@@ -135,25 +135,25 @@ public class SendMailSSL {
 		
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.socketFactory.port", Parametro.SMTP_GMAIL_PORT);
+		props.put("mail.smtp.socketFactory.port", Parametros.getValor(Parametros.SMTP_GMAIL_PORT));
 		props.put("mail.smtp.socketFactory.class",
 				"javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", Parametro.SMTP_GMAIL_PORT);
+		props.put("mail.smtp.port", Parametros.getValor(Parametros.SMTP_GMAIL_PORT));
 
 		Session session = Session.getDefaultInstance(props,
 			new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(Parametro.SMTP_GMAIL_REMITENTE, Parametro.SMTP_GMAIL_PASSWORD);
+					return new PasswordAuthentication(Parametros.getValor(Parametros.SMTP_GMAIL_REMITENTE), Parametros.getValor(Parametros.SMTP_GMAIL_PASSWORD));
 				}
 			});
 
 		try {
 
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(Parametro.SMTP_GMAIL_REMITENTE));
+			message.setFrom(new InternetAddress(Parametros.getValor(Parametros.SMTP_GMAIL_REMITENTE)));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(Parametro.SMTP_GMAIL_DESTINATARIOS));
+					InternetAddress.parse(Parametros.getValor(Parametros.SMTP_GMAIL_DESTINATARIOS_PEDIDOS)));
 			message.setSubject(subject);
 			
 			BodyPart texto = new MimeBodyPart();

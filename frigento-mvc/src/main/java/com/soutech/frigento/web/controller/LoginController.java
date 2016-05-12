@@ -2,12 +2,14 @@ package com.soutech.frigento.web.controller;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +19,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.soutech.frigento.dto.Parametros;
+
 @Controller
 public class LoginController extends GenericController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
+	@Autowired
+    private ServletContext servletContext;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage() {
@@ -40,7 +46,7 @@ public class LoginController extends GenericController {
     public String handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         logger.debug("inicio - Login controller");
-
+        servletContext.setAttribute(Parametros.VERSION_APP, Parametros.getValor(Parametros.VERSION_APP));
         logger.debug("fin - Login controller");
         return "main";
     }

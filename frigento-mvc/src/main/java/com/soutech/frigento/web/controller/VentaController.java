@@ -31,9 +31,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.dto.ItemVentaDTO;
+import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.exception.ProductoSinCategoriaException;
 import com.soutech.frigento.model.Estado;
-import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.Promocion;
 import com.soutech.frigento.model.RelProductoCategoria;
@@ -157,10 +157,10 @@ public class VentaController extends GenericController {
 
 		String mensaje;
 		for (ItemVentaDTO item : ventaForm.getItems()) {
-			Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP).floatValue();
+			Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametros.getValor(Parametros.TOLERANCIA_GRAMOS_PROMOCION_VTA))).setScale(3, RoundingMode.HALF_UP).floatValue();
 			if(item.getPromocion() != null && item.getCantidad() != 0 && cantidadMinima < item.getPromocion().getCantidadMinima()){
 				String nombrePromo = getMessage("venta.promocion", item.getPromocion().getCantidadMinima());
-				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA).setScale(3, RoundingMode.HALF_UP));
+				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametros.getValor(Parametros.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP));
 				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, pesoMinimo});
 				httpServletRequest.setAttribute("msgError", mensaje);
 				return "venta/alta";
@@ -290,10 +290,10 @@ public class VentaController extends GenericController {
 
     	String mensaje;
     	for (ItemVentaDTO item : ventaForm.getItems()) {
-    		Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP).floatValue();
+    		Float cantidadMinima = new BigDecimal(item.getCantidad()).add(new BigDecimal(Parametros.getValor(Parametros.TOLERANCIA_GRAMOS_PROMOCION_VTA))).setScale(3, RoundingMode.HALF_UP).floatValue();
 			if(item.getPromocion() != null && item.getCantidad() != 0 && cantidadMinima < item.getPromocion().getCantidadMinima()){
 				String nombrePromo = getMessage("venta.promocion", item.getPromocion().getCantidadMinima());
-				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametro.TOLERANCIA_GRAMOS_PROMOCION_VTA).setScale(3, RoundingMode.HALF_UP));
+				Object pesoMinimo = new BigDecimal(item.getPromocion().getCantidadMinima()).subtract(new BigDecimal(Parametros.getValor(Parametros.TOLERANCIA_GRAMOS_PROMOCION_VTA)).setScale(3, RoundingMode.HALF_UP));
 				mensaje = getMessage("venta.promocion.minimo.error", new Object[]{nombrePromo, pesoMinimo});
 				httpServletRequest.setAttribute("msgError", mensaje);
 				return "venta/editar";

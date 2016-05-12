@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.soutech.frigento.model.Parametro;
+import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.service.ConfiguracionService;
 
 
@@ -30,10 +30,16 @@ public class ServletInitializer extends HttpServlet {
 		
 		logger.debug("Se procede a inicializar BD en caso que corresponda");
 		configuracionService.inicializarValoresBD();
+		
+		logger.info("Se cargan los parametros del sistema.");
+		configuracionService.cargarParametros();
+		
 		logger.debug("Establezco el TimeZone de la app en America/Buenos_Aires");
-		TimeZone timeZone = TimeZone.getTimeZone(Parametro.TIME_ZONE_BUENOS_AIRES);
+		TimeZone timeZone = TimeZone.getTimeZone(Parametros.getValor(Parametros.TIME_ZONE_BUENOS_AIRES));
 		TimeZone.setDefault(timeZone);
 		logger.info("Hora de la app según timezone definido: " + new Date());
+		
+		
 	}
 	
 }

@@ -19,8 +19,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.soutech.frigento.dto.ItemVentaDTO;
+import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.exception.ReporteException;
-import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Pedido;
 import com.soutech.frigento.model.RelPedidoProducto;
 import com.soutech.frigento.model.RelVentaProducto;
@@ -62,7 +62,7 @@ public class ReportManager{
     	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
-    	parameters.put("destinatario",Parametro.NOMBRE_PROVEEDOR);
+    	parameters.put("destinatario", Parametros.getValor(Parametros.NOMBRE_PROVEEDOR));
     	parameters.put("domicilio","");
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
@@ -118,9 +118,7 @@ public class ReportManager{
 	
 	public ByteArrayOutputStream generarRemitoVenta(List<RelVentaProducto> relVtaProdList) throws ReporteException{
 		List<RemitoDTO> itemsRemito = new ArrayList<RemitoDTO>();
-		BigDecimal iva105 = BigDecimal.ZERO;
-		BigDecimal iva21 = BigDecimal.ZERO;
-    	for (RelVentaProducto rvp : relVtaProdList) {
+		for (RelVentaProducto rvp : relVtaProdList) {
 			RemitoDTO remito = new RemitoDTO();
 			remito.setCantidad(rvp.getCantidad());
 			String descripcion = "";

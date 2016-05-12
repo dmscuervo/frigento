@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title><fmt:message key="app.title"/></title>
+    <title>
+    	<fmt:message key="app.title" />&nbsp;${applicationScope.VERSION_APP}
+    </title>
     
     <link href="<c:url value="/resources/css/frigento.css" />" rel="stylesheet" />
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet" />
@@ -135,7 +137,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="home"><fmt:message key="app.logo"/></a>
+                <a class="navbar-brand" href="home">
+                	<fmt:message key="app.logo" />&nbsp;${applicationScope.VERSION_APP}
+                </a>
             </div>
             <!-- /.navbar-header -->
 
