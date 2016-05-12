@@ -99,7 +99,7 @@ public class Producto implements Serializable {
     private Date fechaAlta;
     
     @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=true)
+    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=false)
     private List<Promocion> promociones;
     
     @Transient

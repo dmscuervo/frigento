@@ -12,6 +12,7 @@ import com.soutech.frigento.model.Venta;
 
 public class Utils {
 
+	public static final SimpleDateFormat SDF_DDMMYY = new SimpleDateFormat("dd/MM/yy");
 	public static final SimpleDateFormat SDF_DDMMYYYY = new SimpleDateFormat("dd/MM/yyyy");
 	public static final SimpleDateFormat SDF_DDMMYYYY_HHMM = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	

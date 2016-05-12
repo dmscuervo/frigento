@@ -28,6 +28,7 @@ import com.soutech.frigento.model.Producto;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioCajaConIvaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioCajaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioConIvaDTO;
@@ -200,7 +201,7 @@ public class PlanillaController extends GenericController {
     		
 		ByteArrayOutputStream bytes = reportePresupuestoManager.generarReporte(planilla, indices);
 		//String fileDownload = "Pedido_"+Utils.generarNroRemito(pedido);
-		String fileDownload = "presupuesto_" + planilla.getIdCategoria();
+		String fileDownload = "presupuesto_" + Utils.formatDate(planilla.getFecha(), Utils.SDF_DDMMYY);
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileDownload + ".pdf");
 		response.setContentType( "application/pdf" );
         response.setContentLength((int) bytes.size());
