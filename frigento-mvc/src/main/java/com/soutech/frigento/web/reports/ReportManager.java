@@ -64,6 +64,7 @@ public class ReportManager{
     	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
     	parameters.put("destinatario", Parametros.getValor(Parametros.NOMBRE_PROVEEDOR));
     	parameters.put("domicilio","");
+    	parameters.put("iva", BigDecimal.ZERO);
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	
