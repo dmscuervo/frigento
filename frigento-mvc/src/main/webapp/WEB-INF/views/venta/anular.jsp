@@ -30,6 +30,9 @@
 				class="form-horizontal" commandName="ventaForm" id="idForm">
 			<form:hidden path="id" />
 			<form:hidden path="usuario.email" />
+			<form:hidden path="usuario.calle"/>
+			<form:hidden path="usuario.altura"/>
+			<form:hidden path="usuario.depto"/>
 			<form:hidden path="fecha" />
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"

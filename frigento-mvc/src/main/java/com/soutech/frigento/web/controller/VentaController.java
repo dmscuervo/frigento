@@ -316,7 +316,7 @@ public class VentaController extends GenericController {
     	}
     	
     	if(ventaForm.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_CONFIRMADO)) && ventaForm.getEnvioMail()){
-    		List<RelVentaProducto> relVtaProdList = relVentaProductoService.obtenerByVenta(ventaForm.getId(), "productoCosto.producto.codigo", "asc");
+    		List<RelVentaProducto> relVtaProdList = relVentaProductoService.obtenerByVenta(ventaForm.getId(), "relProductoCategoria.producto.codigo", "asc");
     		ByteArrayOutputStream bytes;
 			try {
 				bytes = reportManager.generarRemitoVenta(relVtaProdList);

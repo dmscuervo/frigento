@@ -147,7 +147,13 @@ public class ReportManager{
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(venta));
     	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
-    	parameters.put("domicilio","");
+    	String domicilio = "";
+    	if(venta.getUsuario().getCalle() != null){
+    		domicilio = domicilio.concat(venta.getUsuario().getCalle());
+    		domicilio = domicilio.concat(venta.getUsuario().getAltura() != null ? " ".concat(String.valueOf(venta.getUsuario().getAltura())) : " ");
+    		domicilio = domicilio.concat(venta.getUsuario().getDepto() != null ? " ".concat(venta.getUsuario().getDepto()) : " ");
+    	}
+    	parameters.put("domicilio", domicilio);
     	parameters.put(JRParameter.REPORT_LOCALE, locale);
     	parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, reportsResourceBundle);
     	

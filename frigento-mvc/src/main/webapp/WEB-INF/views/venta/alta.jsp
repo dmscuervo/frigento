@@ -12,7 +12,7 @@
 		$('#msgError').text(tieneError);
 		
 		if($('#idEstado').val() == 2 && tieneError == ''){
-			if('${not empty ventaForm.usuario.email}'){
+			if('${not empty ventaForm.usuario.email}' == 'true'){
 				$('#idEnvioMail').prop( "checked", false );
 			}
 		}
@@ -47,7 +47,7 @@
 	
 	function visualizarEnvioMail(){
 		if($('#idEstado').val() == 2){
-			if('${empty ventaForm.usuario.email}'){
+			if('${empty ventaForm.usuario.email}' == 'true'){
 				$('#idConfirmarContenido').html('<fmt:message key="venta.usuario.sin.email" />');
 			}
 			$('#idConfirmar').slideDown( "slow" );
@@ -62,7 +62,13 @@
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="ventaForm" id="idForm" autocomplete="off">
 	<form:hidden path="fecha"/>
 	<form:hidden path="usuario.id"/>
+	<form:hidden path="usuario.username"/>
+	<form:hidden path="usuario.nombre"/>
+	<form:hidden path="usuario.apellido"/>
 	<form:hidden path="usuario.email"/>
+	<form:hidden path="usuario.calle"/>
+	<form:hidden path="usuario.altura"/>
+	<form:hidden path="usuario.depto"/>
 	<form:hidden path="importe"/>
 	<form:hidden path="version"/>
 	<div class='row'>

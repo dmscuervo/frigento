@@ -87,7 +87,7 @@ public class SendMailSSL {
 			throw new Exception(e);
 		}
 		
-		enviarMail(subject, bodyText.toString(), attachment, attachFileName);
+		enviarMail(subject, bodyText.toString(), attachment, attachFileName, Parametros.getValor(Parametros.SMTP_GMAIL_DESTINATARIOS_PEDIDOS), Parametros.getValor(Parametros.SMTP_GMAIL_DESTINATARIOS_CC_PEDIDOS));
 	}
 
 	public void enviarCorreoVenta(Venta venta, ByteArrayOutputStream attachment, String attachFileName) throws Exception{
@@ -128,10 +128,10 @@ public class SendMailSSL {
 			throw new Exception(e);
 		}
 		
-		enviarMail(subject, bodyText.toString(), attachment, attachFileName);
+		enviarMail(subject, bodyText.toString(), attachment, attachFileName, venta.getUsuario().getEmail(), Parametros.getValor(Parametros.SMTP_GMAIL_DESTINATARIOS_CC_VENTAS));
 	}
 	
-	private void enviarMail(String subject, String bodyText, ByteArrayOutputStream attachment, String attachFileName) throws Exception {
+	private void enviarMail(String subject, String bodyText, ByteArrayOutputStream attachment, String attachFileName, String to, String cc) throws Exception {
 		
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -153,7 +153,12 @@ public class SendMailSSL {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(Parametros.getValor(Parametros.SMTP_GMAIL_REMITENTE)));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(Parametros.getValor(Parametros.SMTP_GMAIL_DESTINATARIOS_PEDIDOS)));
+					InternetAddress.parse(to));
+			if(cc != null
+					&& !cc.equals("")){
+				message.setRecipients(Message.RecipientType.CC,
+						InternetAddress.parse(cc));
+			}
 			message.setSubject(subject);
 			
 			BodyPart texto = new MimeBodyPart();
