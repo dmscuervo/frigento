@@ -417,4 +417,35 @@ public class PedidoController extends GenericController {
 
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
+    
+    @RequestMapping(params = "pagar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String prePagar(@PathVariable("id") Integer idPed, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Pedido pedido = pedidoService.obtenerPedido(idPed);
+    	if(!pedido.getEstado().getId().equals(new Short(Constantes.ESTADO_PEDIDO_ENTREGADO))){
+        	httpServletRequest.setAttribute("informar", getMessage("pedido.pagar.estado.error"));
+        	return "pedido/grilla";
+        }
+    	//Obtengo otros pedidos en estado ENTREGADO
+    	List<Pedido> pedidos = pedidoService.obtenerPedidos(new Short[]{new Short(Constantes.ESTADO_PEDIDO_ENTREGADO)}, "id", "asc");
+    	//Le quito el pedido seleccionado y me quedo con el resto.
+    	for (int i = 0; i < pedidos.size(); i++) {
+			if(pedidos.get(i).getId().equals(pedido.getId())){
+				pedidos.remove(i);
+				i--;
+			}
+		}
+    	uiModel.addAttribute("pedidoForm", pedido);
+    	uiModel.addAttribute("pedidosCumplidos", pedidos);
+		return "pedido/pagar";
+    }
+    
+    @RequestMapping(value = "/pagar/{time}/{indices}", produces = "text/html")
+    public String pagar(@PathVariable("time") Long time, @PathVariable("indices") Integer[] indices, Model uiModel) {
+    	String mensaje = getMessage("pedido.pagar.ok");
+    	if(indices.length > 0){
+    		mensaje = getMessage("pedido.varios.pagar.ok");
+    	}
+    	uiModel.asMap().clear();
+    	return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
+    }
 }

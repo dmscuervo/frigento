@@ -74,6 +74,11 @@ public class Pedido implements Serializable {
 	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date fechaAnulado;
 	
+	@Column(name = "F_PAGADO")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
+	private Date fechaPagado;
+	
 	@Transient
 	private List<ItemPedidoDTO> items;
 	
@@ -162,6 +167,14 @@ public class Pedido implements Serializable {
 
 	public void setEnvioMail(Boolean envioMail) {
 		this.envioMail = envioMail;
+	}
+
+	public Date getFechaPagado() {
+		return fechaPagado;
+	}
+
+	public void setFechaPagado(Date fechaPagado) {
+		this.fechaPagado = fechaPagado;
 	}
 	
 }
