@@ -42,7 +42,7 @@ import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 @Controller
 @RequestMapping(value="/planilla")
 @Secured({"ROLE_ADMIN"})
-@SessionAttributes(names={"planillaDTO", "columnaList", "rpcList"})
+@SessionAttributes(names={"planillaDTO", "rpcList"})
 public class PlanillaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());

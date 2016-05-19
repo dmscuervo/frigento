@@ -8,8 +8,9 @@
 	$(document).ready(function(){
 		$('#datetimepickerVentaFechaPagado').datetimepicker({
 			ignoreReadonly: true,
-			defaultDate: ${pedidoForm.fecha.time},
+			defaultDate: ${pedidoAPagar.fecha.time},
 			maxDate: moment(),
+			minDate: ${pedidoAPagar.fecha.time},
 			locale: 'es'
 	    });
 		if(!$.fn.DataTable.isDataTable('#idGrillaPagar')){
@@ -61,7 +62,7 @@
 			<div class="modal-body">
 				<p>
 					<fmt:message key="pedido.pagar.mensaje">
-						<fmt:param value='${pedidoForm.id}'/>
+						<fmt:param value='${pedidoAPagar.id}'/>
 					</fmt:message>
 				</p>
 				<div class='row'>
@@ -84,7 +85,7 @@
 			        </div>
 		    	</div>
 			</div>
-			<c:if test="${not empty pedidosCumplidos }">
+			<c:if test="${not empty otrosPedidos }">
 			<div class="modal-body">
 				<p>
 					<fmt:message key="pedido.pagar.otros" />
@@ -101,7 +102,7 @@
 						            </tr>
 						        </thead>
 						        <tbody>
-						        <c:forEach var="ped" items="${pedidosCumplidos}" varStatus="i">
+						        <c:forEach var="ped" items="${otrosPedidos}" varStatus="i">
 						        	<tr>
 						        		<td style="white-space: nowrap;">
 						        			${ped.id}

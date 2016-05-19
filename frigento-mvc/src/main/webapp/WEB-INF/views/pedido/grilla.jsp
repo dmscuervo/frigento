@@ -31,7 +31,7 @@ ${msgError}
                 <th style="white-space: nowrap;"><fmt:message key="pedido.fecha" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="pedido.costo" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="pedido.estado" /></th>
-                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha.entregar" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="pedido.fecha.pagado" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="pedido.grilla.acciones" /></th>
             </tr>
         </thead>

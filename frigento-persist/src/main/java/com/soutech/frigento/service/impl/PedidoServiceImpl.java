@@ -172,4 +172,14 @@ public class PedidoServiceImpl implements PedidoService {
 		pedidoDao.update(pedido);
 	}
 
+	@Override
+	@Transactional
+	public void pagar(List<Pedido> pedidos, Date fechaPago) {
+		for (Pedido pedido : pedidos) {
+			pedido.setFechaPagado(fechaPago);
+			pedidoDao.update(pedido);
+		}
+	}
+
+	
 }

@@ -20,4 +20,6 @@ public interface PedidoService {
 
 	void cumplirPedido(Pedido pedidoCumplido) throws ProductoSinCostoException;
 
+	void pagar(List<Pedido> pedidos, Date fechaPago);
+
 }

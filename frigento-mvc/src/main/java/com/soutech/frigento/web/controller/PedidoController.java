@@ -51,7 +51,7 @@ import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
 @Controller
 @RequestMapping(value="/pedido")
-@SessionAttributes(names="estadoList")
+@SessionAttributes(names={"estadoList", "pedidoAPagar", "otrosPedidos"})
 @Secured({"ROLE_ADMIN"})
 public class PedidoController extends GenericController {
 
@@ -434,17 +434,24 @@ public class PedidoController extends GenericController {
 				i--;
 			}
 		}
-    	uiModel.addAttribute("pedidoForm", pedido);
-    	uiModel.addAttribute("pedidosCumplidos", pedidos);
+    	uiModel.addAttribute("pedidoAPagar", pedido);
+    	uiModel.addAttribute("otrosPedidos", pedidos);
 		return "pedido/pagar";
     }
     
-    @RequestMapping(value = "/pagar/{time}/{indices}", produces = "text/html")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/pagar/{time}/{indices}", produces = "text/html")
     public String pagar(@PathVariable("time") Long time, @PathVariable("indices") Integer[] indices, Model uiModel) {
     	String mensaje = getMessage("pedido.pagar.ok");
-    	if(indices.length > 0){
+    	Pedido ped = (Pedido)uiModel.asMap().get("pedidoAPagar");
+    	List<Pedido> allPedidos = (List<Pedido>)uiModel.asMap().get("otrosPedidos");
+    	List<Pedido> idPedidos = new ArrayList<Pedido>();
+    	idPedidos.add(ped);
+    	for (Integer indice : indices) {
     		mensaje = getMessage("pedido.varios.pagar.ok");
-    	}
+			idPedidos.add(allPedidos.get(indice));
+		}
+    	pedidoService.pagar(idPedidos, new Date(time));
     	uiModel.asMap().clear();
     	return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
     }
