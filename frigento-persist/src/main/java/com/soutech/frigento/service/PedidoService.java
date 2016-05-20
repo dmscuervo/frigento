@@ -22,4 +22,6 @@ public interface PedidoService {
 
 	void pagar(List<Pedido> pedidos, Date fechaPago);
 
+	List<Pedido> obtenerPedidosSinPagar(Short[] estado, String sortFieldName, String sortOrder);
+
 }

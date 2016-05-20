@@ -13,20 +13,6 @@ import javax.validation.constraints.Size;
 @Table(name = "PARAMETRO")
 public class Parametro {
 
-//	public static final String VERSION_APP = "VERSION_APP";
-//	public static final String NOMBRE_PROVEEDOR = "NOMBRE_PROVEEDOR";
-//	public static final String SMTP_GMAIL_PORT = "SMTP_GMAIL_PORT";
-//	public static final String SMTP_GMAIL_USER = "info.frigento@gmail.com";
-//	public static final String SMTP_GMAIL_PASSWORD = "4l1m3nt0s";
-//	public static final String SMTP_GMAIL_REMITENTE = "SMTP_GMAIL_REMITENTE";
-//	public static final String SMTP_GMAIL_DESTINATARIOS_PEDIDOS = "SMTP_GMAIL_DESTINATARIOS";
-//	public static final String SMTP_GMAIL_DESTINATARIOS_CC_PEDIDOS = "SMTP_GMAIL_DESTINATARIOS_CC";
-//	public static final String SMTP_GMAIL_DESTINATARIOS_CC_VENTAS = "SMTP_GMAIL_DESTINATARIOS_CC";
-//	
-//	public static final String TIME_ZONE_BUENOS_AIRES = "TIME_ZONE_BUENOS_AIRES";
-//	
-//	public static final String TOLERANCIA_GRAMOS_PROMOCION_VTA = "TOLERANCIA_GRAMOS_PROMOCION_VTA";
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_PARAMETRO")

@@ -35,4 +35,27 @@ public class PedidoDaoImpl extends AbstractSpringDao<Pedido, Integer> implements
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Pedido> findAllSinPagar(Short[] estado, String sortFieldName, String sortOrder) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(Pedido.class.getCanonicalName());
+		hql.append(" p ");
+		hql.append("where p.fechaPagado is null ");
+		if(estado != null){
+			hql.append("and p.estado.id in (:estadoId) ");
+		}
+		if(sortFieldName != null){
+			hql.append("order by p.");
+			hql.append(sortFieldName);
+			hql.append(" ");
+			hql.append(sortOrder);
+		}
+		Query query = getSession().createQuery(hql.toString());
+		if(estado != null){
+			query.setParameterList("estadoId", estado);
+		}
+		return query.list();
+	}
+
 }

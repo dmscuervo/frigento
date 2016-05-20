@@ -86,11 +86,6 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
 		if(parametros.isEmpty()){
 			log.info("No existen los parametros del sistema. Se procede a la inicializacion de valores.");
 			Parametro p = new Parametro();
-			p.setParametro(Parametros.VERSION_APP);
-			p.setValor("1.0");
-			parametroDao.save(p);
-			
-			p = new Parametro();
 			p.setParametro(Parametros.NOMBRE_PROVEEDOR);
 			p.setValor("Alimax");
 			parametroDao.save(p);

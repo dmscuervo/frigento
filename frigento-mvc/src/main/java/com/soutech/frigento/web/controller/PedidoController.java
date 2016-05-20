@@ -426,7 +426,7 @@ public class PedidoController extends GenericController {
         	return "pedido/grilla";
         }
     	//Obtengo otros pedidos en estado ENTREGADO
-    	List<Pedido> pedidos = pedidoService.obtenerPedidos(new Short[]{new Short(Constantes.ESTADO_PEDIDO_ENTREGADO)}, "id", "asc");
+    	List<Pedido> pedidos = pedidoService.obtenerPedidosSinPagar(new Short[]{new Short(Constantes.ESTADO_PEDIDO_ENTREGADO)}, "id", "asc");
     	//Le quito el pedido seleccionado y me quedo con el resto.
     	for (int i = 0; i < pedidos.size(); i++) {
 			if(pedidos.get(i).getId().equals(pedido.getId())){
@@ -441,7 +441,7 @@ public class PedidoController extends GenericController {
     
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/pagar/{time}/{indices}", produces = "text/html")
-    public String pagar(@PathVariable("time") Long time, @PathVariable("indices") Integer[] indices, Model uiModel) {
+    public String pagarVarios(@PathVariable("time") Long time, @PathVariable("indices") Integer[] indices, Model uiModel) {
     	String mensaje = getMessage("pedido.pagar.ok");
     	Pedido ped = (Pedido)uiModel.asMap().get("pedidoAPagar");
     	List<Pedido> allPedidos = (List<Pedido>)uiModel.asMap().get("otrosPedidos");
@@ -454,5 +454,11 @@ public class PedidoController extends GenericController {
     	pedidoService.pagar(idPedidos, new Date(time));
     	uiModel.asMap().clear();
     	return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(mensaje));
+    }
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/pagar/{time}", produces = "text/html")
+    public String pagar(@PathVariable("time") Long time, Model uiModel) {
+    	return pagarVarios(time, new Integer[0], uiModel);
     }
 }

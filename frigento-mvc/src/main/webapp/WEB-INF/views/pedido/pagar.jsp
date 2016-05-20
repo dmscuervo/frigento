@@ -42,14 +42,17 @@
 		$('#idModalAccion').on('hidden.bs.modal', function () {
 			$('#idModalAccion').modal('hide');
 			var url = '${pathBase}' + 'pedido/pagar/'+moment($('#idFechaPago').val(),'DD/MM/YYYY HH:mm')+'/'+indices;
-			$.post(url);
+			$.post(url, function(result){
+				//Cargo contenido
+            	$('#page-wrapper').html(result);
+			});
 		});
 		$('#idModalAccion').modal('hide');
 	}
 
 </script>
 
-<div class="modal fade" id="idModalAccion" tabindex="-1" role="dialog">
+<div class="modal admin" id="idModalAccion" tabindex="-1" role="dialog" style="width: 100%">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -57,14 +60,13 @@
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title"><fmt:message key="pedido.pagar.title"/></h4>
-			</div>
-			<div class="modal-body">
-				<p>
-					<fmt:message key="pedido.pagar.mensaje">
+				<h4 class="modal-title">
+					<fmt:message key="pedido.pagar.title">
 						<fmt:param value='${pedidoAPagar.id}'/>
 					</fmt:message>
-				</p>
+				</h4>
+			</div>
+			<div class="modal-body">
 				<div class='row'>
 			        <div class='col-sm-6'>    
 						<div class="form-group" >

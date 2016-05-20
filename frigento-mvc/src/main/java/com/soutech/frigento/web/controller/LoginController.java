@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.soutech.frigento.dto.Parametros;
+import com.soutech.frigento.util.Constantes;
 
 @Controller
 public class LoginController extends GenericController {
@@ -46,7 +47,7 @@ public class LoginController extends GenericController {
     public String handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         logger.debug("inicio - Login controller");
-        servletContext.setAttribute(Parametros.VERSION_APP, Parametros.getValor(Parametros.VERSION_APP));
+        servletContext.setAttribute(Parametros.VERSION_APP, Constantes.VERSION_APP);
         logger.debug("fin - Login controller");
         return "main";
     }

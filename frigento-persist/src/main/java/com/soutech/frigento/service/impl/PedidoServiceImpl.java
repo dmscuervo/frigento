@@ -181,5 +181,10 @@ public class PedidoServiceImpl implements PedidoService {
 		}
 	}
 
+	@Override
+	public List<Pedido> obtenerPedidosSinPagar(Short[] estado, String sortFieldName, String sortOrder) {
+		return pedidoDao.findAllSinPagar(estado, sortFieldName, sortOrder);
+	}
+
 	
 }
