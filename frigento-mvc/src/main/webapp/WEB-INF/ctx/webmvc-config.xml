@@ -11,6 +11,9 @@
 		<property name="suffix" value=".jsp"></property>        
 	</bean>
 	
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 	
 	<mvc:view-controller path="/login"/>

@@ -1,5 +1,6 @@
 package com.soutech.frigento.web.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.exception.EntityExistException;
 import com.soutech.frigento.exception.FechaDesdeException;
 import com.soutech.frigento.exception.StockAlteradoException;
@@ -32,6 +36,7 @@ import com.soutech.frigento.service.ProductoCostoService;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelPedidoProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
+import com.soutech.frigento.util.PrinterStack;
 import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 
@@ -45,22 +50,20 @@ public class ProductoController extends GenericController {
     
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));   
+         binder.registerCustomEditor(Date.class, new FormatoDateTruncateValidator(new SimpleDateFormat("dd/MM/yyyy HH:mm"), false));  
+         binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
+         binder.registerCustomEditor(MultipartFile.class, new ByteArrayMultipartFileEditor());
     }
     
     @Autowired
     public ProductoService productoService;
-    
     @Autowired
     public RelProductoCategoriaService relProductoCategoriaService;
-    
     @Autowired
     public ProductoCostoService productoCostoService;
-    
     @Autowired
     public RelPedidoProductoService relPedidoProductoService;
 
-    
     @RequestMapping(params = "alta", produces = "text/html")
     public String preAlta(Model uiModel) {
     	Producto producto = new Producto();
@@ -70,12 +73,26 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
-    public String alta(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String alta(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, @RequestParam("idImagen") MultipartFile imagen, Model uiModel, HttpServletRequest httpServletRequest) {
     	formValidator.validate(productoForm, bindingResult);
-        if (bindingResult.hasErrors()) {
+    	if (bindingResult.hasErrors()) {
+    		httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.verifique"));
         	return "producto/alta";
         }
+    	//Validaciones sobre la imagen
+    	if(imagen != null){
+    		if(imagen.getSize() > Long.valueOf(Parametros.getValor(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES))){
+    			
+    		}
+    	}
         try {
+    		try {
+				productoForm.setImagen(imagen.getBytes());
+			} catch (IOException e) {
+				httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.error"));
+				logger.error(PrinterStack.getStackTraceAsString(e));
+				return "producto/alta";
+			}
 			productoService.saveProducto(productoForm);
 		} catch (EntityExistException e) {
 			String key = "EntityExist.productoForm."+e.getField();

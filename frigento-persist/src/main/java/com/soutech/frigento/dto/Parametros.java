@@ -19,6 +19,8 @@ public class Parametros {
 	public static final String TIME_ZONE_BUENOS_AIRES = "TIME_ZONE_BUENOS_AIRES";
 	
 	public static final String TOLERANCIA_GRAMOS_PROMOCION_VTA = "TOLERANCIA_GRAMOS_PROMOCION_VTA";
+	
+	public static final String MAX_SIZE_IMAGEN_PRODUCTO_BYTES = "MAX_SIZE_IMAGEN_PRODUCTO_BYTES";
 
 	private static Map<String, String> parametros;
 	

@@ -10,15 +10,41 @@
 			locale: 'es'
         });
 	});
+	
+	function submitInBodyUploadFile(form){
+		if(!bodyBlock){
+			blockControl($('#wrapper'));
+			bodyBlock = true;				
+		}
+		var formData = new FormData(document.getElementById("idForm"));
+		$.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            dataType: "html",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+            	//Desbloqueo pantalla
+            	$('#wrapper').unblock();
+    			bodyBlock = false;
+    			//Cargo contenido
+            	$('#page-wrapper').html(result);
+    			//Levanto Modal
+    			$('#idModalMensaje').modal('show');
+            }
+        });
+	}
 </script>
 		
-<div style="width: 50%; float: left; min-width: 300px">
+<div style="width: 80%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="producto.alta.title" />
 	</h3>
 	<br />
 	<c:url var="urlAltaProducto" value="/producto/alta" />
-	<form:form action="${urlAltaProducto}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+	<form:form action="${urlAltaProducto}" method="post" class="form-horizontal" commandName="productoForm" id="idForm" enctype="multipart/form-data">
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -179,8 +205,7 @@
 			</div>
         </div>
     </div>
-    <%-- 
-	<div class='row'>
+    <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idImagen" style="white-space: nowrap;">
@@ -190,17 +215,18 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="imagen" cssClass="form-control" id="idImagen" />
+        		<input type="file" name="idImagen" id="idImagen" >
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="imagen" cssClass="form-validate" />
+        		<span class="form-validate">
+        			${mensajeImagen}
+				</span>
 			</div>
         </div>
     </div>
-    --%>
-	<div class='row'>
+    <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idPesoCaja" style="white-space: nowrap;">
@@ -245,7 +271,7 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:submitInBodyUploadFile($('#idForm'))">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
 						onclick="javascript:loadInBody('producto?estado=A&sortFieldName=descripcion&sortOrder=asc')">

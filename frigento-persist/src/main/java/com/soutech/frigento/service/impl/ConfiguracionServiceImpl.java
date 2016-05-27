@@ -124,6 +124,11 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
 			p.setParametro(Parametros.TOLERANCIA_GRAMOS_PROMOCION_VTA);
 			p.setValor("0.100");
 			parametroDao.save(p);
+			
+			p = new Parametro();
+			p.setParametro(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES);
+			p.setValor("1000000");
+			parametroDao.save(p);
 		}
 		
 		log.debug("Se finalizado la inicializacion de datos.");

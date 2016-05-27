@@ -21,6 +21,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.soutech.frigento.enums.IVAEnum;
 import com.soutech.frigento.model.annotattions.Numeric;
@@ -98,9 +99,15 @@ public class Producto implements Serializable {
     @Column(name = "FECHA_ALTA")
     private Date fechaAlta;
     
+    @Column(name="imagen")
+    private byte[] imagen;
+    
     @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=false)
     private List<Promocion> promociones;
+    
+    @Transient
+    private MultipartFile file;
     
     @Transient
     private BigDecimal importeVenta;
@@ -249,6 +256,22 @@ public class Producto implements Serializable {
 
 	public void setPromociones(List<Promocion> promociones) {
 		this.promociones = promociones;
+	}
+
+	public byte[] getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
+	}
+
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 	
 }
