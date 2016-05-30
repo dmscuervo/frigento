@@ -115,6 +115,7 @@ public class VentaController extends GenericController {
 		venta.setEstado(estados.get(0));
 		// Lo inicializo para que no falle la validación
 		venta.setImporte(BigDecimal.ZERO);
+		venta.setIncrementoIva(BigDecimal.ZERO);
 		for (RelProductoCategoria rpc : relProdCatList) {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
@@ -228,6 +229,7 @@ public class VentaController extends GenericController {
 		}
 		
 		venta.setItems(new ArrayList<ItemVentaDTO>(relProdCatList.size()));
+		venta.setConIva(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO));
 		for (RelProductoCategoria rpc : relProdCatList) {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();

@@ -244,12 +244,12 @@ public class ControlStockProducto {
 	 * @param relacionesModificadas
 	 * @param relacionesEliminadas
 	 * @param costoTotal
-	 * @return
+	 * @return BigDecimal[] con {importeTotal, importeTotalConIVA} (importeTotalConIVA sera distinto de cero si es venta con iva
 	 * @throws ProductoSinCostoException
 	 */
-	public BigDecimal verificarCambiosVenta(Venta ventaModificada, List<RelVentaProducto> relacionesActual, List<RelVentaProducto> relacionesNuevas,
+	public BigDecimal[] verificarCambiosVenta(Venta ventaModificada, List<RelVentaProducto> relacionesActual, List<RelVentaProducto> relacionesNuevas,
 									List<RelVentaProducto> relacionesModificadas, List<RelVentaProducto> relacionesEliminadas) throws ProductoSinCategoriaException {
-		BigDecimal precioTotal = null;
+		BigDecimal importes[] = null;
 		Boolean prodNuevo;
 		RelVentaProducto rvpActual;
 		for (ItemVentaDTO item : ventaModificada.getItems()) {
@@ -264,8 +264,8 @@ public class ControlStockProducto {
 				}
 				rvpActual = null;
 				prodNuevo = Boolean.TRUE;
-				//Inicializo precioTotal (solo la primera vez)
-				precioTotal = precioTotal == null ? BigDecimal.ZERO : precioTotal;
+				//Inicializo importes (solo la primera vez)
+				importes = importes == null ? new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO} : importes;
 				//Me fijo si es un producto nuevo o existente
 				for (RelVentaProducto rvp : relacionesActual) {
 					if(rvp.getRelProductoCategoria().getProducto().getId().equals(item.getProducto().getId())
@@ -292,7 +292,13 @@ public class ControlStockProducto {
 					rvp.setPromocion(item.getPromocion());
 					relacionesNuevas.add(rvp);
 					//Voy calculando el importe total de la venta
-					precioTotal = precioTotal.add(new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP));
+					BigDecimal importeTotalProducto = new BigDecimal(item.getCantidad()).multiply(item.getImporteVenta()).setScale(2, RoundingMode.HALF_UP);
+					importes[0] = importes[0].add(importeTotalProducto);
+					if(ventaModificada.getConIva()){
+						Float ivaProd = item.getProducto().getIva().getIva();
+						BigDecimal ivaProdPorc = new BigDecimal(ivaProd).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+						importes[1] = importes[1].add(importeTotalProducto.multiply(ivaProdPorc));
+					}
 
 				}else{
 					//Me fijo si cambio la cantidad
@@ -305,7 +311,13 @@ public class ControlStockProducto {
 						relacionesModificadas.add(rvpActual);
 					}
 					//Voy calculando el importe total de la venta
-					precioTotal = precioTotal.add(item.getImporteVenta().multiply(new BigDecimal(item.getCantidad())).setScale(2, RoundingMode.HALF_UP));
+					BigDecimal importeTotalProducto = item.getImporteVenta().multiply(new BigDecimal(item.getCantidad())).setScale(2, RoundingMode.HALF_UP);
+					importes[0] = importes[0].add(importeTotalProducto);
+					if(ventaModificada.getConIva()){
+						Float ivaProd = item.getProducto().getIva().getIva();
+						BigDecimal ivaProdPorc = new BigDecimal(ivaProd).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+						importes[1] = importes[1].add(importeTotalProducto.multiply(ivaProdPorc));
+					}
 				}
 				
 			}else{
@@ -321,6 +333,6 @@ public class ControlStockProducto {
 				}
 			}
 		}
-		return precioTotal;
+		return importes;
 	}
 }

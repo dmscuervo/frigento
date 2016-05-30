@@ -60,7 +60,7 @@ public class IVAEnumType implements UserType {
 			throw new HibernateException("Bad IVAEnum value in UserTyped: "
 					+ value, e);
 		}
-		st.setFloat(index, iva.getCodigo());
+		st.setFloat(index, iva.getIva());
 	}
 
 	@Override
