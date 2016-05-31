@@ -64,7 +64,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrillaUsu" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaUsu" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="usuario.nombre" /></th>

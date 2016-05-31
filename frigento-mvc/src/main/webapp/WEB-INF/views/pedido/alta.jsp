@@ -74,7 +74,7 @@
 	
 </script>
 
-<div style="width: 80%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="pedido.alta.title" />
 	</h3>
@@ -164,7 +164,7 @@
     </div>
     <div class='row' style="">
         <div class='col-sm-12'>
-			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
+			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
 			        <thead>
 			            <tr>
 			                <th style="white-space: nowrap;"><fmt:message key="pedido.item.cantidad.caja" /></th>

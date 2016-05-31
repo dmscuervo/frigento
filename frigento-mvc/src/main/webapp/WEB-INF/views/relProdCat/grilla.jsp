@@ -51,7 +51,7 @@
             url: url,
             type: 'POST',
             success: function(result) {
-            	$('#page-wrapper').html(result);
+            	$('#page-content').html(result);
             	//Controles
             	$('#idSelEstado').attr('disabled', true);
             	$('#idBtConfirmar').show();
@@ -97,7 +97,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrillaRPCa" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaRPCa" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
 	<thead>
         <tr>
             <th style="white-space: nowrap;"><fmt:message key="relProdCat.producto" /></th>

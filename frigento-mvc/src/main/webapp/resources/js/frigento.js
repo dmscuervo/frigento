@@ -15,7 +15,7 @@ function blockControl(control){
 }
 
 function showPopup(control, width, left){
-	$('#wrapper').block({
+	$('#page').block({
 		message: control, 
 		css:{border:'none',
 		backgroundColor:'#fff',
@@ -27,7 +27,7 @@ function showPopup(control, width, left){
 }
 
 function closePopup(){
-	$('#wrapper').unblock();
+	$('#page').unblock();
 }
 
 function aplicarRestriccionesInputs(divId){

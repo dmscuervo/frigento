@@ -18,7 +18,7 @@
 	
 </script>
 
-<div style="width: 80%; min-width: 300px">
+<div style="width: 100%; min-width: 300px">
 	<div style="display: table; float: left; margin: 0 auto; min-width: 50%">
 		<h3>
 			<fmt:message key="pedido.detalle.title" />

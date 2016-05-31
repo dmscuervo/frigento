@@ -88,7 +88,7 @@
             		//Hago que se refresque el contenido al ocultar el modal
 	            	$('#idModalAlta').on('hidden.bs.modal', function () {
 	    				//Cargo contenido
-	                	$('#page-wrapper').html(result);
+	                	$('#page-content').html(result);
 	    				//Controles
 	                	$('#idSelEstado').attr('disabled', true);
 	                	$('#idBtConfirmar').show();

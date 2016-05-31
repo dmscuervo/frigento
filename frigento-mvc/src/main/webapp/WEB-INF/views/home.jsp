@@ -36,7 +36,7 @@
 
     <div id="wrapper">
 			<jsp:include page="body.jsp" />
-        <!-- /#page-wrapper -->
+        <!-- /#page-content -->
     </div>
     <!-- /#wrapper -->
 </body>

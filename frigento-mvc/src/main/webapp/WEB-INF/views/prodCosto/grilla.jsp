@@ -85,7 +85,7 @@
 <c:url var="urlConfirmar" value="/prodCosto/confirmar" />
 <form:form action="${urlConfirmar}" method="post" class="form-horizontal" commandName="prodCostoForm" id="idForm" autocomplete="off">
 <form:hidden path="prodId"/>
-<div class='row' style="width: 80%">
+<div class='row' style="width: 100%">
 	<div class='col-sm-1'>
 		<div class="form-group">
 			<label class="col-sm-2 control-label" for="idCosto" style="white-space: nowrap;">
@@ -122,7 +122,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrillaRPCo" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaRPCo" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
 	<thead>
         <tr>
             <th><fmt:message key="prodCosto.categoria" /></th>

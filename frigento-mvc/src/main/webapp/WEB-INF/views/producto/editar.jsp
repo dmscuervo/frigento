@@ -17,7 +17,7 @@
 	function confirmarEdit(form){
 		
 		if(!bodyBlock){
-			blockControl($('#wrapper'));
+			blockControl($('#page'));
 			bodyBlock = true;				
 		}
 		
@@ -27,7 +27,7 @@
             data: form.serialize(),
             success: function(result) {
             	//Desbloqueo pantalla
-            	$('#wrapper').unblock();
+            	$('#page').unblock();
     			bodyBlock = false;
     			//Cargo contenido
     			//Si se requiere confirmacion, editConfirmar.jsp comienza con la etiqueta controlada a continuación 
@@ -37,10 +37,10 @@
     				$('#idModalAccion').modal('show');
     			}else{
     				//Desbloqueo pantalla
-                	$('#wrapper').unblock();
+                	$('#page').unblock();
         			bodyBlock = false;
         			//Cargo contenido
-                	$('#page-wrapper').html(result);
+                	$('#page-content').html(result);
         			//Levanto Modal
         			$('#idModalMensaje').modal('show');
     			}
@@ -50,7 +50,7 @@
 
 </script>
 
-<div style="width: 50%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="producto.editar.title" />
 	</h3>

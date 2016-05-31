@@ -13,7 +13,7 @@
 	
 	function submitInBodyUploadFile(form){
 		if(!bodyBlock){
-			blockControl($('#wrapper'));
+			blockControl($('#page'));
 			bodyBlock = true;				
 		}
 		var formData = new FormData(document.getElementById("idForm"));
@@ -27,10 +27,10 @@
             processData: false,
             success: function(result) {
             	//Desbloqueo pantalla
-            	$('#wrapper').unblock();
+            	$('#page').unblock();
     			bodyBlock = false;
     			//Cargo contenido
-            	$('#page-wrapper').html(result);
+            	$('#page-content').html(result);
     			//Levanto Modal
     			$('#idModalMensaje').modal('show');
             }
@@ -38,7 +38,7 @@
 	}
 </script>
 		
-<div style="width: 80%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="producto.alta.title" />
 	</h3>

@@ -30,7 +30,7 @@
 			
 </script>
 
-<div style="width: 80%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="producto.grilla.title" />
 </h3>
@@ -52,7 +52,7 @@
 		</div>
 	</div>
 </div>
-<table id="idGrillaProd" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
+<table id="idGrillaProd" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="producto.codigo" /></th>

@@ -173,7 +173,7 @@
     </div>
     <div class='row'>
         <div class='col-sm-12'>
-			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 70%">
+			<table id="idGrillaItems" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
 			        <thead>
 			            <tr>
 			                <th style="white-space: nowrap;"><fmt:message key="venta.item.cantidad.kg" /></th>

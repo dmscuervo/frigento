@@ -19,7 +19,7 @@
 			
 </script>
 
-<div style="width: 80%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="venta.grilla.title" />
 </h3>

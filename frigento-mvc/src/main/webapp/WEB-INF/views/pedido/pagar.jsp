@@ -44,7 +44,7 @@
 			var url = '${pathBase}' + 'pedido/pagar/'+moment($('#idFechaPago').val(),'DD/MM/YYYY HH:mm')+'/'+indices;
 			$.post(url, function(result){
 				//Cargo contenido
-            	$('#page-wrapper').html(result);
+            	$('#page-content').html(result);
 			});
 		});
 		$('#idModalAccion').modal('hide');

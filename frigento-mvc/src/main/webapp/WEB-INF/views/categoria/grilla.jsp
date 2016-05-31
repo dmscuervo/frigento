@@ -24,7 +24,7 @@
 <p class="form-validate">
 	${msgError}
 </p>
-<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 80%">
+<table id="idGrillaCat" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="categoria.descripcion" /></th>

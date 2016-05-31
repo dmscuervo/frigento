@@ -1,7 +1,6 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

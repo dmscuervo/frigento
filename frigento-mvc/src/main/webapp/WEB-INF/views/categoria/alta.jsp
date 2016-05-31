@@ -16,7 +16,7 @@
 </script>
 
 
-<div style="width: 50%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="categoria.alta.title" />
 	</h3>

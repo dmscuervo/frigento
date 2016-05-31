@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<div style="width: 50%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="usuario.alta.title" />
 	</h3>

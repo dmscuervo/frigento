@@ -89,7 +89,7 @@
 		indices = indices.substring(0, indices.length-1);
 		
 		if(!bodyBlock){
-			blockControl($('#wrapper'));
+			blockControl($('#page'));
 			bodyBlock = true;				
 		}
 		
@@ -103,7 +103,7 @@
             		var obj = JSON.parse(result);
             		$('#msgError').html(obj.mensajeGenerico);
 	            	//Desbloqueo pantalla
-	            	$('#wrapper').unblock();
+	            	$('#page').unblock();
 	    			bodyBlock = false;
             		return;
             	}
@@ -111,10 +111,10 @@
 					var url = '${pathBase}' + 'planilla/cliente/generar/'+indices;
 					window.location=url;
 					//Desbloqueo pantalla
-	            	$('#wrapper').unblock();
+	            	$('#page').unblock();
 	    			bodyBlock = false;
 	    			//Cargo contenido
-                	//$('#page-wrapper').html(result);
+                	//$('#page-content').html(result);
             	}
             }
         });
@@ -122,7 +122,7 @@
 
 </script>
 
-<div style="width: 80%; float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="planilla.cliente.title" />
 	</h3>
