@@ -26,4 +26,5 @@ public class Constantes {
 	
 	public static final Float IVA_105 = 10.5f;
 	public static final Float IVA_21 = 21f;
+
 }

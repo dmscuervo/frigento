@@ -1,6 +1,7 @@
 package com.soutech.frigento.web.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.soutech.frigento.dto.Parametros;
+import com.soutech.frigento.model.RelProductoCategoria;
+import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
 
 @Controller
@@ -28,6 +31,8 @@ public class LoginController extends GenericController {
 	protected final Log logger = LogFactory.getLog(getClass());
 	@Autowired
     private ServletContext servletContext;
+	@Autowired
+    public RelProductoCategoriaService relProductoCategoriaService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage() {
@@ -40,7 +45,7 @@ public class LoginController extends GenericController {
         if (auth != null){    
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/login?logout";
+        return "redirect:/home?logout";
     }
 	
 	@RequestMapping(value="/home")
@@ -48,6 +53,14 @@ public class LoginController extends GenericController {
             throws ServletException, IOException {
         logger.debug("inicio - Login controller");
         servletContext.setAttribute(Parametros.VERSION_APP, Constantes.VERSION_APP);
+        Short idCat;
+        try{
+        	idCat = new Short(Parametros.getValor(Parametros.CATEGORIA_ID_VENTA_ONLINE));
+        }catch(Exception e){
+        	throw new RuntimeException(getMessage("mensaje.error.parametro", Parametros.CATEGORIA_ID_VENTA_ONLINE));
+        }
+		List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoria(idCat , Constantes.ESTADO_REL_VIGENTE, new String[]{"incremento * r.producto.costoActual"}, new String[]{"asc"});
+		request.setAttribute("rpcListOnline", rpcList);
         logger.debug("fin - Login controller");
         return "main";
     }
