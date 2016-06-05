@@ -5,6 +5,8 @@
 	$(document).ready(function() {
 		if(!$.fn.DataTable.isDataTable('#idGrillaUsu')){
 		    $('#idGrillaUsu').DataTable({
+		    	scrollX: 		true,
+   		        scrollCollapse: true,
 	    		"columnDefs": [
 		                       { "orderable": false, "targets": -1 }
 		                     ]
@@ -39,7 +41,7 @@
 			
 </script>
 
-<div style="float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="usuario.grilla.title" />
 </h3>
