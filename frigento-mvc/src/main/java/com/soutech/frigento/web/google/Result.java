@@ -9,6 +9,7 @@ public class Result implements Serializable{
 	private Address[] address_components;
 	private String formatted_address;
 	private Geometry geometry;
+	private Boolean partial_match;
 	private String place_id;
 	private String[] types;
 	
@@ -23,6 +24,13 @@ public class Result implements Serializable{
 	}
 	public void setFormatted_address(String formatted_address) {
 		this.formatted_address = formatted_address;
+	}
+	
+	public Boolean getPartial_match() {
+		return partial_match;
+	}
+	public void setPartial_match(Boolean partial_match) {
+		this.partial_match = partial_match;
 	}
 	public Geometry getGeometry() {
 		return geometry;

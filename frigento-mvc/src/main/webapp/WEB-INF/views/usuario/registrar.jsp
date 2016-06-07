@@ -93,7 +93,7 @@
 				<form:input path="depto" cssClass="form-control" id="idDepto" />
 			</div>
 			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<label class="control-label" for="idApellido">
+				<label class="control-label" for="idApellido" style="font-weight: normal;">
 					<fmt:message key="usuario.apellido" />
 				</label>
 				<form:input path="apellido" cssClass="form-control" id="idApellido" />
