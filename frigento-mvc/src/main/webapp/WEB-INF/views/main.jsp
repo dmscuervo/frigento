@@ -57,6 +57,31 @@
             });
     	}
     	
+    	function loadInPopUp(path){
+    		var url = '${pathBase}' + path;
+    		$('#idModalPopUpContent').load(url, function(data){
+    			$('#idModalPopUp').modal('show');
+    		});
+    	}
+    	
+    	function submitInPopUp(form){
+    		blockControl($('#idModalPopUpContent'));
+			
+    		$.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(result) {
+                	//Desbloqueo pantalla
+                	$('#idModalPopUpContent').unblock();
+        			//Cargo contenido
+                	$('#idModalPopUpContent').html(result);
+        			//Levanto Modal
+        			//$('#idModalPopUp').modal('show');
+                }
+            });
+    	}
+    	
     </script>
 
 </head>
@@ -89,7 +114,7 @@
 	                     <a href="#">About</a>
 	                 </li>
 	                 <li>
-	                     <a href="#">Services</a>
+	                     <a href="javascript:loadInPopUp('usuario?registrar')">Registrarse</a>
 	                 </li>
 	    <sec:authorize access="!isAuthenticated()">
 	                 <li>
@@ -129,6 +154,11 @@
 				<td style="FONT-FAMILY: Arial,Verdana;font-size: 12px; font-weight: bold; vertical-align: middle;">Procesando ...</td>
 			</tr>
 		</table>
+	</div>
+	<div class="modal fade" id="idModalPopUp" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" id="idModalPopUpContent"></div>
+		</div>
 	</div>
 </body>
 </html>

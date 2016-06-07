@@ -35,7 +35,7 @@ import com.soutech.frigento.web.dto.reports.ColumnPrecioConIvaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnReporteDTO;
 import com.soutech.frigento.web.dto.reports.PlanillaClienteDTO;
 import com.soutech.frigento.web.reports.ReportePresupuestoManager;
-import com.soutech.frigento.web.validator.ErrorJSONHandler;
+import com.soutech.frigento.web.validator.JSONHandler;
 
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 
@@ -55,7 +55,7 @@ public class PlanillaController extends GenericController {
     @Autowired
     private ReportePresupuestoManager reportePresupuestoManager;
     @Autowired
-    private ErrorJSONHandler errorJSONHandler;
+    private JSONHandler jSONHandler;
     
     @RequestMapping(value = "/cliente", params = "filtro", produces = "text/html")
     public String filtroCliente(Model uiModel) {
@@ -184,7 +184,7 @@ public class PlanillaController extends GenericController {
 			}
     		
     	}catch(Exception e){
-    		String json = errorJSONHandler.getMensajeGenericoJSON(getMessage("mensaje.error.generico"));
+    		String json = jSONHandler.getMensajeGenericoJSON(getMessage("mensaje.error.generico"));
     		uiModel.addAttribute("messageAjax", json);
     		return "ajax/value";
     	}

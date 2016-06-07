@@ -23,6 +23,7 @@ public class Parametros {
 	public static final String MAX_SIZE_IMAGEN_PRODUCTO_BYTES = "MAX_SIZE_IMAGEN_PRODUCTO_BYTES";
 	
 	public static final String CATEGORIA_ID_VENTA_ONLINE = "CATEGORIA_ID_VENTA_ONLINE";
+	public static final String KEY_GOOGLE_UBICACION = "KEY_GOOGLE_UBICACION";
 
 	private static Map<String, String> parametros;
 	

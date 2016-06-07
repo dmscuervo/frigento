@@ -34,6 +34,9 @@ public class ServletInitializer extends HttpServlet {
 		logger.info("Se cargan los parametros del sistema.");
 		configuracionService.cargarParametros();
 		
+		logger.info("Se cargan las localidades del sistema.");
+		configuracionService.cargarLocalidades();
+		
 		logger.debug("Establezco el TimeZone de la app en America/Buenos_Aires");
 		TimeZone timeZone = TimeZone.getTimeZone(Parametros.getValor(Parametros.TIME_ZONE_BUENOS_AIRES));
 		TimeZone.setDefault(timeZone);

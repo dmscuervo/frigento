@@ -30,13 +30,15 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = -1039096380771137501L;
 
 	@NotNull
+    @NotEmpty
     @Column(name = "username")
     @Size(max = 50)
     private String username;
 	
-	@NotNull
-	@Column(name = "password")
-    @Size(min = 64, max = 64)
+//	@NotNull
+//    @NotEmpty
+//    @Size(min = 64, max = 64)
+    @Column(name = "password")
     private String password;
 	
 	@NotNull
@@ -70,10 +72,13 @@ public class Usuario implements Serializable {
     @Size(max = 15)
     private String celular;
 
+    @NotNull
+    @NotEmpty
     @Column(name = "CALLE")
     @Size(max = 30)
     private String calle;
 
+    @NotNull
     @Column(name = "ALTURA")
     private Short altura;
 
@@ -81,7 +86,8 @@ public class Usuario implements Serializable {
     @Size(max = 10)
     private String depto;
     
-    @Email(regexp="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}|^$")//Acepta formato de mails y string vacios (mediante |^$) ya que no es obligatorio
+    @NotNull
+    @Email(regexp="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
     @Column(name = "EMAIL")
     @Size(max = 30)
     private String email;
@@ -96,8 +102,23 @@ public class Usuario implements Serializable {
     @Column(name = "ID_USUARIO")
     private Integer id;
 	
+	@NotNull
+    @ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name = "ID_LOCALIDAD")
+    private Localidad localidad;
+	
+	@NotNull
+    @Column(name = "DISTANCIA")
+    private Integer distancia;
+	
 	@Transient
 	private String identificadoWeb;
+	
+	@Transient
+//	@NotNull
+//    @NotEmpty
+//    @Size(min = 64, max = 64)
+    private String passwordReingresada;
 
 	public Integer getId() {
         return this.id;
@@ -229,6 +250,30 @@ public class Usuario implements Serializable {
 
 	public void setIdentificadoWeb(String identificadoWeb) {
 		this.identificadoWeb = identificadoWeb;
+	}
+
+	public String getPasswordReingresada() {
+		return passwordReingresada;
+	}
+
+	public void setPasswordReingresada(String passwordReingresada) {
+		this.passwordReingresada = passwordReingresada;
+	}
+
+	public Localidad getLocalidad() {
+		return localidad;
+	}
+
+	public void setLocalidad(Localidad localidad) {
+		this.localidad = localidad;
+	}
+
+	public Integer getDistancia() {
+		return distancia;
+	}
+
+	public void setDistancia(Integer distancia) {
+		this.distancia = distancia;
 	}
 	
 }

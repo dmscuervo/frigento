@@ -10,12 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.soutech.frigento.dao.EstadoDao;
+import com.soutech.frigento.dao.LocalidadDao;
 import com.soutech.frigento.dao.ParametroDao;
 import com.soutech.frigento.dao.RolDao;
 import com.soutech.frigento.dao.UsuarioDao;
+import com.soutech.frigento.dto.LocalidadesDTO;
 import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.enums.TipoEstadoEnum;
 import com.soutech.frigento.model.Estado;
+import com.soutech.frigento.model.Localidad;
 import com.soutech.frigento.model.Parametro;
 import com.soutech.frigento.model.Rol;
 import com.soutech.frigento.model.Usuario;
@@ -36,6 +39,10 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
 	private ParametroDao parametroDao;
 	@Autowired
 	private Parametros parametros;
+	@Autowired
+	private LocalidadDao localidadDao;
+	@Autowired
+	private LocalidadesDTO localidades;
 	
 	@Override
 	@Transactional
@@ -146,4 +153,13 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
 		parametros.setParametros(valores);
 	}
 
+	@Override
+	public void cargarLocalidades() {
+		List<Localidad> findAll = localidadDao.findAll();
+		Map<Short, String> valores = new HashMap<Short, String>();
+		for (Localidad localidad : findAll) {
+			valores.put(localidad.getId(), localidad.getNombre());
+		}
+		localidades.setLocalidades(valores);
+	}
 }

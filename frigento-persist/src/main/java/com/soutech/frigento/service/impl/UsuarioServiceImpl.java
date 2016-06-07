@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.soutech.frigento.dao.UsuarioDao;
 import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.service.UsuarioService;
+import com.soutech.frigento.util.Encriptador;
 import com.soutech.frigento.util.Utils;
 
 @Service
@@ -22,6 +23,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if(usuario.getCategoriaProducto().getId() == null){
 			usuario.setCategoriaProducto(null);
 		}
+		usuario.setPassword(Encriptador.encriptarPassword(usuario.getPassword()));
 		usuarioDao.save(usuario);
 	}
 

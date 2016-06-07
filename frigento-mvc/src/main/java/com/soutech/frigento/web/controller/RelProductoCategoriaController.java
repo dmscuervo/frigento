@@ -47,7 +47,7 @@ import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.service.RelVentaProductoService;
 import com.soutech.frigento.util.Constantes;
 import com.soutech.frigento.util.Utils;
-import com.soutech.frigento.web.validator.ErrorJSONHandler;
+import com.soutech.frigento.web.validator.JSONHandler;
 import com.soutech.frigento.web.validator.FormatoDateTruncateValidator;
 import com.soutech.frigento.web.validator.obj.RelProdCatErroresView;
 
@@ -75,7 +75,7 @@ public class RelProductoCategoriaController extends GenericController {
     @Autowired
     private ProductoCostoService productoCostoService;
     @Autowired
-    private ErrorJSONHandler errorJSONHandler;
+    private JSONHandler jSONHandler;
     @Autowired
     private ProductoService productoService;
     @Autowired
@@ -113,7 +113,7 @@ public class RelProductoCategoriaController extends GenericController {
     		if(relProdCatForm.getFechaDesde() != null && pc != null && relProdCatForm.getFechaDesde().before(pc.getFechaDesde())){
     			errorView.setFechaDesde(getMessage("relProdCatForm.fechaDesde.anterior", sdf_desde_hasta.format(pc.getFechaDesde())));
     		}
-    		String json = errorJSONHandler.getJSON(errorView, bindingResult);
+    		String json = jSONHandler.getJSON(errorView, bindingResult);
     		uiModel.addAttribute("messageAjax", json);
         	return "ajax/value";
         }
@@ -181,7 +181,7 @@ public class RelProductoCategoriaController extends GenericController {
     	if (bindingResult.hasErrors()) {
     		if(bindingResult.getErrorCount() != 1 || !bindingResult.getFieldError().getField().equals("fechaHasta")){
     			RelProdCatErroresView errorView = new RelProdCatErroresView();
-    			String json = errorJSONHandler.getJSON(errorView, bindingResult);
+    			String json = jSONHandler.getJSON(errorView, bindingResult);
     			uiModel.addAttribute("messageAjax", json);
     			return "ajax/value";
     		}

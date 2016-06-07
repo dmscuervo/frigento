@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soutech.frigento.util.PrinterStack;
 
 @Component
-public class ErrorJSONHandler {
+public class JSONHandler {
 	
 	Logger log = Logger.getLogger(this.getClass());
 	@Autowired
@@ -54,7 +54,7 @@ public class ErrorJSONHandler {
 		}
 		return json;
 	}
-
+	
 	private void setValue(Object errorView, String campo, String keyMsg) {
 		PropertyDescriptor[] propertyDescriptors;
 		try {
