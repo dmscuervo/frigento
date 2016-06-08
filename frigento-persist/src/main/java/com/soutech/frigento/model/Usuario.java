@@ -110,9 +110,6 @@ public class Usuario implements Serializable {
 	
 	@Transient
     private String passwordReingresada;
-	
-	@Transient
-    private String captchaCode;
 
 	public Integer getId() {
         return this.id;
@@ -270,12 +267,4 @@ public class Usuario implements Serializable {
 		this.distancia = distancia;
 	}
 
-	public String getCaptchaCode() {
-		return captchaCode;
-	}
-
-	public void setCaptchaCode(String captchaCode) {
-		this.captchaCode = captchaCode;
-	}
-	
 }

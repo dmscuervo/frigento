@@ -182,15 +182,15 @@ public class UsuarioController extends GenericController {
     public String registrar(@Valid @ModelAttribute("registracionForm") Usuario registracionForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	logger.debug("Comienza registración");
         if (bindingResult.hasErrors()) {
-        	return "usuario/registrar";
+        	return "usuario/registrarForm";
         }
         
-        Captcha captcha = Captcha.load(httpServletRequest, "exampleCaptcha");
-        boolean isHuman = captcha.validate(registracionForm.getCaptchaCode());
-        if(!isHuman){
-        	bindingResult.rejectValue("captchaCode", "registracion.error.captchaCode");
-        	return "usuario/registrar";
-        }
+//        Captcha captcha = Captcha.load(httpServletRequest, "exampleCaptcha");
+//        boolean isHuman = captcha.validate(registracionForm.getCaptchaCode());
+//        if(!isHuman){
+//        	bindingResult.rejectValue("captchaCode", "registracion.error.captchaCode");
+//        	return "usuario/registrar";
+//        }
         
         Boolean usarGoogle = Boolean.parseBoolean(Parametros.getValor(Parametros.USAR_SERVICIOS_GOOGLE));
         if(usarGoogle){
@@ -204,21 +204,21 @@ public class UsuarioController extends GenericController {
 				logger.info("Error al invocar el servicio google geocode.");
 				logger.error(PrinterStack.getStackTraceAsString(e));
 				bindingResult.rejectValue("calle", "registracion.error.localidad");
-	        	return "usuario/registrar";
+	        	return "usuario/registrarForm";
 			}
 			
 			logger.info("Chequeo si el domicilio es unico dentro de CABA");
 			Boolean esUnica = googleServicesHandler.esDirecciónUnica(geocode);
 			if(!esUnica){
 				bindingResult.rejectValue("calle", "registracion.error.localidad.ambigua");
-	        	return "usuario/registrar";
+	        	return "usuario/registrarForm";
 			}
 			
 			logger.info("Chequeo si el domicilio corresponde a CABA");
 	        Boolean esCABA = googleServicesHandler.esCABA(geocode);
 	        if(!esCABA){
 	        	bindingResult.rejectValue("calle", "registracion.error.localidad");
-	        	return "usuario/registrar";
+	        	return "usuario/registrarForm";
 	        }
 	        String localidad = googleServicesHandler.getLocalidad(geocode);
 	        String urlDistance = googleServicesHandler.urlDistance.replace("{0}", registracionForm.getCalle().replaceAll(" ", "+")).replace("{1}", registracionForm.getAltura().toString());
@@ -230,7 +230,7 @@ public class UsuarioController extends GenericController {
 				logger.info("Error al invocar el servicio google geocode.");
 				logger.error(PrinterStack.getStackTraceAsString(e));
 				bindingResult.rejectValue("calle", "registracion.error.localidad");
-	        	return "usuario/registrar";
+	        	return "usuario/registrarForm";
 			}
 	        Integer metros = googleServicesHandler.getDistancia(distance);
 	        
@@ -246,10 +246,10 @@ public class UsuarioController extends GenericController {
 			usuarioService.registrarUsuario(registracionForm);
 		} catch (UserNameExistenteException e) {
 			bindingResult.rejectValue("username", e.getKeyMessage());
-        	return "usuario/registrar";
+        	return "usuario/registrarForm";
 		} catch (EmailExistenteException e) {
 			bindingResult.rejectValue("email", e.getKeyMessage());
-        	return "usuario/registrar";
+        	return "usuario/registrarForm";
 		}
         uiModel.asMap().clear();
         logger.debug("Fin de registración");

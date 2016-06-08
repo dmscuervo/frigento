@@ -66,8 +66,9 @@
     	
     	function submitInPopUp(form){
     		blockControl($('#idModalPopUpContent'));
-			
-    		$.ajax({
+    		console.log(form.attr('action'));
+    		console.log(form.serialize());
+			$.ajax({
                 url: form.attr('action'),
                 type: 'POST',
                 data: form.serialize(),
@@ -76,6 +77,23 @@
                 	$('#idModalPopUpContent').unblock();
         			//Cargo contenido
                 	$('#idModalPopUpContent').html(result);
+        			//Levanto Modal
+        			//$('#idModalPopUp').modal('show');
+                }
+            });
+    	}
+    	
+    	function submitInPopUpRegistrar(action, data){
+    		blockControl($('#idModalPopUpContent'));
+			$.ajax({
+                url: action,
+                type: 'POST',
+                data: data,
+                success: function(result) {
+                	//Desbloqueo pantalla
+                	$('#idModalPopUpContent').unblock();
+        			//Cargo contenido
+                	$('#contentBody').html(result);
         			//Levanto Modal
         			//$('#idModalPopUp').modal('show');
                 }
