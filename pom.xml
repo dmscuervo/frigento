@@ -114,6 +114,11 @@
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
         </repository>
+		<repository>
+			<id>captcha</id>
+			<name>BotDetect Captcha Repository</name>
+			<url>https://git.captcha.com/maven.git/blob_plain/HEAD:/</url>
+		</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

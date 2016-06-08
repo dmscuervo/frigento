@@ -18,10 +18,10 @@ public class PasswordValidator implements Validator {
 	public void validate(Object arg0, Errors arg1) {
 		Usuario usu = (Usuario)arg0;
 		if(usu.getPassword() == null || usu.getPassword().equals("")){
-			arg1.rejectValue("password", "NotEmpty.usuarioForm.password");
+			arg1.rejectValue("password", "NotNull.registracionForm.password");
 		}
 		if(usu.getPasswordReingresada() == null || usu.getPasswordReingresada().equals("")){
-			arg1.rejectValue("passwordReingresada", "NotEmpty.usuarioForm.password");
+			arg1.rejectValue("passwordReingresada", "NotNull.registracionForm.password");
 		}
 		//Si ya tienen errores salgo
 		if(arg1.getFieldError("password") != null
@@ -30,16 +30,16 @@ public class PasswordValidator implements Validator {
 		}
 		
 		if(!usu.getPassword().equals(usu.getPasswordReingresada())){
-			arg1.rejectValue("password", "usuario.error.password.diferente");
-			arg1.rejectValue("passwordReingresada", "usuario.error.password.diferente");
+			arg1.rejectValue("password", "registracion.error.password.diferente");
+			arg1.rejectValue("passwordReingresada", "registracion.error.password.diferente");
 			return;
 		}
 		
 		if(usu.getPassword().length() < 6 || usu.getPassword().length() > 15){
-			arg1.rejectValue("password", "usuario.error.password.tamanio");
+			arg1.rejectValue("password", "registracion.error.password.tamanio");
 		}
 		if(usu.getPasswordReingresada().length() < 6 || usu.getPasswordReingresada().length() > 15){
-			arg1.rejectValue("passwordReingresada", "usuario.error.password.tamanio");
+			arg1.rejectValue("passwordReingresada", "registracion.error.password.tamanio");
 		}
 	}
 

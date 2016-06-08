@@ -24,6 +24,7 @@ public class Parametros {
 	
 	public static final String CATEGORIA_ID_VENTA_ONLINE = "CATEGORIA_ID_VENTA_ONLINE";
 	public static final String KEY_GOOGLE_UBICACION = "KEY_GOOGLE_UBICACION";
+	public static final String USAR_SERVICIOS_GOOGLE = "USAR_SERVICIOS_GOOGLE";
 
 	private static Map<String, String> parametros;
 	

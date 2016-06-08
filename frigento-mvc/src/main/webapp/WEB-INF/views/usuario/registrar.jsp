@@ -1,5 +1,35 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="botDetect" uri="botDetect"%>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		if($('#idHayErrores').val() > 0){
+			$('#idMsgErrorGral').text('<fmt:message key="registracion.error.mensaje.generico" />');
+		}
+		
+		//Aplico restricciones
+		$('#idAltura').keyup(function(){
+			var value=$(this).val();
+			 value=value.replace(/([^0-9]*)/g, "");
+			$(this).val(value);
+		});
+		
+		verificarCaptcha();
+		
+		$('#idCaptchaCode').on('keyup', function(){
+			verificarCaptcha();
+		});
+	});
+	
+	function verificarCaptcha(){
+		if($('#idCaptchaCode').val() == ''){
+			$('#idBtSubmit').prop('disabled', true);
+		}else{
+			$('#idBtSubmit').prop('disabled', false);
+		}
+	}
+</script>
 
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal"
@@ -8,16 +38,19 @@
 	</button>
 	<h3 class="modal-title"><fmt:message key="usuario.registrar.title" /></h3>
 </div>
-<div class="modal-body" style="height: 75%; overflow: auto;">
-	<c:url var="urlRegistrar" value="/usuario/registrar" />
-	<form:form action="${urlRegistrar}" method="post" commandName="usuarioForm" id="idForm">
+<c:url var="urlRegistrar" value="/usuario/registrar" />
+<form:form action="${urlRegistrar}" method="post" commandName="registracionForm" id="idForm">
+<div class="modal-body" style="height: 60%; overflow: auto;">
 	<form:hidden path="esAdmin"/>
 	<form:hidden path="habilitado"/>
 	<form:hidden path="localidad.id"/>
 	<form:hidden path="categoriaProducto.id"/>
 	<form:hidden path="distancia"/>
+		<spring:hasBindErrors name="registracionForm">
+			<input type="hidden" id="idHayErrores" value="${fn:length(errors.allErrors)}"/>
+		</spring:hasBindErrors>
 		<fieldset>
-			<legend style="font-size: 16px; font-weight: bold; color: #a94442"><fmt:message key="datos.obligatorios" /></legend>
+			<legend style="font-size: 16px; font-weight: bold; color: #a94442"><fmt:message key="datos.obligatorios" />&nbsp;<label id="idMsgErrorGral"></label></legend>
 			<spring:bind path="username">
 			<c:set var="usernameHasBindError">
 				<form:errors path="username"/>
@@ -52,9 +85,12 @@
 			</div>
 			</spring:bind>
 			<spring:bind path="nombre">
+			<c:set var="nombreHasBindError">
+				<form:errors path="nombre"/>
+			</c:set>
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<label class="control-label" for="idNombre">
-					<fmt:message key="usuario.nombre" />
+					<fmt:message key="usuario.nombre" />&nbsp;${nombreHasBindError}
 				</label>
 				<form:input path="nombre" cssClass="form-control" id="idNombre" />
 			</div>
@@ -82,9 +118,12 @@
 			</div>
 			</spring:bind>
 			<spring:bind path="altura">
+			<c:set var="alturaHasBindError">
+				<form:errors path="altura"/>
+			</c:set>
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<label class="control-label" for="idAltura">
-					<fmt:message key="usuario.altura" />
+					<fmt:message key="usuario.altura" />&nbsp;${alturaHasBindError}
 				</label>
 				<form:input path="altura" cssClass="form-control" id="idAltura" />
 			</div>
@@ -123,12 +162,25 @@
 				<form:input path="cuitCuil" cssClass="form-control" id="idCuitCuil" />
 			</div>
 		</fieldset>
-	</form:form>
 </div>
-<div class="modal-footer">
-	<input type="button" class="btn btn-default btn-primary"
+<div class="modal-footer" style="text-align: right;">
+	<fieldset>
+		<legend style="font-size: 12px; font-weight: bold; color: #337ab7; text-align: left;"><fmt:message key="usuario.registrar.captcha" /></legend>
+		<div class="row">
+	        <div class="col-sm-4"><botDetect:captcha id="exampleCaptcha"/></div>
+			<spring:bind path="captchaCode">
+				<c:set var="captchaCodeHasBindError">
+					<form:errors path="captchaCode"/>
+				</c:set>
+	        <div class="col-sm-4 col-md-offset-4"><form:input path="captchaCode" cssClass="form-control" id="idCaptchaCode" /></div>
+	        </spring:bind>
+		</div>
+	</fieldset>
+	<label style="font-size: 16px; font-weight: bold; color: #a94442">${captchaCodeHasBindError}</label>
+	<input type="button" class="btn btn-default btn-primary" id="idBtSubmit"
 		value='<fmt:message key="boton.aceptar"/>'
 		onclick="javascript:submitInPopUp($('#idForm'))">
 	<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 </div>
+</form:form>
 

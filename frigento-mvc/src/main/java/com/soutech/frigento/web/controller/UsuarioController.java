@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.captcha.botdetect.web.servlet.Captcha;
 import com.soutech.frigento.dto.LocalidadesDTO;
 import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.exception.EmailExistenteException;
@@ -48,7 +50,8 @@ public class UsuarioController extends GenericController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder){
-         binder.addValidators(new PasswordValidator());   
+         binder.addValidators(new PasswordValidator());
+         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
     
     @Secured({"ROLE_ADMIN"})    
@@ -170,62 +173,77 @@ public class UsuarioController extends GenericController {
 		Categoria categoria = new Categoria();
 		categoria.setId(new Short(Parametros.getValor(Parametros.CATEGORIA_ID_VENTA_ONLINE)));
 		usuario.setCategoriaProducto(categoria);
-    	uiModel.addAttribute("usuarioForm", usuario);
+    	uiModel.addAttribute("registracionForm", usuario);
     	
     	return "usuario/registrar";
     }
     
     @RequestMapping(value = "/registrar", method = RequestMethod.POST, produces = "text/html")
-    public String registrar(@Valid @ModelAttribute("usuarioForm") Usuario usuarioForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String registrar(@Valid @ModelAttribute("registracionForm") Usuario registracionForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	logger.debug("Comienza registración");
         if (bindingResult.hasErrors()) {
         	return "usuario/registrar";
         }
-        logger.info("Comienzo geocodificacion");
-        //Obtengo geolocation
-        String url = googleServicesHandler.urlGeocode.replace("{0}", usuarioForm.getCalle().replaceAll(" ", "+")).replace("{1}", usuarioForm.getAltura().toString());
-        GoogleGeocode geocode = null;
-		try {
-			geocode = googleServicesHandler.invocarURL(url, GoogleGeocode.class);
-		} catch (Exception e) {
-			logger.info("Error al invocar el servicio google geocode.");
-			logger.error(PrinterStack.getStackTraceAsString(e));
-			bindingResult.rejectValue("calle", "usuario.error.localidad");
-        	return "usuario/registrar";
-		}
-		
-		logger.info("Chequeo si el domicilio es unico dentro de CABA");
-		Boolean esUnica = googleServicesHandler.esDirecciónUnica(geocode);
-		if(!esUnica){
-			bindingResult.rejectValue("calle", "usuario.error.localidad.ambigua");
-        	return "usuario/registrar";
-		}
-		
-		logger.info("Chequeo si el domicilio corresponde a CABA");
-        Boolean esCABA = googleServicesHandler.esCABA(geocode);
-        if(!esCABA){
-        	bindingResult.rejectValue("calle", "usuario.error.localidad");
+        
+        Captcha captcha = Captcha.load(httpServletRequest, "exampleCaptcha");
+        boolean isHuman = captcha.validate(registracionForm.getCaptchaCode());
+        if(!isHuman){
+        	bindingResult.rejectValue("captchaCode", "registracion.error.captchaCode");
         	return "usuario/registrar";
         }
-        String localidad = googleServicesHandler.getLocalidad(geocode);
-        String urlDistance = googleServicesHandler.urlDistance.replace("{0}", usuarioForm.getCalle().replaceAll(" ", "+")).replace("{1}", usuarioForm.getAltura().toString());
-        GoogleDistance distance = null;
-		try {
-			logger.info("Obtengo distancia en metros");
-			distance = googleServicesHandler.invocarURL(urlDistance, GoogleDistance.class);
-		} catch (Exception e) {
-			logger.info("Error al invocar el servicio google geocode.");
-			logger.error(PrinterStack.getStackTraceAsString(e));
-			bindingResult.rejectValue("calle", "usuario.error.localidad");
-        	return "usuario/registrar";
-		}
-        Integer metros = googleServicesHandler.getDistancia(distance);
         
-        usuarioForm.setLocalidad(LocalidadesDTO.getLocalidad(localidad));
-        usuarioForm.setDistancia(metros);
+        Boolean usarGoogle = Boolean.parseBoolean(Parametros.getValor(Parametros.USAR_SERVICIOS_GOOGLE));
+        if(usarGoogle){
+	        logger.info("Comienzo geocodificacion");
+	        //Obtengo geolocation
+	        String url = googleServicesHandler.urlGeocode.replace("{0}", registracionForm.getCalle().replaceAll(" ", "+")).replace("{1}", registracionForm.getAltura().toString());
+	        GoogleGeocode geocode = null;
+			try {
+				geocode = googleServicesHandler.invocarURL(url, GoogleGeocode.class);
+			} catch (Exception e) {
+				logger.info("Error al invocar el servicio google geocode.");
+				logger.error(PrinterStack.getStackTraceAsString(e));
+				bindingResult.rejectValue("calle", "registracion.error.localidad");
+	        	return "usuario/registrar";
+			}
+			
+			logger.info("Chequeo si el domicilio es unico dentro de CABA");
+			Boolean esUnica = googleServicesHandler.esDirecciónUnica(geocode);
+			if(!esUnica){
+				bindingResult.rejectValue("calle", "registracion.error.localidad.ambigua");
+	        	return "usuario/registrar";
+			}
+			
+			logger.info("Chequeo si el domicilio corresponde a CABA");
+	        Boolean esCABA = googleServicesHandler.esCABA(geocode);
+	        if(!esCABA){
+	        	bindingResult.rejectValue("calle", "registracion.error.localidad");
+	        	return "usuario/registrar";
+	        }
+	        String localidad = googleServicesHandler.getLocalidad(geocode);
+	        String urlDistance = googleServicesHandler.urlDistance.replace("{0}", registracionForm.getCalle().replaceAll(" ", "+")).replace("{1}", registracionForm.getAltura().toString());
+	        GoogleDistance distance = null;
+			try {
+				logger.info("Obtengo distancia en metros");
+				distance = googleServicesHandler.invocarURL(urlDistance, GoogleDistance.class);
+			} catch (Exception e) {
+				logger.info("Error al invocar el servicio google geocode.");
+				logger.error(PrinterStack.getStackTraceAsString(e));
+				bindingResult.rejectValue("calle", "registracion.error.localidad");
+	        	return "usuario/registrar";
+			}
+	        Integer metros = googleServicesHandler.getDistancia(distance);
+	        
+	        registracionForm.setLocalidad(LocalidadesDTO.getLocalidad(localidad));
+	        registracionForm.setDistancia(metros);
+        }else{
+        	logger.info("Geocodificacion desactivada");
+        	registracionForm.setLocalidad(LocalidadesDTO.getLocalidadDefault());
+	        registracionForm.setDistancia(0);
+        }
         logger.info("Persisto usuario");
         try {
-			usuarioService.registrarUsuario(usuarioForm);
+			usuarioService.registrarUsuario(registracionForm);
 		} catch (UserNameExistenteException e) {
 			bindingResult.rejectValue("username", e.getKeyMessage());
         	return "usuario/registrar";

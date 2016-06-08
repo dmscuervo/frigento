@@ -21,7 +21,6 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "users", uniqueConstraints={@UniqueConstraint(columnNames={"username"}, name="ux_username"),
@@ -31,14 +30,10 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = -1039096380771137501L;
 
 	@NotNull
-    @NotEmpty
     @Column(name = "username")
     @Size(max = 50)
     private String username;
 	
-//	@NotNull
-//    @NotEmpty
-//    @Size(min = 64, max = 64)
     @Column(name = "password")
     private String password;
 	
@@ -51,7 +46,6 @@ public class Usuario implements Serializable {
 	private Categoria categoriaProducto;
 	
 	@NotNull
-	@NotEmpty
     @Column(name = "NOMBRE")
     @Size(max = 20)
     private String nombre;
@@ -74,7 +68,6 @@ public class Usuario implements Serializable {
     private String celular;
 
     @NotNull
-    @NotEmpty
     @Column(name = "CALLE")
     @Size(max = 30)
     private String calle;
@@ -116,10 +109,10 @@ public class Usuario implements Serializable {
 	private String identificadoWeb;
 	
 	@Transient
-//	@NotNull
-//    @NotEmpty
-//    @Size(min = 64, max = 64)
     private String passwordReingresada;
+	
+	@Transient
+    private String captchaCode;
 
 	public Integer getId() {
         return this.id;
@@ -275,6 +268,14 @@ public class Usuario implements Serializable {
 
 	public void setDistancia(Integer distancia) {
 		this.distancia = distancia;
+	}
+
+	public String getCaptchaCode() {
+		return captchaCode;
+	}
+
+	public void setCaptchaCode(String captchaCode) {
+		this.captchaCode = captchaCode;
 	}
 	
 }

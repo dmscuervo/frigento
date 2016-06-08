@@ -118,6 +118,15 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
+    <!-- Captcha -->
+    <servlet>
+		<servlet-name>BotDetect Captcha</servlet-name>
+		<servlet-class>com.captcha.botdetect.web.servlet.CaptchaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BotDetect Captcha</servlet-name>
+		<url-pattern>/botdetectcaptcha</url-pattern>
+	</servlet-mapping>
     <!-- 
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
