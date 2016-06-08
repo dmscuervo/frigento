@@ -23,6 +23,16 @@ public class UsuarioDaoImpl extends AbstractSpringDao<Usuario, Integer> implemen
 		return (Usuario) query.uniqueResult();
 	}
 	
+	@Override
+	public Usuario findByEmail(String email) {
+		StringBuilder hql = new StringBuilder("from ");
+		hql.append(Usuario.class.getCanonicalName());
+		hql.append(" u where lower(u.email) = :email");
+		Query query = getSession().createQuery(hql.toString());
+		query.setParameter("email", email.toLowerCase());
+		return (Usuario) query.uniqueResult();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Usuario> findAllByCategoriaProd(Short idCat) {

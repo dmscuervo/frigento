@@ -28,6 +28,9 @@ public class GoogleServicesHandler {
 	public Boolean esCABA(GoogleGeocode geocode){
 		Boolean esCABA = null;
 		if(!geocode.getStatus().equals("OK")){
+			if(geocode.getStatus().equals("OVER_QUERY_LIMIT")){
+				log.info("Se excedio la cuota de consulta a google geocode");
+			}
 			return Boolean.FALSE;
 		}
 		if(geocode.getResults().length == 0){
@@ -53,6 +56,9 @@ public class GoogleServicesHandler {
 	public String getLocalidad(GoogleGeocode geocode){
 		String localidad = null;
 		if(!geocode.getStatus().equals("OK")){
+			if(geocode.getStatus().equals("OVER_QUERY_LIMIT")){
+				log.info("Se excedio la cuota de consulta a google geocode");
+			}
 			return localidad;
 		}
 		if(geocode.getResults().length == 0){
@@ -98,5 +104,19 @@ public class GoogleServicesHandler {
 		}
 
 		return metros;
+	}
+
+	public Boolean esDirecciónUnica(GoogleGeocode geocode) {
+		Boolean esUnica = Boolean.TRUE;
+		if(!geocode.getStatus().equals("OK")){
+			if(geocode.getStatus().equals("OVER_QUERY_LIMIT")){
+				log.info("Se excedio la cuota de consulta a google geocode");
+			}
+			return Boolean.FALSE;
+		}
+		if(geocode.getResults().length != 1){
+			esUnica = Boolean.FALSE;
+		}
+		return esUnica;
 	}
 }

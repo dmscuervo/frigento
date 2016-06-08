@@ -92,7 +92,7 @@ public class ProductoCostoController extends GenericController {
     	precio.setCosto(producto.getCostoActual());
     	precio.setIncrementos(new BigDecimal[relProdCats.size()]);
     	precio.setPrecioCalculado(new BigDecimal[relProdCats.size()]);
-    	//precio.setIncrementos(new ArrayList<BigDecimal>());;
+    	//precio.setIncrementos(new ArrayList<BigDecimal>());
     	for (int i = 0; i < relProdCats.size(); i++) {
     		RelProductoCategoria relProdCat = relProdCats.get(i); 
 			precio.getIncrementos()[i] = relProdCat.getIncremento();

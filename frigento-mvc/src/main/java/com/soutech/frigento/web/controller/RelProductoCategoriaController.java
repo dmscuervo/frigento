@@ -118,7 +118,7 @@ public class RelProductoCategoriaController extends GenericController {
         	return "ajax/value";
         }
     	Map<String, String> codDescripcionMap = (Map<String, String>) uiModel.asMap().get("codProductosMap");
-    	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()).replaceFirst(relProdCatForm.getProducto().getCodigo().concat(" - "), ""));;
+    	relProdCatForm.getProducto().setDescripcion(codDescripcionMap.get(relProdCatForm.getProducto().getCodigo()).replaceFirst(relProdCatForm.getProducto().getCodigo().concat(" - "), ""));
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
         //Control de fecha y de relaciones actuales
         Date fechaDesdeMinPosible = null;
@@ -187,7 +187,7 @@ public class RelProductoCategoriaController extends GenericController {
     		}
         }
     	Map<String, String> codProductosMasterMap = (Map<String, String>) uiModel.asMap().get("codProductosMasterMap");
-    	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));;
+    	relProdCatForm.getProducto().setDescripcion(codProductosMasterMap.get(relProdCatForm.getProducto().getCodigo()));
         List<RelProductoCategoria> lista = (List<RelProductoCategoria>) uiModel.asMap().get("productosCategoria");
         //Control de fecha y de relaciones actuales
         if(relProdCatForm.getId() != null){

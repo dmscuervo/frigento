@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.soutech.frigento.dto.LocalidadesDTO;
 import com.soutech.frigento.dto.Parametros;
+import com.soutech.frigento.exception.EmailExistenteException;
+import com.soutech.frigento.exception.UserNameExistenteException;
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.service.CategoriaService;
@@ -170,18 +172,17 @@ public class UsuarioController extends GenericController {
 		usuario.setCategoriaProducto(categoria);
     	uiModel.addAttribute("usuarioForm", usuario);
     	
-    	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
     	return "usuario/registrar";
     }
     
     @RequestMapping(value = "/registrar", method = RequestMethod.POST, produces = "text/html")
     public String registrar(@Valid @ModelAttribute("usuarioForm") Usuario usuarioForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	logger.debug("Comienza registración");
         if (bindingResult.hasErrors()) {
         	return "usuario/registrar";
         }
-        
-        
-        
+        logger.info("Comienzo geocodificacion");
+        //Obtengo geolocation
         String url = googleServicesHandler.urlGeocode.replace("{0}", usuarioForm.getCalle().replaceAll(" ", "+")).replace("{1}", usuarioForm.getAltura().toString());
         GoogleGeocode geocode = null;
 		try {
@@ -193,15 +194,24 @@ public class UsuarioController extends GenericController {
         	return "usuario/registrar";
 		}
 		
+		logger.info("Chequeo si el domicilio es unico dentro de CABA");
+		Boolean esUnica = googleServicesHandler.esDirecciónUnica(geocode);
+		if(!esUnica){
+			bindingResult.rejectValue("calle", "usuario.error.localidad.ambigua");
+        	return "usuario/registrar";
+		}
+		
+		logger.info("Chequeo si el domicilio corresponde a CABA");
         Boolean esCABA = googleServicesHandler.esCABA(geocode);
         if(!esCABA){
         	bindingResult.rejectValue("calle", "usuario.error.localidad");
         	return "usuario/registrar";
         }
         String localidad = googleServicesHandler.getLocalidad(geocode);
-        String urlDistance = googleServicesHandler.urlDistance.replace("{0}", usuarioForm.getCalle().replaceAll(" ", "+")).replace("{1}", usuarioForm.getAltura().toString());;
+        String urlDistance = googleServicesHandler.urlDistance.replace("{0}", usuarioForm.getCalle().replaceAll(" ", "+")).replace("{1}", usuarioForm.getAltura().toString());
         GoogleDistance distance = null;
 		try {
+			logger.info("Obtengo distancia en metros");
 			distance = googleServicesHandler.invocarURL(urlDistance, GoogleDistance.class);
 		} catch (Exception e) {
 			logger.info("Error al invocar el servicio google geocode.");
@@ -213,8 +223,19 @@ public class UsuarioController extends GenericController {
         
         usuarioForm.setLocalidad(LocalidadesDTO.getLocalidad(localidad));
         usuarioForm.setDistancia(metros);
+        logger.info("Persisto usuario");
+        try {
+			usuarioService.registrarUsuario(usuarioForm);
+		} catch (UserNameExistenteException e) {
+			bindingResult.rejectValue("username", e.getKeyMessage());
+        	return "usuario/registrar";
+		} catch (EmailExistenteException e) {
+			bindingResult.rejectValue("email", e.getKeyMessage());
+        	return "usuario/registrar";
+		}
         uiModel.asMap().clear();
-        usuarioService.saveUsuario(usuarioForm);
-        return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("usuario.alta.ok", usuarioForm.getUsername())));
+        logger.debug("Fin de registración");
+        uiModel.addAttribute("informar", getMessage("usuario.registracion.ok"));
+        return "usuario/registrarResultado";
     }
 }

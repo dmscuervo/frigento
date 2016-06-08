@@ -6,7 +6,7 @@
 		aria-label="Close">
 		<span aria-hidden="true">&times;</span>
 	</button>
-	<h3 class="modal-title"><fmt:message key="usuario.alta.title" /></h3>
+	<h3 class="modal-title"><fmt:message key="usuario.registrar.title" /></h3>
 </div>
 <div class="modal-body" style="height: 75%; overflow: auto;">
 	<c:url var="urlRegistrar" value="/usuario/registrar" />
@@ -19,9 +19,12 @@
 		<fieldset>
 			<legend style="font-size: 16px; font-weight: bold; color: #a94442"><fmt:message key="datos.obligatorios" /></legend>
 			<spring:bind path="username">
+			<c:set var="usernameHasBindError">
+				<form:errors path="username"/>
+			</c:set>
 			<div class="form-group ${status.error ? 'has-error' : ''}" style="margin-bottom: 10px; line-height: inherit;">
 				<label class="control-label" for="idUserName">
-					<fmt:message key="usuario.username" />
+					<fmt:message key="usuario.username" />&nbsp;${usernameHasBindError}
 				</label>
 				<form:input path="username" cssClass="form-control" id="idUserName" />
 			</div>
@@ -57,9 +60,12 @@
 			</div>
 			</spring:bind>
 			<spring:bind path="email">
+			<c:set var="emailHasBindError">
+				<form:errors path="email"/>
+			</c:set>
 			<div class="form-group ${status.error ? 'has-error' : ''}">
 				<label class="control-label" for="idEmail">
-					<fmt:message key="usuario.email" />
+					<fmt:message key="usuario.email" />&nbsp;${emailHasBindError}
 				</label>
 				<form:input path="email" cssClass="form-control" id="idEmail" />
 			</div>

@@ -13,4 +13,6 @@ public interface UsuarioDao extends IDao<Usuario, Integer> {
 
 	public List<Usuario> findAllConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder);
 
+	public Usuario findByEmail(String email);
+
 }

@@ -24,7 +24,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name = "users", uniqueConstraints=@UniqueConstraint(columnNames={"username"}))
+@Table(name = "users", uniqueConstraints={@UniqueConstraint(columnNames={"username"}, name="ux_username"),
+											@UniqueConstraint(columnNames={"email"}, name="ux_email")})
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = -1039096380771137501L;
@@ -55,7 +56,7 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     private String nombre;
 
-    @Column(name = "APPELLIDO")
+    @Column(name = "APELLIDO")
     @Size(max = 20)
     private String apellido;
     

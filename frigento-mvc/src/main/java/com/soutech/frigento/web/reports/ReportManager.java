@@ -198,7 +198,7 @@ public class ReportManager{
     		String reportsPath, List<RemitoDTO> items) throws Exception{
     	
     	logger.info("iniciando la creacion del reporte: " + reportName );  
-    	ByteArrayOutputStream out = new ByteArrayOutputStream();;
+    	ByteArrayOutputStream out = new ByteArrayOutputStream();
     	try {
     		String fileName = reportsPath + reportName + ".jasper" ;	
     		

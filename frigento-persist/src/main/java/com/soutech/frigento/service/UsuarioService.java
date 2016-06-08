@@ -2,11 +2,15 @@ package com.soutech.frigento.service;
 
 import java.util.List;
 
+import com.soutech.frigento.exception.EmailExistenteException;
+import com.soutech.frigento.exception.UserNameExistenteException;
 import com.soutech.frigento.model.Usuario;
 
 public interface UsuarioService {
 
 	void saveUsuario(Usuario usuario);
+	
+	void registrarUsuario(Usuario usuario) throws UserNameExistenteException, EmailExistenteException;
 
 	Usuario obtenerUsuario(Integer id);
 
