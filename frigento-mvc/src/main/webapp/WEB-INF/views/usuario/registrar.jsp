@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
 <%@ taglib prefix="botDetect" uri="botDetect"%>
-
+<c:if test="${not empty captchaCodeError}">
+<!--Captcha NO QUITAR. ESTA ETIQUETA PERMITE SABER QUE EL CONTENIDO SE CARGA EN UN DIV INTERNO-->
+</c:if>
 <script type="text/javascript">
 	$(document).ready(function(){
 		if($('#idHayErrores').val() > 0){
@@ -40,7 +42,7 @@
 <div class="modal-body" style="height: 60%; overflow: auto;" id="contentBody">
 	<jsp:include page="registrarForm.jsp"></jsp:include>
 </div>
-<div class="modal-footer" style="text-align: right;">
+<div class="modal-footer" style="text-align: right;" id="contentFooter">
 	<fieldset>
 		<legend style="font-size: 12px; font-weight: bold; color: #337ab7; text-align: left;"><fmt:message key="usuario.registrar.captcha" /></legend>
 		<div class="row">
@@ -48,10 +50,10 @@
 			<div class="col-sm-4 col-md-offset-4"><input type="text" name="captchaCode" class="form-control" id="idCaptchaCode" /></div>
 		</div>
 	</fieldset>
-	<label style="font-size: 16px; font-weight: bold; color: #a94442">${captchaCodeHasBindError}</label>
+	<label style="font-size: 16px; font-weight: bold; color: #a94442">${captchaCodeError}</label>
 	<input type="button" class="btn btn-default btn-primary" id="idBtSubmit"
 		value='<fmt:message key="boton.aceptar"/>'
-		onclick="javascript:submitInPopUpRegistrar($('#idForm').attr('action'), $('#idForm').serialize())">
+		onclick="javascript:submitInPopUpRegistrar($('#idForm').attr('action'), $('#idForm').serialize()+'&captchaCode='+$('#idCaptchaCode').val())">
 	<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 </div>
 

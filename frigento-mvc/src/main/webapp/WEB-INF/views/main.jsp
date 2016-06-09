@@ -92,10 +92,14 @@
                 success: function(result) {
                 	//Desbloqueo pantalla
                 	$('#idModalPopUpContent').unblock();
-        			//Cargo contenido
-                	$('#contentBody').html(result);
-        			//Levanto Modal
-        			//$('#idModalPopUp').modal('show');
+                	console.log(result.trim().startsWith('<!--Captcha'));
+                	console.log(result.trim());
+                	if(result.trim().startsWith('<!--Captcha')){
+                		$('#idModalPopUpContent').html(result);
+                	}else{
+	                	//Cargo contenido
+	                	$('#contentBody').html(result);
+                	}
                 }
             });
     	}

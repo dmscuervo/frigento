@@ -185,12 +185,13 @@ public class UsuarioController extends GenericController {
         	return "usuario/registrarForm";
         }
         
-//        Captcha captcha = Captcha.load(httpServletRequest, "exampleCaptcha");
-//        boolean isHuman = captcha.validate(registracionForm.getCaptchaCode());
-//        if(!isHuman){
-//        	bindingResult.rejectValue("captchaCode", "registracion.error.captchaCode");
-//        	return "usuario/registrar";
-//        }
+        Captcha captcha = Captcha.load(httpServletRequest, "exampleCaptcha");
+        boolean isHuman = captcha.validate(httpServletRequest.getParameter("captchaCode"));
+        if(!isHuman){
+        	//bindingResult.rejectValue("captchaCode", "registracion.error.captchaCode");
+        	httpServletRequest.setAttribute("captchaCodeError", getMessage("registracion.error.captchaCode"));
+        	return "usuario/registrar";
+        }
         
         Boolean usarGoogle = Boolean.parseBoolean(Parametros.getValor(Parametros.USAR_SERVICIOS_GOOGLE));
         if(usarGoogle){
