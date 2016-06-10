@@ -30,6 +30,13 @@
 			$('#idBtSubmit').prop('disabled', false);
 		}
 	}
+	
+	function enviar(){
+		$('#idErrorCaptcha').text('');
+		var action = $('#idForm').attr('action');
+		var data = $('#idForm').serialize()+'&captchaCode='+$('#idCaptchaCode').val();
+		submitInPopUpRegistrar(action, data);
+	}
 </script>
 
 <div class="modal-header">
@@ -50,10 +57,10 @@
 			<div class="col-sm-4 col-md-offset-4"><input type="text" name="captchaCode" class="form-control" id="idCaptchaCode" /></div>
 		</div>
 	</fieldset>
-	<label style="font-size: 16px; font-weight: bold; color: #a94442">${captchaCodeError}</label>
+	<label style="font-size: 16px; font-weight: bold; color: #a94442" id="idErrorCaptcha">${captchaCodeError}</label>
 	<input type="button" class="btn btn-default btn-primary" id="idBtSubmit"
 		value='<fmt:message key="boton.aceptar"/>'
-		onclick="javascript:submitInPopUpRegistrar($('#idForm').attr('action'), $('#idForm').serialize()+'&captchaCode='+$('#idCaptchaCode').val())">
+		onclick="javascript:enviar();">
 	<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 </div>
 

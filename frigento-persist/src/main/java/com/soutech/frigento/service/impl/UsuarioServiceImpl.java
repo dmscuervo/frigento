@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.soutech.frigento.dao.UsuarioDao;
+import com.soutech.frigento.exception.ConfirmacionRegistracionException;
 import com.soutech.frigento.exception.EmailExistenteException;
 import com.soutech.frigento.exception.UserNameExistenteException;
 import com.soutech.frigento.model.Usuario;
@@ -116,6 +117,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if(usuarioExiste != null){
 			throw new UserNameExistenteException("usuario.registracion.username.existente");
 		}
+	}
+
+	@Override
+	public Usuario confirmarRegistracion(String username, String validator) throws ConfirmacionRegistracionException {
+		Usuario usuario = usuarioDao.findByUserName(username);
+		if(!Encriptador.encriptarPassword(usuario.getId().toString()).equals(validator)){
+			throw new ConfirmacionRegistracionException("usuario.registracion.confirmacion.error.validador");
+		}
+		usuario.setHabilitado(Boolean.TRUE);
+		usuarioDao.update(usuario);
+		return usuario;
 	}
 
 }

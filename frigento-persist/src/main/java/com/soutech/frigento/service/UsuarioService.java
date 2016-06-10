@@ -2,6 +2,7 @@ package com.soutech.frigento.service;
 
 import java.util.List;
 
+import com.soutech.frigento.exception.ConfirmacionRegistracionException;
 import com.soutech.frigento.exception.EmailExistenteException;
 import com.soutech.frigento.exception.UserNameExistenteException;
 import com.soutech.frigento.model.Usuario;
@@ -23,4 +24,6 @@ public interface UsuarioService {
 	public Usuario reactivarUsuario(Integer usuarioId);
 
 	List<Usuario> obtenerUsuariosConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder);
+
+	Usuario confirmarRegistracion(String username, String validator) throws ConfirmacionRegistracionException;
 }

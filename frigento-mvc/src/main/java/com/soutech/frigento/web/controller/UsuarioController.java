@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.captcha.botdetect.web.servlet.Captcha;
 import com.soutech.frigento.dto.LocalidadesDTO;
 import com.soutech.frigento.dto.Parametros;
+import com.soutech.frigento.exception.ConfirmacionRegistracionException;
 import com.soutech.frigento.exception.EmailExistenteException;
 import com.soutech.frigento.exception.UserNameExistenteException;
 import com.soutech.frigento.model.Categoria;
@@ -29,6 +30,7 @@ import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.UsuarioService;
 import com.soutech.frigento.util.PrinterStack;
+import com.soutech.frigento.util.SendMailSSL;
 import com.soutech.frigento.web.google.GoogleDistance;
 import com.soutech.frigento.web.google.GoogleGeocode;
 import com.soutech.frigento.web.google.GoogleServicesHandler;
@@ -47,6 +49,8 @@ public class UsuarioController extends GenericController {
     public CategoriaService categoriaService;
     @Autowired
     private GoogleServicesHandler googleServicesHandler;
+    @Autowired
+    private SendMailSSL sendMailSSL;
 
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -252,9 +256,34 @@ public class UsuarioController extends GenericController {
 			bindingResult.rejectValue("email", e.getKeyMessage());
         	return "usuario/registrarForm";
 		}
+        
+        try {
+        	//http://localhost:8081/frigento-mvc/home
+			sendMailSSL.enviarCorreoRegistracion(registracionForm, "http", "localhost", "8081", "frigento-mvc");
+		} catch (Exception e) {
+			String mensaje = "No pudo enviarse el correo de registración a " + registracionForm.getEmail();
+			logger.error(mensaje);
+			sendMailSSL.enviarCorreoProblema(mensaje, e);
+		}
+        
         uiModel.asMap().clear();
         logger.debug("Fin de registración");
         uiModel.addAttribute("informar", getMessage("usuario.registracion.ok"));
         return "usuario/registrarResultado";
+    }
+    
+    @RequestMapping(params = "confirmarReg", value="/{username}/{valid}", method = RequestMethod.GET, produces = "text/html")
+    public String confirmarRegistracion(@PathVariable("username") String username, @PathVariable("valid") String validator, HttpServletRequest httpServletRequest) {
+    	
+    	String mensaje;
+    	try {
+			Usuario usuario = usuarioService.confirmarRegistracion(username, validator);
+			mensaje = getMessage("usuario.registracion.confirmacion.ok", usuario.getNombre());
+		} catch (ConfirmacionRegistracionException e) {
+			logger.error(getMessage(e.getMessage()));
+			mensaje = getMessage(e.getMessage());
+		}
+    	httpServletRequest.setAttribute("informar", mensaje);
+        return "usuario/registrarConfirmacion";
     }
 }

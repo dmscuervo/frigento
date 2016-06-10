@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.model.Estado;
 import com.soutech.frigento.model.Pedido;
+import com.soutech.frigento.model.Usuario;
 import com.soutech.frigento.model.Venta;
 import com.sun.xml.ws.util.ByteArrayDataSource;
 
@@ -33,6 +34,8 @@ import com.sun.xml.ws.util.ByteArrayDataSource;
 public class SendMailSSL {
 	
 	Logger logger = Logger.getLogger(this.getClass());
+//	@Context 
+//	protected SecurityContext sc;
 	
 	public static void main(String args[]) {
 		try {
@@ -180,6 +183,78 @@ public class SendMailSSL {
 
 		} catch (MessagingException e) {
 			throw new Exception(e);
+		}
+	}
+
+	public void enviarCorreoRegistracion(Usuario usuario, String protocolo, String host, String port, String contex) throws Exception {
+		String subject = "Registración Frigento";
+		StringBuilder bodyText = new StringBuilder();
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("mail/body_registracion.html");
+		try {
+			BufferedReader fr = new BufferedReader(new InputStreamReader(is));
+			String linea = fr.readLine();
+			//usuario/dmscuervo/asdlkjaklsdj?confirmarReg
+			while(linea != null){
+				if(linea.contains("{protocolo}")){
+					linea = linea.replace("{protocolo}", protocolo);
+				}
+				if(linea.contains("{host}")){
+					linea = linea.replace("{host}", host);
+				}
+				if(linea.contains("{port}")){
+					linea = linea.replace("{port}", port);
+				}
+				if(linea.contains("{context}")){
+					linea = linea.replace("{context}", contex);
+				}
+				if(linea.contains("{username}")){
+					linea = linea.replace("{username}", usuario.getUsername());
+				}
+				if(linea.contains("{valid}")){
+					linea = linea.replace("{valid}", Encriptador.encriptarPassword(usuario.getId().toString()));
+				}
+				bodyText.append(linea);
+				linea = fr.readLine();
+			}
+			fr.close();
+		} catch (FileNotFoundException e) {
+			logger.error("No se pudo generar el body del mail. Archivo html inexistente.");
+			throw new Exception(e);
+		} catch (IOException e) {
+			logger.error("No se pudo generar el body del mail. Error al leer archivo html.");
+			throw new Exception(e);
+		}
+		enviarMail(subject, bodyText.toString(), null, null, usuario.getEmail(), null);
+	}
+
+	public void enviarCorreoProblema(String mensaje, Exception ex) {
+		String subject = "Problema en el sistema";
+		StringBuilder bodyText = new StringBuilder();
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("mail/body_error.html");
+		try {
+			BufferedReader fr = new BufferedReader(new InputStreamReader(is));
+			String linea = fr.readLine();
+			while(linea != null){
+				if(linea.contains("{detalle}")){
+					linea = linea.replace("{detalle}", mensaje);
+				}
+				if(linea.contains("{stack}")){
+					linea = linea.replace("{stack}", PrinterStack.getStackTraceAsString(ex));
+				}
+				bodyText.append(linea);
+				linea = fr.readLine();
+			}
+			fr.close();
+			enviarMail(subject, bodyText.toString(), null, null, Parametros.SMTP_GMAIL_REMITENTE, null);
+		} catch (FileNotFoundException e) {
+			logger.info("No se pudo enviar correo de error en aplicación.");
+			logger.error(PrinterStack.getStackTraceAsString(e));
+		} catch (IOException e) {
+			logger.info("No se pudo enviar correo de error en aplicación.");
+			logger.error(PrinterStack.getStackTraceAsString(e));
+		} catch (Exception e) {
+			logger.info("No se pudo enviar correo de error en aplicación.");
+			logger.error(PrinterStack.getStackTraceAsString(e));
 		}
 	}
 	
