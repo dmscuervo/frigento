@@ -101,13 +101,13 @@
 			            </ol>
 			            <div class="carousel-inner">
 			                <div class="item active">
-			                    <img class="slide-image" src="<c:url value="/resources/images/productoSinFoto.png"/>" alt="">
+			                    <img class="slide-image" src="<c:url value="/resources/images/Banner_1.jpg"/>" alt="">
 			                </div>
 			                <div class="item">
-			                    <img class="slide-image" src="<c:url value="/resources/images/productoSinFoto.png"/>" alt="">
+			                    <img class="slide-image" src="<c:url value="/resources/images/Banner_2.jpg"/>" alt="">
 			                </div>
 			                <div class="item">
-			                    <img class="slide-image" src="<c:url value="/resources/images/productoSinFoto.png"/>" alt="">
+			                    <img class="slide-image" src="<c:url value="/resources/images/Banner_3.jpg"/>" alt="">
 			                </div>
 			            </div>
 			            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
@@ -124,7 +124,12 @@
 			<c:forEach var="rpc" items="${rpcListOnline}" varStatus="i">
 				<div class="col-sm-4 col-lg-4 col-md-4">
 			        <div class="thumbnail">
-			            <img src="<c:url value="/resources/images/productoSinFoto_chica.png"/>" alt="">
+			        	<c:if test="${not empty rpc.producto.imagen}">
+			        		<img src="${rpc.producto.imagen}" alt="">
+			        	</c:if>
+			        	<c:if test="${empty rpc.producto.imagen}">
+				        	<img src="<c:url value="/resources/images/productoSinFoto_chica.png"/>" alt="">
+			        	</c:if>
 			            <div class="caption">
 			                <h5 class="pull-right" style="font-weight: bold;"><fmt:formatNumber currencySymbol="$" type="currency" value="${rpc.producto.costoActual + rpc.producto.costoActual*rpc.incremento/100 }" minFractionDigits="2" maxFractionDigits="2"/></h5>
 			                <h5><a href="#">${rpc.producto.descripcionVenta }</a>

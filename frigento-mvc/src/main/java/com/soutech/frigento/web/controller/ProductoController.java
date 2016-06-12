@@ -82,17 +82,18 @@ public class ProductoController extends GenericController {
     	//Validaciones sobre la imagen
     	if(imagen != null){
     		if(imagen.getSize() > Long.valueOf(Parametros.getValor(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES))){
-    			
+    			httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.tamanio", Parametros.getValor(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES)));
+            	return "producto/alta";
+    		}
+    		try {
+    			productoForm.setImagen(imagen.getBytes());
+    		} catch (IOException e) {
+    			httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.error"));
+    			logger.error(PrinterStack.getStackTraceAsString(e));
+    			return "producto/alta";
     		}
     	}
         try {
-    		try {
-				productoForm.setImagen(imagen.getBytes());
-			} catch (IOException e) {
-				httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.error"));
-				logger.error(PrinterStack.getStackTraceAsString(e));
-				return "producto/alta";
-			}
 			productoService.saveProducto(productoForm);
 		} catch (EntityExistException e) {
 			String key = "EntityExist.productoForm."+e.getField();
@@ -148,7 +149,7 @@ public class ProductoController extends GenericController {
     }
     
     @RequestMapping(value = "/validarEditar", method = RequestMethod.POST, produces = "text/html")
-    public String validarEditar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String validarEditar(@Valid @ModelAttribute("productoForm") Producto productoForm, BindingResult bindingResult, @RequestParam("idImagen") MultipartFile imagen, Model uiModel, HttpServletRequest httpServletRequest) {
     	formValidator.validate(productoForm, bindingResult);
         if (bindingResult.hasErrors()) {
         	return "producto/editar";
@@ -164,6 +165,20 @@ public class ProductoController extends GenericController {
     	    	return "producto/editConfirmar";
     		}
     	}
+    	//Validaciones sobre la imagen
+    	if(imagen != null){
+    		if(imagen.getSize() > Long.valueOf(Parametros.getValor(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES))){
+    			httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.tamanio", Parametros.getValor(Parametros.MAX_SIZE_IMAGEN_PRODUCTO_BYTES)));
+            	return "producto/editar";
+    		}
+    		try {
+    			productoForm.setImagen(imagen.getBytes());
+    		} catch (IOException e) {
+    			httpServletRequest.setAttribute("mensajeImagen", getMessage("producto.imagen.error"));
+    			logger.error(PrinterStack.getStackTraceAsString(e));
+    			return "producto/editar";
+    		}
+    	}
     	return edit(productoForm, bindingResult, uiModel, httpServletRequest);
     }
 
@@ -173,7 +188,7 @@ public class ProductoController extends GenericController {
         if (bindingResult.hasErrors()) {
         	return "producto/editar";
         }
-    	try {
+        try {
 			productoService.actualizarProducto(productoForm);
 		} catch (StockAlteradoException e) {
 			logger.info("El producto a actualizar habia alterado su stock en pararelo. Se reintenta la edicion.");

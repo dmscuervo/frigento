@@ -21,10 +21,15 @@
 			bodyBlock = true;				
 		}
 		
+		var formData = new FormData(document.getElementById("idForm"));
 		$.ajax({
             url: form.attr('action'),
             type: 'POST',
-            data: form.serialize(),
+            data: formData,
+            dataType: "html",
+            cache: false,
+            contentType: false,
+            processData: false,
             success: function(result) {
             	//Desbloqueo pantalla
             	$('#page').unblock();
@@ -47,10 +52,10 @@
 			}
 		});
 	}
-
+	
 </script>
 
-<div style="width: 100%; float: left; min-width: 300px">
+<div style="width: 80%; float: left; min-width: 300px">
 	<h3>
 		<fmt:message key="producto.editar.title" />
 	</h3>
@@ -58,10 +63,11 @@
 		${msgError}
 	</p>
 	<c:url var="urlValidarEditar" value="/producto/validarEditar" />
-	<form:form action="${urlValidarEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm">
+	<form:form action="${urlValidarEditar}" method="post" class="form-horizontal" commandName="productoForm" id="idForm" enctype="multipart/form-data">
 	<form:hidden path="id" />
 	<form:hidden path="stockPrevio"/>
 	<form:hidden path="costoPrevio"/>
+	<form:hidden path="imagen"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -222,8 +228,7 @@
 			</div>
         </div>
     </div>
-    <%-- 
-	<div class='row'>
+    <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idImagen" style="white-space: nowrap;">
@@ -233,17 +238,18 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="imagen" cssClass="form-control" id="idImagen" />
+        		<input type="file" name="idImagen" id="idImagen" >
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="imagen" cssClass="form-validate" />
+        		<span class="form-validate">
+        			${mensajeImagen}
+				</span>
 			</div>
         </div>
     </div>
-    --%>
-	<div class='row'>
+    <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idPesoCaja" style="white-space: nowrap;">
@@ -298,4 +304,3 @@
 	</form:form>
 </div>
 <div id="confirmacionEditar"></div>
-</div>
