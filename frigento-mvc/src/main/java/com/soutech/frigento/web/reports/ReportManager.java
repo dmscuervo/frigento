@@ -59,7 +59,7 @@ public class ReportManager{
     	cal.setTime(pedido.getFecha());
     	parameters.put("header_cantidad", messageSource.getMessage("pedido.cantidad.caja", null, locale));
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
-    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
+    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH)+1, 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(pedido));
     	parameters.put("destinatario", Parametros.getValor(Parametros.NOMBRE_PROVEEDOR));
@@ -144,7 +144,7 @@ public class ReportManager{
     	cal.setTime(venta.getFecha());
     	parameters.put("header_cantidad", messageSource.getMessage("venta.cantidad.kg", null, locale));
     	parameters.put("dia", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.DAY_OF_MONTH), 2));
-    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH), 2));
+    	parameters.put("mes", Utils.aTextoConCeroIzqSegunCantDigitos(cal.get(Calendar.MONTH)+1, 2));
     	parameters.put("anio", String.valueOf(cal.get(Calendar.YEAR)));
     	parameters.put("nroPedido", Utils.generarNroRemito(venta));
     	parameters.put("destinatario",venta.getUsuario().getNombre().concat(venta.getUsuario().getApellido() == null ? "" : " ".concat(venta.getUsuario().getApellido())));
