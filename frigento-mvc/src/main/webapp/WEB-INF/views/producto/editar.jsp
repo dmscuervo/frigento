@@ -67,7 +67,6 @@
 	<form:hidden path="id" />
 	<form:hidden path="stockPrevio"/>
 	<form:hidden path="costoPrevio"/>
-	<form:hidden path="imagen"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -228,6 +227,15 @@
 			</div>
         </div>
     </div>
+    <c:if test="${not empty productoForm.imagen}">
+	<div class='row'>
+        <div class='col-sm-12'>    
+			<div class="form-group" >
+				<img src="${pathBase}${productoForm.id}?imagen" alt="">
+			</div>
+        </div>
+    </div>
+    </c:if>
     <div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >

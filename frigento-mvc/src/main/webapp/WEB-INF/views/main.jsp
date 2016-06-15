@@ -11,6 +11,8 @@
     <script type="text/javascript">
     	var bodyBlock=false;
     	
+    	console.log('${pathBase}');
+    	
     	function loadInBody(path){
     		if(!bodyBlock){
 				blockControl($('#page'));

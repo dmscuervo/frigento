@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,12 +17,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.soutech.frigento.dto.Parametros;
 import com.soutech.frigento.model.RelProductoCategoria;
+import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
 
@@ -33,6 +37,8 @@ public class LoginController extends GenericController {
     private ServletContext servletContext;
 	@Autowired
     public RelProductoCategoriaService relProductoCategoriaService;
+	@Autowired
+    public ProductoService productoService;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage() {
@@ -93,4 +99,34 @@ public class LoginController extends GenericController {
         }
         return userName;
     }
+	
+	@RequestMapping(params = "imagen", value="/{id}", method = RequestMethod.GET, produces = "text/html")
+	public ServletResponse getImagen(@PathVariable("id") Integer id, Model uiModel, HttpServletResponse httpServletResponse) {
+		try {
+//			httpServletResponse.setContentType("image/jpeg");  
+//			ServletOutputStream out = httpServletResponse.getOutputStream();  
+//			
+//			byte[] buf = productoService.obtenerProducto(id).getImagen();
+//			BufferedInputStream bin = new BufferedInputStream(new ByteArrayInputStream(buf));  
+//			BufferedOutputStream bout = new BufferedOutputStream(out);  
+//			int ch =0; ;  
+//			while((ch=bin.read())!=-1)  
+//			{  
+//				bout.write(ch);  
+//			}  
+//			  
+//			bin.close();  
+//			bout.close();  
+//			out.close();
+
+			
+			byte[] imageBytes = productoService.obtenerProducto(id).getImagen();
+			httpServletResponse.setContentType("image/jpeg");
+			httpServletResponse.setContentLength(imageBytes.length);
+			httpServletResponse.getOutputStream().write(imageBytes);
+		} catch (IOException e) {
+			logger.error("Error al obtener imagen de producto ID:" + id);
+		}  
+		return httpServletResponse;
+	}
 }

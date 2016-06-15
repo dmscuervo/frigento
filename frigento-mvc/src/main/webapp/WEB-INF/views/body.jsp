@@ -125,7 +125,8 @@
 				<div class="col-sm-4 col-lg-4 col-md-4">
 			        <div class="thumbnail">
 			        	<c:if test="${not empty rpc.producto.imagen}">
-			        		<img src="${rpc.producto.imagen}" alt="">
+			        		<c:set var="urlImagen" value="${pathBase}${rpc.producto.id}?imagen"/>
+			        		<img src="http://localhost:8081/frigento-mvc/6?imagen" alt="">
 			        	</c:if>
 			        	<c:if test="${empty rpc.producto.imagen}">
 				        	<img src="<c:url value="/resources/images/productoSinFoto_chica.png"/>" alt="">
