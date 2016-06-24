@@ -38,3 +38,9 @@
 .txtlink2:hover {
 	color:#008CBA;
 }
+
+.imageCenter {
+	display: block;
+    margin: 0 auto;
+    padding-bottom: 10px;
+}

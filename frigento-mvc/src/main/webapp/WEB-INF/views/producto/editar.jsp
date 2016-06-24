@@ -229,7 +229,12 @@
     </div>
     <c:if test="${not empty productoForm.imagen}">
 	<div class='row'>
-       	<img src="${pathBase}${productoForm.id}?imagen" alt="">
+       	<img src="${pathBase}${productoForm.id}?imagen" alt="" class="imageCenter">
+    </div>
+    </c:if>
+    <c:if test="${empty productoForm.imagen}">
+    <div class='row'>
+    	<img src="<c:url value="/resources/images/productoSinFoto_chica.png"/>" alt="" class="imageCenter">
     </div>
     </c:if>
     <div class='row'>
