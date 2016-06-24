@@ -229,11 +229,7 @@
     </div>
     <c:if test="${not empty productoForm.imagen}">
 	<div class='row'>
-        <div class='col-sm-12'>    
-			<div class="form-group" >
-				<img src="${pathBase}${productoForm.id}?imagen" alt="">
-			</div>
-        </div>
+       	<img src="${pathBase}${productoForm.id}?imagen" alt="">
     </div>
     </c:if>
     <div class='row'>

@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
-	<div class="navbar-default sidebar" style="margin-top: 0px;">
+	<div class="navbar-default sidebar" style="margin-top: 0px; width: 85%">
 		<div class="sidebar-nav navbar-collapse" id="bs-example-navbar-collapse-2">
 		    <ul class="nav" id="side-menu">
 		    	<!-- 
