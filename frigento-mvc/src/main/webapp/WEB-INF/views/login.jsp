@@ -1,35 +1,54 @@
 <%@ include file="/WEB-INF/views/include.jsp"%>
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><fmt:message key="login.title" /></title>
-	<link href="<c:url value="/resources/css/bootstrap.min.css" />"
-		rel="stylesheet" />
-	<link href="<c:url value="/resources/css/font-awesome.min.css" />"
-		rel="stylesheet" />
-		
-	<script src="<c:url value="/resources/js/jquery.min.js" />"></script>
-	<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
-</head>
 
-<body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#msgLogin').slideUp(1);
+	});
+	
+	function submitLogin(form){
+		if(!bodyBlock){
+			blockControl($('#idMain'));
+			bodyBlock = true;				
+		}
+		$('#msgLogin').slideUp(1);
+		$.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(result) {
+            	//Si tengo respuesta JSON es porque contiene errores 
+            	try {
+            		var obj = JSON.parse(result);
+            		$('#msgLogin').html(obj.mensajeGenerico);
+            		$('#msgLogin').slideDown(400);
+            		//Desbloqueo pantalla
+	            	$('#idMain').unblock();
+	    			bodyBlock = false;
+            		return;
+            	}
+            	catch(err) {
+                	//Desbloqueo pantalla
+                	$('#idMain').unblock();
+        			bodyBlock = false;
+        			//Cargo contenido
+                	$('#idMain').html(result);
+        			//Levanto Modal
+        			$('#idModalMensaje').modal('show');
+            	}
+            }
+        });
+	}
+	
+</script>
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4><fmt:message key="login.subtitle" /></h4>
+</div>
+<div class="modal-body">
 	<div style="width: 30%; margin: 0 auto; min-width: 300px">
-		<p>
-			<h2><fmt:message key="login.subtitle" /></h2>
-		</p>
 		<c:url var="loginUrl" value="/login" />
-		<form action="${loginUrl}" method="post" class="form-horizontal" autocomplete="off">
-			<p>
-				<c:if test="${param.error != null}">
-					<div class="alert alert-danger">${param.msg}</div>
-				</c:if>
-				<c:if test="${param.logout != null}">
-					<div class="alert alert-success">
-						<fmt:message key="login.logout.ok" />
-					</div>
-				</c:if>
-			</p>
+		<form action="${loginUrl}" method="post" class="form-horizontal" autocomplete="off" id="idForm">
 			<div class="input-group input-sm">
 				<label class="input-group-addon" for="username"><i
 					class="fa fa-user"></i></label> <input type="text" class="form-control"
@@ -42,14 +61,14 @@
 					id="password" name="password"
 					placeholder='<fmt:message key="login.password"/>' required>
 			</div>
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
-
-			<div class="form-actions">
-				<input type="submit" class="btn btn-block btn-primary btn-default"
-					value="<fmt:message key="boton.ingresar"/>">
+			<div id="msgLogin" class="alert alert-danger">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 			</div>
 		</form>
 	</div>
-</body>
-</html>
+</div>
+<div class="modal-footer">
+	<input type="button" class="btn btn-block btn-primary btn-default"
+		value="<fmt:message key="boton.ingresar"/>" onclick="javascript:submitLogin($('#idForm'))">
+</div>

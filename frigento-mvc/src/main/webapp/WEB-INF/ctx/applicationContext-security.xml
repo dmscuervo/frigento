@@ -7,7 +7,7 @@
     
     <!-- HTTP security configurations -->
     <http auto-config="true" use-expressions="true">
-        <form-login login-page="/login" username-parameter="username" password-parameter="password" authentication-failure-url="/autenticationFailure" />
+        <form-login login-page="/login" username-parameter="username" password-parameter="password" authentication-failure-url="/autenticationFailure" default-target-url="/successLogin" />
         <!-- Configure these elements to secure URIs in your application 
         <intercept-url pattern="/pedido/**" access="hasRole('ROLE_ADMIN')" />
         <intercept-url pattern="/categoria/**" access="hasRole('ROLE_ADMIN')" />

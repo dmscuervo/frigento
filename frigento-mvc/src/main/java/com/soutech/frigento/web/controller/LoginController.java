@@ -5,17 +5,14 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -29,6 +26,7 @@ import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.ProductoService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Constantes;
+import com.soutech.frigento.web.validator.JSONHandler;
 
 @Controller
 public class LoginController extends GenericController {
@@ -40,19 +38,50 @@ public class LoginController extends GenericController {
     public RelProductoCategoriaService relProductoCategoriaService;
 	@Autowired
     public ProductoService productoService;
+	@Autowired
+    private JSONHandler jSONHandler;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage() {
+    public String loginPage(HttpServletRequest request, HttpServletResponse response) {
+		if(request.getParameter("logout") != null){
+			logger.debug("inicio - Logout");
+			Short idCat;
+	        try{
+	        	idCat = new Short(Parametros.getValor(Parametros.CATEGORIA_ID_VENTA_ONLINE));
+	        }catch(Exception e){
+	        	throw new RuntimeException(getMessage("mensaje.error.parametro", Parametros.CATEGORIA_ID_VENTA_ONLINE));
+	        }
+			List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoria(idCat , Constantes.ESTADO_REL_VIGENTE, new String[]{"incremento * r.producto.costoActual"}, new String[]{"asc"});
+			request.setAttribute("rpcListOnline", rpcList);
+			logger.debug("fin - Logout");
+	        return "home";
+		}
+		logger.debug("inicio/fin - Login");
         return "login";
     }
 	
-	@RequestMapping(value="/logout", method = RequestMethod.GET)
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){    
-            new SecurityContextLogoutHandler().logout(request, response, auth);
+//	@RequestMapping(value="/logout", method = RequestMethod.GET)
+//    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null){    
+//            new SecurityContextLogoutHandler().logout(request, response, auth);
+//        }
+//        String json = jSONHandler.getMensajeGenericoJSON(getMessage("login.logout.ok"));
+//        request.setAttribute("messageAjax", json);
+//		return "ajax/value";
+//    }
+	
+	@RequestMapping(value = "/successLogin", method = RequestMethod.GET)
+    public String successLogin(HttpServletRequest request, HttpServletResponse response) {
+		Short idCat;
+        try{
+        	idCat = new Short(Parametros.getValor(Parametros.CATEGORIA_ID_VENTA_ONLINE));
+        }catch(Exception e){
+        	throw new RuntimeException(getMessage("mensaje.error.parametro", Parametros.CATEGORIA_ID_VENTA_ONLINE));
         }
-        return "redirect:/home?logout";
+		List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoria(idCat , Constantes.ESTADO_REL_VIGENTE, new String[]{"incremento * r.producto.costoActual"}, new String[]{"asc"});
+		request.setAttribute("rpcListOnline", rpcList);
+        return "home";
     }
 	
 	@RequestMapping(value="/home")
@@ -74,8 +103,9 @@ public class LoginController extends GenericController {
 	
 	@RequestMapping(value = "/autenticationFailure", method = RequestMethod.GET)
     public String autenticationFailure(ModelMap model) {
-        model.addAttribute("msg", getMessage("login.error.user.password", null));
-        return "redirect:/login?error";
+        String json = jSONHandler.getMensajeGenericoJSON(getMessage("login.error.user.password"));
+		model.addAttribute("messageAjax", json);
+		return "ajax/value";
     }
 	
 	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)

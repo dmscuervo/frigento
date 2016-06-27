@@ -1,43 +1,76 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
-<html >
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title><fmt:message key="app.title"/></title>
-    
-    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/metisMenu.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/timeline.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/sb-admin-2.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/morris.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/font-awesome.min.css" />" rel="stylesheet">
-    
-    <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
-    <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
-    <script src="<c:url value="/resources/js/metisMenu.min.js" />"></script>
-    <script src="<c:url value="/resources/js/raphael-min.js" />"></script>
-    <script src="<c:url value="/resources/js/morris.min.js" />"></script>
-    <script src="<c:url value="/resources/js/morris-data.js" />"></script>
-    <script src="<c:url value="/resources/js/sb-admin-2.js" />"></script>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-    <div id="wrapper">
-			<jsp:include page="body.jsp" />
-        <!-- /#page-content -->
-    </div>
-    <!-- /#wrapper -->
-</body>
-</html>
+<!-- Navigation -->
+<!-- <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0"> -->
+ <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+     <div class="container">
+         <!-- Brand and toggle get grouped for better mobile display -->
+         <div class="navbar-header">
+             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                 <span class="sr-only">Toggle navigation</span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+             </button>
+             <button type="button" id="btToggle2" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                 <span class="sr-only">Toggle navigation</span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+                 <span class="icon-bar"></span>
+             </button>
+             <a class="navbar-brand" href="#">Start Bootstrap</a>
+         </div>
+         <!-- Collect the nav links, forms, and other content for toggling -->
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+             <ul class="nav navbar-nav">
+                 <li>
+                     <a href="#">About</a>
+                 </li>
+                 <li>
+                     <a href="javascript:loadInPopUp('usuario?registrar')">Registrarse</a>
+                 </li>
+    <sec:authorize access="!isAuthenticated()">
+                 <li>
+                     <a href="javascript:loadInPopUp('login')">Ingresar</a>
+                 </li>
+       </sec:authorize>
+	<sec:authorize access="isAuthenticated()">
+	            <li class="dropdown">
+	                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+	                </a>
+	                <ul class="dropdown-menu dropdown-user">
+	                    <li><a href="#"><i class="fa fa-user fa-fw"></i><fmt:message key="menu.header.user.profile"/></a>
+	                    </li>
+	                    <li class="divider"></li>
+	                    <li>
+	                    	<a href="javascript:loadInMain('logout')"><i class="fa fa-sign-out fa-fw"></i><fmt:message key="menu.header.user.logout"/></a>
+	                    </li>
+	                </ul>
+	            </li>
+	</sec:authorize>
+             </ul>
+         </div>
+         <!-- /.navbar-collapse -->
+     </div>
+     <!-- /.container -->
+</nav>
+<div id="page" class="container" style="width: 70%">
+ 	<jsp:include page="body.jsp" />
+ 	</div>
+   <!-- /#page-content -->
+   <!-- Div para blockControl -->
+   <div id="loadingDiv" style="display: none;overflow: auto; height: auto;width: 99%;">
+	<table id="loading-img" cellpadding="0" cellspacing="0">
+		<tr>
+			<td><img src="<c:url value="/resources/images/ajax-loader.gif"/> "></td>
+			<td style="width: 5px;">&nbsp;</td>
+			<td style="FONT-FAMILY: Arial,Verdana;font-size: 12px; font-weight: bold; vertical-align: middle;">Procesando ...</td>
+		</tr>
+	</table>
+</div>
+<div class="modal fade" id="idModalPopUp" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content" id="idModalPopUpContent"></div>
+	</div>
+</div>
