@@ -74,23 +74,29 @@
 <!-- /.row -->
 <div class="row">
 
-<sec:authorize access="isAuthenticated()">
+<!-- sec:authorize access="isAuthenticated()"-->
+<sec:authorize access="hasRole('ROLE_ADMIN')">
 	<div class="col-md-3" >
 		<%@ include file="/WEB-INF/views/menuSideBar.jsp" %>
     </div>
-	<sec:authorize access="hasRole('ROLE_USER')">
+	<%-- <sec:authorize access="hasRole('ROLE_USER')">
 		<c:set var="altoPantallaMax" value="80%"/>
 	</sec:authorize>
-	<sec:authorize access="hasRole('ROLE_ADMIN')">
+	<sec:authorize access="hasRole('ROLE_ADMIN')"> --%>
 		<c:set var="altoPantallaMax" value="100%"/>
-	</sec:authorize>
+	<%-- </sec:authorize> --%>
     <c:set var="col" value="col-md-9" />
+</sec:authorize>
+<sec:authorize access="hasRole('ROLE_USER')">
+	<c:set var="altoPantallaMax" value="80%"/>
+	<c:set var="col" value="col-md-12" />
 </sec:authorize>
 <sec:authorize access="!isAuthenticated()">
 	<c:set var="altoPantallaMax" value="100%"/>
 	<c:set var="col" value="col-md-12" />
 </sec:authorize>
     <div class="${col}" id="page-content" style="height: ${altoPantallaMax}; overflow: auto">
+    	<sec:authorize access="!isAuthenticated()">
 	    	<div class="row carousel-holder">
 			    <div class="col-md-12">
 			        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -119,11 +125,26 @@
 			        </div>
 			    </div>
 			</div>
-			
+		</sec:authorize>	
 			<div class="row">
 			<c:forEach var="rpc" items="${rpcListOnline}" varStatus="i">
 				<div class="col-sm-4 col-lg-4 col-md-4">
 			        <div class="thumbnail">
+			            <sec:authorize access="hasRole('ROLE_USER')">
+			            <div class="shopping-cart">
+			                <p class="pull-right">
+			                	<a href="#"><span class="fa fa-plus-circle" style="color: green"></span></a>
+			                    <select id="idCantidad">
+			                		<c:forEach begin="1" end="10" step="1" var="canti">
+			                			<option value="${canti/2}">${canti/2}&nbsp;Kg</option>
+			                		</c:forEach>
+			                	</select>
+			                </p>
+			                <p>
+			                	<span class="fa fa-shopping-cart" style="font-size: 1.5em;"></span>
+			                </p>
+			            </div>	
+			            </sec:authorize>
 			        	<c:if test="${not empty rpc.producto.imagen}">
 			        		<c:set var="urlImagen" value="${pathBase}${rpc.producto.id}?imagen"/>
 			        		<img src="${urlImagen}" alt="">

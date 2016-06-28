@@ -40,6 +40,18 @@ body {
     color: #d17581;
 }
 
+.shopping-cart {
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+    font-size: 18px;
+    color: #337ab7;
+}
+
+.shopping-cart p {
+    margin: 0 0 5px;
+}
+
 .thumbnail {
     padding: 0;
 }

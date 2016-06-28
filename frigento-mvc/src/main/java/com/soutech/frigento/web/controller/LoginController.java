@@ -44,17 +44,9 @@ public class LoginController extends GenericController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage(HttpServletRequest request, HttpServletResponse response) {
 		if(request.getParameter("logout") != null){
-			logger.debug("inicio - Logout");
-			Short idCat;
-	        try{
-	        	idCat = new Short(Parametros.getValor(Parametros.CATEGORIA_ID_VENTA_ONLINE));
-	        }catch(Exception e){
-	        	throw new RuntimeException(getMessage("mensaje.error.parametro", Parametros.CATEGORIA_ID_VENTA_ONLINE));
-	        }
-			List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoria(idCat , Constantes.ESTADO_REL_VIGENTE, new String[]{"incremento * r.producto.costoActual"}, new String[]{"asc"});
-			request.setAttribute("rpcListOnline", rpcList);
-			logger.debug("fin - Logout");
-	        return "home";
+			logger.debug("realizo - Logout");
+			logger.debug("redirecciono a successLogin");
+			return successLogin(request, response);
 		}
 		logger.debug("inicio/fin - Login");
         return "login";
