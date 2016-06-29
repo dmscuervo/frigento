@@ -42,7 +42,7 @@
             <a href="#">
 	            <span class="pull-left"><fmt:message key="online.carrito.ver"/></span>
             </a>
-            <a href="#">
+            <a href="javascript:vaciarCarrito()" id="idLinkVaciar">
                 <span class="pull-right"><i class="fa fa-times-circle"></i>&nbsp;<fmt:message key="online.carrito.vaciar"/></span>
             </a>
                 <div class="clearfix"></div>
