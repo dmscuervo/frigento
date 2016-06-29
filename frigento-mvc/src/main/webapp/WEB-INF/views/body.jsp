@@ -12,17 +12,17 @@
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge">26</div>
-                        <div>Productos</div>
+                        <div><fmt:message key="online.pedido.pendientes"/></div>
                     </div>
                 </div>
             </div>
+            <div class="panel-footer">
             <a href="#">
-                <div class="panel-footer">
-                    <span class="pull-left">Ver detalle</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
+                <span class="pull-left"><fmt:message key="online.pedido.ver"/></span>
             </a>
+	            <span class="pull-right">&nbsp;</span>
+	            <div class="clearfix"></div>
+            </div>
         </div>
     </div>
     <div class="col-lg-4 col-md-6">
@@ -33,18 +33,20 @@
                         <i class="fa fa-shopping-cart fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">12</div>
-                        <div>Pedidos</div>
+                        <div class="huge" id="idCantCarrito">0</div>
+                        <div><fmt:message key="online.carrito.productos"/></div>
                     </div>
                 </div>
             </div>
+            <div class="panel-footer">
             <a href="#">
-                <div class="panel-footer">
-                    <span class="pull-left">Ver Detalle</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
+	            <span class="pull-left"><fmt:message key="online.carrito.ver"/></span>
             </a>
+            <a href="#">
+                <span class="pull-right"><i class="fa fa-times-circle"></i>&nbsp;<fmt:message key="online.carrito.vaciar"/></span>
+            </a>
+                <div class="clearfix"></div>
+            </div>
         </div>
     </div>
     <div class="col-lg-4 col-md-6">
@@ -56,17 +58,17 @@
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge">124</div>
-                        <div>Mis datos</div>
+                        <div><fmt:message key="online.perfil.entrega"/></div>
                     </div>
                 </div>
             </div>
-            <a href="login">
-                <div class="panel-footer">
-                    <span class="pull-left">Ver Detalle</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+            <div class="panel-footer">
+	            <a href="login">
+                    <span class="pull-left"><fmt:message key="online.perfil.ver"/></span>
+    	        </a>
+                    <span class="pull-right">&nbsp;</span>
                     <div class="clearfix"></div>
-                </div>
-            </a>
+   	        </div>
         </div>
     </div>
 </div>
@@ -133,8 +135,8 @@
 			            <sec:authorize access="hasRole('ROLE_USER')">
 			            <div class="shopping-cart">
 			                <p class="pull-right">
-			                	<a href="#"><span class="fa fa-plus-circle" style="color: green"></span></a>
-			                    <select id="idCantidad">
+			                	<a href="javascript:agregarCarrito('${rpc.producto.id}', ${i.index})"><span class="fa fa-plus-circle" style="color: green"></span></a>
+			                    <select id="idCantidad-${i.index}">
 			                		<c:forEach begin="1" end="10" step="1" var="canti">
 			                			<option value="${canti/2}">${canti/2}&nbsp;Kg</option>
 			                		</c:forEach>

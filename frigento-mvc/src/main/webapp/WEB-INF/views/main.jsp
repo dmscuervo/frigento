@@ -116,6 +116,24 @@
             });
     	}
     	
+    	function agregarCarrito(idProd, indice){
+    		var cant = $('#idCantidad-'+indice).val();
+    		console.log(idProd);
+    		console.log(cant);
+    		var url = '${pathBase}' + 'carrito/agregar?idProd='+idProd;
+    		console.log(url);
+    		$.ajax({
+                url: url,
+                type: 'POST',
+                data: {idProd: idProd, cantidad: cant},
+                success: function(result) {
+                	console.log(result);
+                	//var obj = JSON.parse(result);
+                	//$('#idCantCarrito').html(obj.mensajeGenerico);
+                }
+            });
+    	}
+    	
     </script>
 
 </head>
