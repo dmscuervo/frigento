@@ -3,6 +3,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#msgLogin').slideUp(1);
+		$('#username').focus();
 	});
 	
 	function submitLogin(form){
@@ -50,15 +51,17 @@
 		<c:url var="loginUrl" value="/login" />
 		<form action="${loginUrl}" method="post" class="form-horizontal" autocomplete="off" id="idForm">
 			<div class="input-group input-sm">
-				<label class="input-group-addon" for="username"><i
-					class="fa fa-user"></i></label> <input type="text" class="form-control"
-					id="username" name="username"
+				<label class="input-group-addon" for="username">
+					<i class="fa fa-user"></i>
+				</label>
+				<input type="text" class="form-control" id="username" name="username"
 					placeholder='<fmt:message key="login.username"/>' required>
 			</div>
 			<div class="input-group input-sm">
-				<label class="input-group-addon" for="password"><i
-					class="fa fa-lock"></i></label> <input type="password" class="form-control"
-					id="password" name="password"
+				<label class="input-group-addon" for="password">
+					<i class="fa fa-lock"></i>
+				</label> 
+				<input type="password" class="form-control" id="password" name="password"
 					placeholder='<fmt:message key="login.password"/>' required>
 			</div>
 			<div id="msgLogin" class="alert alert-danger">
@@ -69,6 +72,6 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<input type="button" class="btn btn-block btn-primary btn-default"
+	<input type="button" class="btn btn-block btn-primary btn-default" tabindex="-1"
 		value="<fmt:message key="boton.ingresar"/>" onclick="javascript:submitLogin($('#idForm'))">
 </div>

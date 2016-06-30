@@ -1,5 +1,14 @@
 <%@ include file="/WEB-INF/views/include.jsp" %>
 <c:url var="pathBase" value="/" />
+
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		$('#idLinkVaciar').slideUp(0);	
+	});
+	
+</script>
+
 <!-- /.row -->
 <sec:authorize access="hasRole('ROLE_USER')">
 <div class="row">
@@ -39,11 +48,11 @@
                 </div>
             </div>
             <div class="panel-footer">
-            <a href="#">
+            <a href="javascript:verCarrito()">
 	            <span class="pull-left"><fmt:message key="online.carrito.ver"/></span>
             </a>
-            <a href="javascript:vaciarCarrito()" id="idLinkVaciar">
-                <span class="pull-right"><i class="fa fa-times-circle"></i>&nbsp;<fmt:message key="online.carrito.vaciar"/></span>
+            <a href="javascript:vaciarCarrito()">
+                <span class="pull-right" id="idLinkVaciar"><i class="fa fa-times-circle"></i>&nbsp;<fmt:message key="online.carrito.vaciar"/></span>
             </a>
                 <div class="clearfix"></div>
             </div>
@@ -138,7 +147,7 @@
 			                	<a href="javascript:agregarCarrito('${rpc.producto.id}', ${i.index})"><span class="fa fa-plus-circle" style="color: green"></span></a>
 			                    <select id="idCantidad-${i.index}">
 			                		<c:forEach begin="1" end="10" step="1" var="canti">
-			                			<option value="${canti/2}">${canti/2}&nbsp;Kg</option>
+			                			<option value="${canti/2}">${canti/2}&nbsp;<fmt:message key="venta.cantidad.kg" /></option>
 			                		</c:forEach>
 			                	</select>
 			                </p>

@@ -73,6 +73,28 @@
             });
     	}
     	
+    	function submitInMain(form){
+    		if(!bodyBlock){
+				blockControl($('#idMain'));
+				bodyBlock = true;				
+			}
+    		
+    		$.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(result) {
+                	//Desbloqueo pantalla
+                	$('#idMain').unblock();
+        			bodyBlock = false;
+        			//Cargo contenido
+                	$('#idMain').html(result);
+        			//Levanto Modal
+        			$('#idModalMensaje').modal('show');
+                }
+            });
+    	}
+    	
     	function loadInPopUp(path){
     		var url = '${pathBase}' + path;
     		$('#idModalPopUpContent').load(url, function(data){
@@ -133,7 +155,7 @@
     	
     	function vaciarCarrito(){
     		var url = '${pathBase}' + 'carrito/vaciar';
-    		console.log(url);
+    		
     		$.ajax({
                 url: url,
                 type: 'GET',
@@ -143,6 +165,27 @@
                 	$('#idCantCarrito').html(obj.mensajeGenerico);
                 }
             });
+    	}
+    	
+    	function verCarrito(){
+    		var url = '${pathBase}' + 'carrito/ver';
+    		
+    		$('#idModalPopUpContent').load(url, function(result){
+    			//Si tengo respuesta JSON es porque contiene errores 
+    			try {
+            		var obj = JSON.parse(result);
+            		//Desbloqueo pantalla
+	            	$('#page').unblock();
+	    			bodyBlock = false;
+	    			$('#idModalPopUpContent').html(obj.mensajeGenerico);
+	    			$('#idModalPopUp').modal('show');
+	    			return;
+            	}
+            	catch(err) {
+            		$('#idModalPopUp').modal('show');
+            	}
+    			
+    		});
     	}
     	
     </script>
