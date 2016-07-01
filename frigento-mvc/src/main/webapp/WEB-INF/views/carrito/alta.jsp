@@ -40,7 +40,6 @@
 		
 		//Ajusto los anchos de la tabla
 		dataTableVentaAlta.columns.adjust().draw();
-		
 	});
 	
 	function cargarForm(form){

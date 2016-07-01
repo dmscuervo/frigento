@@ -37,7 +37,6 @@
    
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.blockUI.js" />"></script>
-<script src="<c:url value="/resources/js/frigento.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/metisMenu.min.js" />"></script>
 <script src="<c:url value="/resources/js/raphael-min.js" />"></script>
@@ -46,7 +45,7 @@
 <script src="<c:url value="/resources/js/sb-admin-2.js" />"></script>
 
 <%-- DataTable js --%>
-<script type="text/javascript" src="<c:url value="/resources/js/datatables/jquery.dataTables.min.js" />" ></script>
+<script type="text/javascript" src="<c:url value="/resources/js/datatables/jquery.dataTables.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.bootstrap.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.autoFill.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/autoFill.bootstrap.min.js" />" ></script>
@@ -58,6 +57,8 @@
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.scroller.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.select.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.buttons.min.js" />" ></script>
+<%-- La coloco al final porque sobreescribe una funcion de jquery.dataTables.js --%>
+<script src="<c:url value="/resources/js/frigento.js" />"></script>
 
 <script src="<c:url value="/resources/js/moment-with-locales.min.js" />" ></script>
 <script src="<c:url value="/resources/js/bootstrap-datetimepicker.js" />" ></script>
