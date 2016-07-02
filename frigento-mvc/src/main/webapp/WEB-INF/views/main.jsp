@@ -5,6 +5,7 @@
     <title>
     	<fmt:message key="app.title" />&nbsp;${applicationScope.VERSION_APP}
     </title>
+    <link href="${pathBase}resources/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     
     <%@ include file="/WEB-INF/views/sources.jsp" %>
 
