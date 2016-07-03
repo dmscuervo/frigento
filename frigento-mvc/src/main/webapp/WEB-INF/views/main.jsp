@@ -171,22 +171,39 @@
     	function verCarrito(){
     		var url = '${pathBase}' + 'carrito/ver';
     		
+    		var huboError = false;
     		$('#idModalPopUpContent').load(url, function(result){
     			//Si tengo respuesta JSON es porque contiene errores 
     			try {
             		var obj = JSON.parse(result);
-            		//Desbloqueo pantalla
-	            	$('#page').unblock();
-	    			bodyBlock = false;
-	    			$('#idModalPopUpContent').html(obj.mensajeGenerico);
-	    			$('#idModalPopUp').modal('show');
-	    			return;
+            		$('#idModalPopUpContent').html(obj.mensajeGenerico);
+        			$('#idModalPopUp').modal('show');
+            		huboError = true;
+        			return;
             	}
             	catch(err) {
-            		$('#idModalPopUp').modal('show');
+		    		$('#idModalPopUp').modal('show');
+            		//$('#idModalPopUpContent').html(result);
             	}
     			
     		});
+       		//El datatable se carga despues de cargar el popup porque sino no ajusta los anchos
+    		if(!huboError){
+	       		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
+	    			dataTableVentaAlta = $('#idGrillaItems').DataTable({
+	    		    	scrollY:        300,
+	    		    	scrollX: 		false,
+	    		        scrollCollapse: true,
+	    		        paging: false,
+	    		    	order: [[ 1, "asc" ]],
+	    		    	searching: false,
+	    		    	columnDefs: [
+	    		                       { "orderable": false, "targets": 0 }
+	    		                     ]
+	    		    }); 
+	    		}
+    		}
+    		
     	}
     	
     </script>

@@ -72,3 +72,9 @@ function aplicarRestriccionesInputs(divId){
 		$(this).val(value.toUpperCase());
 	});
 }
+
+/* Permite definir una funcion para datatable
+$.fn.dataTable.Api.register( 'unaFuncion', function (settings) {
+	alert('asdasd');
+} );
+*/

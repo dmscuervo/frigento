@@ -12,20 +12,6 @@
 		var tieneError = '${msgError}';
 		$('#msgError').text(tieneError);
 		
-		if(!$.fn.DataTable.isDataTable('#idGrillaItems')){
-			dataTableVentaAlta = $('#idGrillaItems').DataTable({
-		    	scrollY:        300,
-		    	scrollX: 		false,
-		        scrollCollapse: true,
-		        paging: false,
-		    	order: [[ 1, "asc" ]],
-		    	searching: false,
-		    	columnDefs: [
-		                       { "orderable": false, "targets": 0 }
-		                     ]
-		    }); 
-		}
-		
 		$('#datetimepickerVentaFechaEntrega').datetimepicker({
 			ignoreReadonly: true,
 			locale: 'es'
@@ -38,8 +24,6 @@
 			$(this).val(value);
 		});
 		
-		//Ajusto los anchos de la tabla
-		dataTableVentaAlta.columns.adjust().draw();
 	});
 	
 	function cargarForm(form){

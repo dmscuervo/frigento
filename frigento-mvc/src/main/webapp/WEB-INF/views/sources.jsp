@@ -45,7 +45,7 @@
 <script src="<c:url value="/resources/js/sb-admin-2.js" />"></script>
 
 <%-- DataTable js --%>
-<script type="text/javascript" src="<c:url value="/resources/js/datatables/jquery.dataTables.js" />" ></script>
+<script type="text/javascript" src="<c:url value="/resources/js/datatables/jquery.dataTables.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.bootstrap.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/dataTables.autoFill.min.js" />" ></script>
 <script type="text/javascript" src="<c:url value="/resources/js/datatables/autoFill.bootstrap.min.js" />" ></script>
