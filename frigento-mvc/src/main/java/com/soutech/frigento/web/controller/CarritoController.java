@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.dto.ItemVentaDTO;
 import com.soutech.frigento.dto.Parametros;
@@ -31,7 +32,6 @@ import com.soutech.frigento.web.validator.JSONHandler;
 
 @Controller
 @RequestMapping(value="/carrito")
-@SessionAttributes(names={"carrito"})
 @Secured({"ROLE_USER"})
 public class CarritoController extends GenericController {
 
@@ -45,11 +45,11 @@ public class CarritoController extends GenericController {
     
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/agregar", method = RequestMethod.POST, produces = "text/html")
-    public String agregar(@RequestParam(value = "idProd", required = true) Integer idProducto, @RequestParam(value = "cantidad", required = true) BigDecimal cantidad, Model uiModel) {
-		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) uiModel.asMap().get("carrito");
+    public String agregar(@RequestParam(value = "idProd", required = true) Integer idProducto, @RequestParam(value = "cantidad", required = true) BigDecimal cantidad, HttpServletRequest request) {
+		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) request.getSession().getAttribute("carrito");
 		if(carrito == null){
 			carrito = new HashMap<Integer, BigDecimal>();
-			uiModel.addAttribute("carrito", carrito);
+			request.getSession().setAttribute("carrito", carrito);
 			carrito.put(idProducto, cantidad);
 		}else{
 			if(carrito.containsKey(idProducto)){
@@ -58,32 +58,34 @@ public class CarritoController extends GenericController {
 				carrito.put(idProducto, cantidad.setScale(2, RoundingMode.HALF_UP));
 			}
 		}
+		request.getSession().setAttribute("carritoSize", carrito.size());
 		String json = jSONHandler.getMensajeGenericoJSON(String.valueOf(carrito.size()));
-		uiModel.addAttribute("messageAjax", json);
+		request.setAttribute("messageAjax", json);
 		return "ajax/value";
     }
     
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/vaciar", method = RequestMethod.GET, produces = "text/html")
-    public String vaciar(Model uiModel) {
-		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) uiModel.asMap().get("carrito");
+    public String vaciar(HttpServletRequest request) {
+		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) request.getSession().getAttribute("carrito");
 		String cantProd = "0";
 		if(carrito != null){
 			carrito = new HashMap<Integer, BigDecimal>();
-			uiModel.addAttribute("carrito", carrito);
+			request.getSession().setAttribute("carrito", carrito);
+			request.getSession().setAttribute("carritoSize", 0);
 		}
 		String json = jSONHandler.getMensajeGenericoJSON(cantProd);
-		uiModel.addAttribute("messageAjax", json);
+		request.setAttribute("messageAjax", json);
 		return "ajax/value";
     }
     
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/ver", method = RequestMethod.GET, produces = "text/html")
-    public String ver(Model uiModel) {
-		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) uiModel.asMap().get("carrito");
+    public String ver(Model uiModel, HttpServletRequest request) {
+		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) request.getSession().getAttribute("carrito");
 		if(carrito == null || carrito.size() == 0){
 			String json = jSONHandler.getMensajeGenericoJSON(getMessage("online.error.carrito.vacio"));
-			uiModel.addAttribute("messageAjax", json);
+			request.setAttribute("messageAjax", json);
 			return "ajax/value";
 		}
 		

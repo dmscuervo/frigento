@@ -4,7 +4,9 @@
 <script type="text/javascript">
 	
 	$(document).ready(function(){
-		$('#idLinkVaciar').slideUp(0);	
+		if('${carritoSize}' < 1){
+			$('#idLinkVaciar').slideUp(0);
+		}
 	});
 	
 </script>
@@ -34,6 +36,10 @@
             </div>
         </div>
     </div>
+    <c:set var="cantProd" value="0" />
+    <c:if test="${not empty carritoSize}">
+	    <c:set var="cantProd" value="${carritoSize}" />
+    </c:if>
     <div class="col-lg-4 col-md-6">
         <div class="panel panel-green">
             <div class="panel-heading">
@@ -42,7 +48,7 @@
                         <i class="fa fa-shopping-cart fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge" id="idCantCarrito">0</div>
+                        <div class="huge" id="idCantCarrito">${cantProd}</div>
                         <div><fmt:message key="online.carrito.productos"/></div>
                     </div>
                 </div>

@@ -87,6 +87,10 @@ public class Venta implements Serializable {
     @Column(name = "VERSION")
     private Short version;
     
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_OBSERVACION")
+    private Observacion observacion;
+    
     @Transient
     private Boolean conIva;
 
@@ -212,6 +216,14 @@ public class Venta implements Serializable {
 
 	public void setIncrementoIva(BigDecimal incrementoIva) {
 		this.incrementoIva = incrementoIva;
+	}
+
+	public Observacion getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(Observacion observacion) {
+		this.observacion = observacion;
 	}
 
 }

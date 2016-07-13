@@ -88,6 +88,7 @@
 			            <tr>
 			                <th style="white-space: nowrap;"><fmt:message key="venta.item.cantidad.kg" /></th>
 			                <th style="white-space: nowrap;"><fmt:message key="venta.item.producto" /></th>
+			                <th style="white-space: nowrap;"><fmt:message key="online.carrito.item.fechaEntrega" /></th>
 			            </tr>
 			        </thead>
 			        <tbody>
@@ -117,7 +118,7 @@
 									<form:hidden path="items[${status.index}].promocion.fechaDesde"/>
 								</c:if>
 			        		</td>
-			        		<td style="white-space: nowrap;">
+			        		<td style="white-space: nowrap; vertical-align: middle;">
 			        			<c:if test="${ not empty item.promocion }">
 			        				<fmt:message key="venta.promocion">
 			        					<fmt:param value="${item.promocion.cantidadMinima}" />
@@ -125,12 +126,39 @@
 			        			</c:if>
 			        			${item.producto.codigo} - ${item.producto.descripcion}
 			        		</td>
+			        		<td style="white-space: nowrap; vertical-align: middle; font-size: 0.75em;">
+			        			<fmt:message key="online.carrito.item.entrega1">
+			        				<fmt:param value="${item.entregaArgMessage}" />
+			        			</fmt:message><br>
+			        			<fmt:message key="online.carrito.item.entrega2">
+			        				<fmt:param value="${item.entregaArgMessage}" />
+			        			</fmt:message>
+			        		</td>
 			        	</tr>
 			        </c:forEach>
 			        </tbody>
 			</table>
 		</div>
 	</div>
+	<div class='row'>
+        <div class='col-sm-4'>    
+			<div class="form-group" >
+				<label class="col-sm-2 control-label" for="idObservacion" style="white-space: nowrap;">
+					<fmt:message key="online.carrito.observacion" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group">
+             			<form:textarea path="observacion" cssClass="form-control" id="idObservacion" />
+			</div>
+        </div>
+        <div class='col-sm-4'>
+        	<div class="form-group" >
+				<form:errors path="observacion" cssClass="form-validate" />
+			</div>
+        </div>
+    </div>
 	<div class='row'>
 		<div class='col-sm-12'>
 			<form:errors path="*" cssClass="form-validate" />
