@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <script type="text/javascript">
+
+	var ahora = moment();
 	
 	$(document).ready(function(){
 		//Aumento el ancho del modal 
@@ -17,14 +19,45 @@
 			locale: 'es'
 	    });
 		
-		//Aplico restricciones
-		$("[id^=idCantidad-]").keyup(function(){
-			var value=$(this).val();
-			 value=value.replace(/([^0-9.]*)/g, "");
-			$(this).val(value);
+		$("[id^=idCantidad-]").change(function(){
+			//Tengo que hacerlo asi por estar montado en un modal. Sino trae lo que primero cargo al parsear el html
+			var cantPedida = $(this).val();
+			$('#'+$(this).attr('id')+' option').each(function(){
+				if(cantPedida == $(this).val()){
+					console.log($(this).val());
+					$(this).attr('selected', 'selected');
+				}else{
+					$(this).removeAttr('selected');
+				}
+			});
+			actualizarFechaEntrega();
 		});
-		
+
+		actualizarFechaEntrega();
 	});
+	
+	function actualizarFechaEntrega(){
+		var entregaRapida = 1; //24hs
+		var entregaLenta = 3; //72hs
+		var cantProd = '${carritoSize}';
+		for(i = 0; i < cantProd; i++){
+			var cantPedida;
+			//Tengo que hacerlo asi por estar montado en un modal. Sino trae lo que primero cargo al parsear el html
+			$('#idCantidad-'+i+' option').each(function(){
+				if($(this).attr('selected') == 'selected'){
+					console.log('Encontre: ' + $(this).val());
+					cantPedida = $(this).val();
+				}
+			});
+			
+			var stock = $('#idStock-'+i).val();
+			if(cantPedida >= stock){
+				incremento = entregaLenta;
+			}
+		}
+		var incremento = entregaRapida;
+		$('#datetimepickerVentaFechaEntrega').data("DateTimePicker").minDate(ahora.add(incremento, 'days'));
+	}
 	
 	function cargarForm(form){
 		//Si la grilla esta filtrada por alguna busqueda la quito, sino el submit no se lleva todos los valores
@@ -109,6 +142,7 @@
 			        			<form:hidden path="items[${status.index}].producto.id"/>
 			        			<form:hidden path="items[${status.index}].producto.codigo"/>
 			        			<form:hidden path="items[${status.index}].producto.descripcion"/>
+			        			<form:hidden id="idStock-${status.index}"  path="items[${status.index}].producto.stock"/>
 			        			<form:hidden path="items[${status.index}].producto.iva"/>
 			        			<form:hidden path="items[${status.index}].importeVenta"/>
 								<form:hidden path="items[${status.index}].relProductoCategoriaId"/>
