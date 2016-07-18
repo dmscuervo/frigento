@@ -154,6 +154,30 @@
             });
     	}
     	
+    	function quitarCarrito(idProd){
+    		var r = confirm('<fmt:message key="online.carrito.quitar.confirm"/>');
+    		if (r != true) {
+    		    return;
+    		}
+    		var url = '${pathBase}' + 'carrito/quitar';
+    		$.ajax({
+                url: url,
+                type: 'POST',
+                data: {idProd: idProd},
+                success: function(result) {
+                	try {
+                		//Si hay json es porque no quedan productos en el carrito
+                		var obj = JSON.parse(result);
+                		$('#idLinkVaciar').slideUp(0);
+                    	$('#idCantCarrito').html('0');
+                    	$('#idModalPopUpContent').html(obj.mensajeGenerico);
+                	} catch(err) {
+	                	$('#idModalPopUpContent').html(result);
+                	}
+                }
+            });
+    	}
+    	
     	function vaciarCarrito(){
     		var url = '${pathBase}' + 'carrito/vaciar';
     		
@@ -195,10 +219,10 @@
 	    		    	scrollX: 		false,
 	    		        scrollCollapse: true,
 	    		        paging: false,
-	    		    	order: [[ 1, "asc" ]],
+	    		    	order: [[ 2, "asc" ]],
 	    		    	searching: false,
 	    		    	columnDefs: [
-	    		                       { "orderable": false, "targets": 0 }
+	    		                       { "orderable": false, "targets": [0, 1] }
 	    		                     ]
 	    		    }); 
 	    		}

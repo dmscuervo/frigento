@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.dto.ItemVentaDTO;
 import com.soutech.frigento.dto.Parametros;
@@ -32,6 +33,7 @@ import com.soutech.frigento.web.validator.JSONHandler;
 
 @Controller
 @RequestMapping(value="/carrito")
+@SessionAttributes(value="ventaForm")
 @Secured({"ROLE_USER"})
 public class CarritoController extends GenericController {
 
@@ -62,6 +64,33 @@ public class CarritoController extends GenericController {
 		String json = jSONHandler.getMensajeGenericoJSON(String.valueOf(carrito.size()));
 		request.setAttribute("messageAjax", json);
 		return "ajax/value";
+    }
+    
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/quitar", method = RequestMethod.POST, produces = "text/html")
+    public String quitar(@RequestParam(value = "idProd", required = true) Integer idProducto, Model uiModel, HttpServletRequest request) {
+		Map<Integer, BigDecimal> carrito = (Map<Integer, BigDecimal>) request.getSession().getAttribute("carrito");
+		if(carrito != null){
+			if(carrito.containsKey(idProducto)){
+				carrito.remove(idProducto);
+				//Lo quito del form
+				Venta venta = (Venta) uiModel.asMap().get("ventaForm");
+				List<ItemVentaDTO> items = venta.getItems();
+				for (ItemVentaDTO item : items) {
+					if(item.getProducto().getId().equals(idProducto)){
+						items.remove(item);
+						break;
+					}
+				}
+			}
+		}
+		request.getSession().setAttribute("carritoSize", carrito.size());
+		if(carrito.size() < 1){
+			String json = jSONHandler.getMensajeGenericoJSON(getMessage("online.error.carrito.vacio"));
+			request.setAttribute("messageAjax", json);
+			return "ajax/value";
+		}
+		return "carrito/alta";
     }
     
     @SuppressWarnings("unchecked")
