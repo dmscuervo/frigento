@@ -18,8 +18,6 @@
 		<td style="white-space: nowrap;"><form:select
 				path="items[${status.index}].cantidad" cssClass="form-control"
 				id="idCantidad-${status.index}">
-				<option value="-1">0&nbsp;
-					<fmt:message key="venta.cantidad.kg" /></option>
 				<c:forEach begin="1" end="50" step="1" var="canti">
 					<c:if test="${item.cantidad eq (canti/2)}">
 						<option value="${canti/2}" selected="selected">${canti/2}&nbsp;<fmt:message

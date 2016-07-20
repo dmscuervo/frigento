@@ -3,8 +3,6 @@
 
 <script type="text/javascript">
 
-	var ahora = moment();
-	
 	$(document).ready(function(){
 		//Aumento el ancho del modal 
 		$('.modal-dialog').css('width', '70%');
@@ -24,7 +22,6 @@
 			var cantPedida = $(this).val();
 			$('#'+$(this).attr('id')+' option').each(function(){
 				if(cantPedida == $(this).val()){
-					console.log($(this).val());
 					$(this).attr('selected', 'selected');
 				}else{
 					$(this).removeAttr('selected');
@@ -40,6 +37,7 @@
 		var entregaRapida = 1; //24hs
 		var entregaLenta = 3; //72hs
 		var cantProd = '${carritoSize}';
+		var incremento = entregaRapida;
 		for(i = 0; i < cantProd; i++){
 			var cantPedida;
 			//Tengo que hacerlo asi por estar montado en un modal. Sino trae lo que primero cargo al parsear el html
@@ -54,8 +52,13 @@
 				incremento = entregaLenta;
 			}
 		}
-		var incremento = entregaRapida;
+		var ahora = moment();
+		console.log(ahora);
+		console.log(incremento);
 		$('#datetimepickerVentaFechaEntrega').data("DateTimePicker").minDate(ahora.add(incremento, 'days'));
+		$('#datetimepickerVentaFechaEntrega').datetimepicker('setDate', ahora);
+		//$('#datetimepickerVentaFechaEntrega').datetimepicker("setDate", ahora);
+		console.log(ahora);
 	}
 	
 	function cargarForm(form){
