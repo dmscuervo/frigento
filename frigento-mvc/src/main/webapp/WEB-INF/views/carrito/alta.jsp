@@ -48,17 +48,13 @@
 			});
 			
 			var stock = $('#idStock-'+i).val();
-			if(cantPedida >= stock){
+			if(cantPedida > stock){
 				incremento = entregaLenta;
 			}
 		}
 		var ahora = moment();
-		console.log(ahora);
-		console.log(incremento);
 		$('#datetimepickerVentaFechaEntrega').data("DateTimePicker").minDate(ahora.add(incremento, 'days'));
-		$('#datetimepickerVentaFechaEntrega').datetimepicker('setDate', ahora);
-		//$('#datetimepickerVentaFechaEntrega').datetimepicker("setDate", ahora);
-		console.log(ahora);
+		$('#datetimepickerVentaFechaEntrega').data("DateTimePicker").date(ahora);
 	}
 	
 	function cargarForm(form){
@@ -93,14 +89,14 @@
 	<form:hidden path="incrementoIva"/>
 	<form:hidden path="version"/>
 	<div class='row'>
-        <div class='col-sm-4'>    
+        <div class='col-sm-2'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idFechaEntregar" style="white-space: nowrap;">
 					<fmt:message key="venta.fecha.entregar" />
 				</label>
 			</div>
         </div>
-        <div class='col-sm-4'>
+        <div class='col-sm-3'>
         	<div class="form-group">
              			<div class='input-group date' id='datetimepickerVentaFechaEntrega'>
              				<form:input path="fechaAEntregar" cssClass="form-control" id="idFechaEntregar" readonly="true" />
@@ -108,11 +104,6 @@
                      			<span class="glyphicon glyphicon-calendar"></span>
                  			</span>
              			</div>
-			</div>
-        </div>
-        <div class='col-sm-4'>
-        	<div class="form-group" >
-				<form:errors path="fechaAEntregar" cssClass="form-validate" />
 			</div>
         </div>
     </div>
@@ -134,26 +125,21 @@
 		</div>
 	</div>
 	<div class='row'>
-        <div class='col-sm-4'>    
+        <div class='col-sm-2'>    
 			<div class="form-group" >
 				<label class="col-sm-2 control-label" for="idObservacion" style="white-space: nowrap;">
 					<fmt:message key="online.carrito.observacion" />
 				</label>
 			</div>
         </div>
-        <div class='col-sm-4'>
+        <div class='col-sm-6'>
         	<div class="form-group">
              			<form:textarea path="observacion" cssClass="form-control" id="idObservacion" />
 			</div>
         </div>
-        <div class='col-sm-4'>
-        	<div class="form-group" >
-				<form:errors path="observacion" cssClass="form-validate" />
-			</div>
-        </div>
     </div>
 	<div class='row'>
-		<div class='col-sm-12'>
+		<div class='col-sm-8'>
 			<form:errors path="*" cssClass="form-validate" />
 		</div>
 	</div>
