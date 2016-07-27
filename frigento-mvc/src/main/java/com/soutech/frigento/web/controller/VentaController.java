@@ -124,7 +124,7 @@ public class VentaController extends GenericController {
 			item.setRelProductoCategoriaId(rpc.getId());
 			item.setImporteVenta(rpc.getProducto().getImporteVenta());
 			venta.getItems().add(item);
-			for (Promocion promo : producto.getPromociones()) {
+			for (Promocion promo : rpc.getPromociones()) {
 				if(Utils.estaDentroDeRelacion(ventaForm.getFecha(), promo.getFechaDesde(), promo.getFechaHasta())){
 					item = new ItemVentaDTO();
 					item.setProducto(producto);
@@ -246,7 +246,7 @@ public class VentaController extends GenericController {
 				}
 			}
 			venta.getItems().add(item);
-			for (Promocion promo : producto.getPromociones()) {
+			for (Promocion promo : rpc.getPromociones()) {
 				if(Utils.estaDentroDeRelacion(venta.getFecha(), promo.getFechaDesde(), promo.getFechaHasta())){
 					item = new ItemVentaDTO();
 					item.setProducto(producto);

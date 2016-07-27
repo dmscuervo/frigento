@@ -2,6 +2,7 @@ package com.soutech.frigento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -57,6 +59,14 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_PRODUCTO")
     private Producto producto;
+    
+    /**
+     * Inicialmente esta coleccion estaba sobre Producto. Pero cuando se desarrollo el ABM de Promociones se dio la necesidad de que las 
+     * promociones sean establecidas para un producto-categoria, ya que de esta manera, los incrementos se relacionan con los precios de venta
+     */
+    @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=false)
+    private List<Promocion> promociones;
 
     @Transient
     private BigDecimal precioCalculado;
@@ -152,6 +162,14 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
 
 	public void setEsNoVigente(Boolean esNoVigente) {
 		this.esNoVigente = esNoVigente;
+	}
+	
+	public List<Promocion> getPromociones() {
+		return promociones;
+	}
+
+	public void setPromociones(List<Promocion> promociones) {
+		this.promociones = promociones;
 	}
 
 	@Override

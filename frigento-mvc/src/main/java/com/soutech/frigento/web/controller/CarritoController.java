@@ -138,7 +138,7 @@ public class CarritoController extends GenericController {
 				ItemVentaDTO item;
 				Producto producto = rpc.getProducto();
 				Boolean esPromo = Boolean.FALSE;
-				for (Promocion promo : producto.getPromociones()) {
+				for (Promocion promo : rpc.getPromociones()) {
 					if(Utils.estaDentroDeRelacion(venta.getFecha(), promo.getFechaDesde(), promo.getFechaHasta())){
 						item = new ItemVentaDTO();
 						item.setProducto(producto);

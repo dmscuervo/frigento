@@ -49,6 +49,18 @@
 	            <!-- /.nav-second-level -->
 	        </li>
 	        <li>
+	            <a href="#"><i class="fa fa-money fa-fw"></i> <fmt:message key="menu.promocion"/><span class="fa arrow"></span></a>
+	            <ul class="nav nav-second-level">
+	                <li>
+	                    <a href="javascript:loadInBody('promocion?alta')"><fmt:message key="menu.promocion.alta"/></a>
+	                </li>
+	                <li>
+	                    <a href="javascript:loadInBody('promocion?estado=A&sortFieldName=fechaDesde&sortOrder=desc')"><fmt:message key="menu.promocion.listar"/></a>
+	                </li>
+	            </ul>
+	            <!-- /.nav-second-level -->
+	        </li>
+	        <li>
 	            <a href="forms.html"><i class="fa fa-truck fa-fw"></i> <fmt:message key="menu.pedido"/><span class="fa arrow"></span></a>
 	            <ul class="nav nav-second-level">
 	                <li>

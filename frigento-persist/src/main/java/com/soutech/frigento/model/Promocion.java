@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,8 +50,11 @@ public class Promocion implements Serializable {
     //@Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaHasta;
-	
-	public Integer getId() {
+    
+    @Transient
+    private Short idRelProdCatSel;
+    
+    public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
@@ -80,5 +84,12 @@ public class Promocion implements Serializable {
 	public void setFechaHasta(Date fechaHasta) {
 		this.fechaHasta = fechaHasta;
 	}
+	public Short getIdRelProdCatSel() {
+		return idRelProdCatSel;
+	}
+	public void setIdRelProdCatSel(Short idRelProdCatSel) {
+		this.idRelProdCatSel = idRelProdCatSel;
+	}
+	
 	
 }

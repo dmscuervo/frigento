@@ -5,6 +5,8 @@
 	$(document).ready(function() {
 		if(!$.fn.DataTable.isDataTable('#idGrillaPed')){
 	    	$('#idGrillaPed').DataTable({
+	    		scrollX: 		true,
+   		        scrollCollapse: true,
 	    		order: [[ 0, "desc" ]],
 	    		columnDefs: [
 		                       { orderable: false, targets: -1 }

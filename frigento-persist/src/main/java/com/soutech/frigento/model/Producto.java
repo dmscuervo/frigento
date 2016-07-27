@@ -2,16 +2,12 @@ package com.soutech.frigento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -101,10 +97,6 @@ public class Producto implements Serializable {
     
     @Column(name="imagen")
     private byte[] imagen;
-    
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=false)
-    private List<Promocion> promociones;
     
     @Transient
     private MultipartFile file;
@@ -250,14 +242,6 @@ public class Producto implements Serializable {
 		this.costoVenta = costoVenta;
 	}
 
-	public List<Promocion> getPromociones() {
-		return promociones;
-	}
-
-	public void setPromociones(List<Promocion> promociones) {
-		this.promociones = promociones;
-	}
-
 	public byte[] getImagen() {
 		return imagen;
 	}
@@ -274,4 +258,7 @@ public class Producto implements Serializable {
 		this.file = file;
 	}
 
+	public String getDescripcionCompuesta() {
+		return codigo + " - " + descripcion;
+	}
 }

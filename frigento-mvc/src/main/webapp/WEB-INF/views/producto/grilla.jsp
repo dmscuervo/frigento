@@ -36,7 +36,6 @@
 <h3>
 	<fmt:message key="producto.grilla.title" />
 </h3>
-<br />
 <div class='row'>
 	<div class='col-sm-6' >    
 		<div class="form-group" style="float: right;">

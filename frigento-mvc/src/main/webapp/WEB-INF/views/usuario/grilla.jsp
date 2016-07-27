@@ -45,9 +45,7 @@
 <h3>
 	<fmt:message key="usuario.grilla.title" />
 </h3>
-<p class="form-validate">
-	${msgError}
-</p>
+${msgError}
 <div class='row'>
 	<div class='col-sm-6' >    
 		<div class="form-group" style="float: right;">

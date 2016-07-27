@@ -1,4 +1,9 @@
 
+h3{
+	color: #337ab7;
+	text-decoration: underline;
+}
+
 .form-validate {
   display: block;
   width: 100%;
