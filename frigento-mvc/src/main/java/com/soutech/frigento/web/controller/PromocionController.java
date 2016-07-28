@@ -44,7 +44,7 @@ public class PromocionController extends GenericController {
     protected final Log logger = LogFactory.getLog(getClass());
     public static final String BUSQUEDA_DEFAULT = "promocion?estado=A&sortFieldName=fechaDesde&sortOrder=desc";
     
-    //@Autowired
+    @Autowired
     public PromocionService promocionService;
     @Autowired
     private CategoriaService categoriaService;
@@ -62,7 +62,9 @@ public class PromocionController extends GenericController {
     
     @RequestMapping(value = "/preAltaContenido", produces = "text/html")
     public String preAltaContenido(@RequestParam(value = "idCat", required = false) Short idCategoria, Model uiModel) {
-    	List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(new Date(), idCategoria);
+    	Promocion promo = new Promocion();
+    	promo.setFechaDesde(new Date());
+    	List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(promo.getFechaDesde(), idCategoria);
     	if(relProdCatList.isEmpty()){
     		String json = jSONHandler.getMensajeGenericoJSON(getMessage("login.error.user.password"));
     		uiModel.addAttribute("messageAjax", json);
@@ -84,7 +86,7 @@ public class PromocionController extends GenericController {
     	
     	uiModel.addAttribute("idRpcPrecioVtaJson", json);
     	uiModel.addAttribute("relProdCatList", relProdCatList);
-    	uiModel.addAttribute("promoForm", new Promocion());
+    	uiModel.addAttribute("promoForm", promo);
     	return "promocion/altaContenido";
     }
     

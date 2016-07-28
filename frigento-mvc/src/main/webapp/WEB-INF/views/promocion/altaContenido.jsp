@@ -50,6 +50,7 @@
 
 <c:url var="urlAlta" value="/promocion/alta" />
 <form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="promoForm" id="idForm">
+<form:hidden path="fechaDesde"/>
     <div class='row' id="idDivProd">
         <div class='col-sm-4'>    
 			<div class="form-group" >
@@ -60,7 +61,7 @@
         </div>
         <div class='col-sm-8'>
         	<div class="form-group">
-        		<form:select path="idRelProdCatSel" items="${relProdCatList}" itemLabel="producto.descripcionCompuesta" itemValue="id" cssClass="form-control" id="idRelProdCat" />
+        		<form:select path="relProdCat.id" items="${relProdCatList}" itemLabel="producto.descripcionCompuesta" itemValue="id" cssClass="form-control" id="idRelProdCat" />
 			</div>
         </div>
     </div>

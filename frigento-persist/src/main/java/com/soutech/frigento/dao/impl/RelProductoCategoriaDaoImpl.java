@@ -21,7 +21,8 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 	public List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat, String[] sortFieldName, String[] sortOrder) {
 		StringBuilder hql = new StringBuilder("from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
-		hql.append(" r where r.categoria.id = :catId");
+		hql.append(" r left outer join fetch r.promociones p ");
+		hql.append(" where r.categoria.id = :catId");
 		if(fecha != null){
 			hql.append(" and r.fechaDesde <= :fecha");
 			hql.append(" and (r.fechaHasta is null or r.fechaHasta > :fecha)");

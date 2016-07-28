@@ -6,12 +6,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,8 +53,12 @@ public class Promocion implements Serializable {
     @DateTimeFormat(pattern="dd/MM/yyyy HH:mm")
     private Date fechaHasta;
     
-    @Transient
-    private Short idRelProdCatSel;
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_REL_PROD_CAT")
+    private RelProductoCategoria relProdCat;
+//    @Transient
+//    private Short idRelProdCatSel;
     
     public Integer getId() {
 		return id;
@@ -84,12 +90,11 @@ public class Promocion implements Serializable {
 	public void setFechaHasta(Date fechaHasta) {
 		this.fechaHasta = fechaHasta;
 	}
-	public Short getIdRelProdCatSel() {
-		return idRelProdCatSel;
+	public RelProductoCategoria getRelProdCat() {
+		return relProdCat;
 	}
-	public void setIdRelProdCatSel(Short idRelProdCatSel) {
-		this.idRelProdCatSel = idRelProdCatSel;
+	public void setRelProdCat(RelProductoCategoria relProdCat) {
+		this.relProdCat = relProdCat;
 	}
-	
 	
 }

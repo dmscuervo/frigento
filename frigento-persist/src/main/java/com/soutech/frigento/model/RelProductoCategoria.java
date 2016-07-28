@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -64,8 +65,8 @@ public class RelProductoCategoria implements Serializable, Comparable<RelProduct
      * Inicialmente esta coleccion estaba sobre Producto. Pero cuando se desarrollo el ABM de Promociones se dio la necesidad de que las 
      * promociones sean establecidas para un producto-categoria, ya que de esta manera, los incrementos se relacionan con los precios de venta
      */
-    @OneToMany(fetch=FetchType.EAGER)
-    @JoinColumn(name="ID_PRODUCTO", referencedColumnName="ID_PRODUCTO", nullable=false)
+    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="relProdCat")
+    //@JoinColumn(name="ID_REL_PROD_CAT", referencedColumnName="ID_REL_PROD_CAT", nullable=false)
     private List<Promocion> promociones;
 
     @Transient
