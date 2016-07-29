@@ -118,7 +118,28 @@ public class PromocionController extends GenericController {
     
     @RequestMapping(params = "editar", value="/{id}", method = RequestMethod.GET, produces = "text/html")
     public String preEdit(@PathVariable("id") Integer id, Model uiModel) {
-    	uiModel.addAttribute("promoForm", promocionService.obtenerPromocion(id));
+    	Promocion promo = promocionService.obtenerPromocion(id);
+    	List<RelProductoCategoria> relProdCatList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(promo.getFechaDesde(), promo.getRelProdCat().getCategoria().getId());
+    	if(relProdCatList.isEmpty()){
+    		String json = jSONHandler.getMensajeGenericoJSON(getMessage("login.error.user.password"));
+    		uiModel.addAttribute("messageAjax", json);
+    		return "ajax/value";
+    	}
+    	
+    	Map<Integer, BigDecimal> mapa = new HashMap<Integer, BigDecimal>();
+    	for (RelProductoCategoria rpc : relProdCatList) {
+    		mapa.put(rpc.getId(), rpc.getProducto().getImporteVenta());
+		}
+    	String json;
+    	ObjectMapper mapper = new ObjectMapper();
+        try {
+			json = mapper.writeValueAsString(mapa);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Error al convertir el mapa codigo-costo de productos.");
+		}
+    	
+    	uiModel.addAttribute("idRpcPrecioVtaJson", json);
+    	uiModel.addAttribute("promoForm", promo);
         return "promocion/editar";
     }
     

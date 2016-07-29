@@ -41,7 +41,7 @@
         <c:forEach var="promo" items="${promociones}">
         	<tr>
         		<td style="white-space: nowrap;">${promo.id}</td>
-        		<td style="white-space: nowrap;"><fmt:formatNumber type="percent" value="${promo.descuento}" minFractionDigits="2" maxFractionDigits="2" /></td>
+        		<td style="white-space: nowrap;"><fmt:formatNumber value="${promo.descuento}" minFractionDigits="2" maxFractionDigits="2" /></td>
         		<td style="white-space: nowrap;"><fmt:formatNumber value="${promo.cantidadMinima}" maxFractionDigits="2" minFractionDigits="2" /></td>
         		<td style="white-space: nowrap;"><fmt:formatDate value="${promo.fechaDesde}" pattern="dd/MM/yyyy HH:mm:ss"/></td>
 			    <td style="white-space: nowrap;">

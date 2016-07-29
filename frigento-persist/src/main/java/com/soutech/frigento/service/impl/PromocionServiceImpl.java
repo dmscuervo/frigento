@@ -18,8 +18,7 @@ public class PromocionServiceImpl implements PromocionService {
 
 	@Override
 	public List<Promocion> obtenerPromociones() {
-		// TODO Auto-generated method stub
-		return null;
+		return promocionDao.findAll();
 	}
 
 	@Override
@@ -29,20 +28,17 @@ public class PromocionServiceImpl implements PromocionService {
 
 	@Override
 	public Promocion obtenerPromocion(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		return promocionDao.findById(id);
 	}
 
 	@Override
 	public List<Promocion> obtenerPromociones(String sortFieldName, String sortOrder) {
-		// TODO Auto-generated method stub
-		return null;
+		return promocionDao.findAll(sortFieldName, sortOrder);
 	}
 
 	@Override
 	public void actualizarPromocion(Promocion promocion) {
-		// TODO Auto-generated method stub
-
+		promocionDao.update(promocion);
 	}
 
 	@Override
