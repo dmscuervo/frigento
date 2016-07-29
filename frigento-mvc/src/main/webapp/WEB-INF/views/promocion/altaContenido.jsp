@@ -4,6 +4,13 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
+		var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
+		var idRPC = $('#idRelProdCat').val();
+		var precio = rpcPrecioVtaJsonMap[idRPC];
+		$("#idPrecioPromo").val(precio);
+		$("#idPrecioPromo").attr('placeholder', precio)
+		
 		//Se evita el submit del form al apretar la tecla ENTER
 		$('#idForm').on('keyup keypress', function(e) {
 			  var keyCode = e.keyCode || e.which;
@@ -19,7 +26,7 @@
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
 		});
-		$("#idDesc").keyup(function(){
+		$("#idPrecioPromo").keyup(function(){
 			var value=$(this).val();
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
@@ -28,10 +35,10 @@
 		});
 	})
 	
-	function calcularPrecioPromo(porcDesc){
-		console.log(porcDesc);
-		if(porcDesc == ''){
-			$('#idLblPrecioPromo').text('');
+	function calcularPrecioPromo(precioPromo){
+		console.log(precioPromo);
+		if(precioPromo == ''){
+			$('#idDesc').val('');
 			return
 		}
 		console.log('${idRpcPrecioVtaJson}');
@@ -41,9 +48,9 @@
 		console.log(idRPC);
 		var precio = rpcPrecioVtaJsonMap[idRPC];
 		console.log(precio);
-		var precioPromo = precio - precio * porcDesc / 100;
-		console.log(precioPromo);
-		$('#idLblPrecioPromo').text(Math.round(precioPromo * 100) / 100);
+		var descuento = (precio - precioPromo) * 100 / precio;
+		console.log(descuento);
+		$('#idDesc').val(Math.round(descuento * 100) / 100);
 		
 	}
 </script>
@@ -53,7 +60,7 @@
 <form:hidden path="fechaDesde"/>
     <div class='row' id="idDivProd">
         <div class='col-sm-4'>    
-			<div class="form-group" >
+			<div class="form-group" style="white-space: nowrap;">
 				<label class="col-sm-2 control-label" for="idRelProdCat" style="white-space: nowrap;">
 					<fmt:message key="promocion.producto" />
 				</label>
@@ -67,7 +74,7 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" >
+			<div class="form-group" style="white-space: nowrap;">
 				<label class="col-sm-2 control-label" for="idCantMin">
 					<fmt:message key="promocion.cant.minima" />
 				</label>
@@ -86,7 +93,21 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" >
+			<div class="form-group" style="white-space: nowrap;">
+				<label class="col-sm-2 control-label" for="idPrecioPromo">
+					<fmt:message key="promocion.precio.por.kilo" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-8'>
+        	<div class="form-group">
+				<input type="text" class="form-validate" id="idPrecioPromo" />
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+    	<div class='col-sm-4'>    
+			<div class="form-group" style="white-space: nowrap;">
 				<label class="col-sm-2 control-label" for="idDesc">
 					<fmt:message key="promocion.descuento" />
 				</label>
@@ -94,26 +115,12 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="descuento" cssClass="form-control" id="idDesc" for="idDescError"/>
+				<form:input path="descuento" cssClass="form-control" id="idDesc" for="idDescError" readonly="true"/>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="descuento" cssClass="form-validate" id="idDescError"/>
-			</div>
-        </div>
-    </div>
-    <div class='row'>
-    	<div class='col-sm-4'>    
-			<div class="form-group" >
-				<label class="col-sm-2 control-label" for="idDesc">
-					<fmt:message key="promocion.precio.por.kilo" />
-				</label>
-			</div>
-        </div>
-        <div class='col-sm-8'>
-        	<div class="form-group">
-				<label id="idLblPrecioPromo"></label>
 			</div>
         </div>
     </div>
