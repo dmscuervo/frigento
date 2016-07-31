@@ -13,7 +13,7 @@ public interface PromocionService {
 
 	public Promocion obtenerPromocion(Integer id);
 
-	public List<Promocion> obtenerPromociones(String sortFieldName, String sortOrder);
+	public List<Promocion> obtenerPromociones(Boolean vigente, String sortFieldName, String sortOrder);
 
 	public void actualizarPromocion(Promocion promocion);
 

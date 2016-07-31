@@ -15,6 +15,13 @@
 	    if('${informar}' != null){
 	    	$('#idModalMensaje').attr('style', 'visible');
 	    }
+	    
+	    $('#idSelEstado').on('change', function(){
+	    	var estado = $("#idSelEstado").val();
+	    	loadInBody('promocion?vigente='+estado+'&sortFieldName=fechaDesde&sortOrder=desc');
+	    });
+	    
+	    
 	});
 			
 </script>
@@ -23,9 +30,25 @@
 <h3>
 	<fmt:message key="promocion.grilla.title" />
 </h3>
-<p class="form-validate">
-	${msgError}
-</p>
+<div class='row'>
+	<div class='col-sm-4'>
+     	<div class="form-group">
+			<label class="form-validate">${msgError}</label>
+		</div>
+	</div>
+	<div class='col-sm-4'>
+     	<div class="form-group">
+			<label class="col-sm-6 control-label" for="idCod" style="white-space: nowrap">
+				<fmt:message key="relProdCat.estado" />
+			</label>
+     		<select id="idSelEstado">
+				<option value="true" ><fmt:message key="estado.rel.vigente" /></option>
+				<option value="false" ><fmt:message key="estado.rel.no.vigente" /></option>
+				<option value="" ><fmt:message key="combos.todos" /></option>
+        	</select>
+		</div>
+	</div>
+</div>
 <table id="idGrillaPromo" class="order-column table table-striped table-bordered" style="border-spacing: 0; width: 100%">
         <thead>
             <tr>

@@ -42,7 +42,7 @@ import com.soutech.frigento.web.validator.JSONHandler;
 public class PromocionController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "promocion?estado=A&sortFieldName=fechaDesde&sortOrder=desc";
+    public static final String BUSQUEDA_DEFAULT = "promocion?vigente=V&sortFieldName=fechaDesde&sortOrder=desc";
     
     @Autowired
     public PromocionService promocionService;
@@ -92,9 +92,6 @@ public class PromocionController extends GenericController {
     
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
     public String alta(@Valid @ModelAttribute("promoForm") Promocion promoForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-        	return "promocion/alta";
-        }
         uiModel.asMap().clear();
         promocionService.savePromocion(promoForm);
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("promocion.alta.ok", promoForm.getId())));
@@ -108,8 +105,14 @@ public class PromocionController extends GenericController {
     }
     
     @RequestMapping(produces = "text/html")
-    public String listar(@RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
-        uiModel.addAttribute("promociones", promocionService.obtenerPromociones(sortFieldName, sortOrder));
+    public String listar(@RequestParam(value = "vigente", required = false) String estado, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
+    	Boolean vigente = Boolean.FALSE;
+    	if(estado == null || estado.equals("")){
+    		vigente = null;
+    	}else if(estado.toLowerCase().equals("true")){
+    		vigente = Boolean.TRUE;
+    	}
+        uiModel.addAttribute("promociones", promocionService.obtenerPromociones(vigente, sortFieldName, sortOrder));
         if(informar != null){
         	uiModel.addAttribute("informar", informar);
         }

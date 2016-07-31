@@ -22,20 +22,19 @@
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
 		});
-		$("#idDesc").keyup(function(){
+		$("#idPrecioPromo").keyup(function(){
 			var value=$(this).val();
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
 			//Calculo precio
-			calcularPrecioPromo(value);
+			calcularDescuento(value);
 		});
 	})
 	
-	function calcularPrecioPromo(porcDesc){
-		console.log(porcDesc);
-		if(porcDesc == ''){
-			$('#idLblPrecioPromo').text('');
-			return
+	function calcularDescuento(precioPromo){
+		console.log(precioPromo);
+		if(precioPromo == ''){
+			precioPromo = $("#idPrecioPromo").attr('placeholder');
 		}
 		console.log('${idRpcPrecioVtaJson}');
 		var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
@@ -44,10 +43,29 @@
 		console.log(idRPC);
 		var precio = rpcPrecioVtaJsonMap[idRPC];
 		console.log(precio);
-		var precioPromo = precio - precio * porcDesc / 100;
-		console.log(precioPromo);
-		$('#idLblPrecioPromo').text(Math.round(precioPromo * 100) / 100);
+		var descuento = (precio - precioPromo) * 100 / precio;
+		console.log(descuento);
+		$('#idDesc').val(Math.round(descuento * 100) / 100);
 		
+	}
+	
+	function calcularPrecioPromo(porcDesc){
+		var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
+		var idRPC = $('#idRelProdCat').val();
+		var precio = rpcPrecioVtaJsonMap[idRPC];
+		var precioPromo = precio - precio * porcDesc / 100;
+		$('#idPrecioPromo').val(Math.round(precioPromo * 100) / 100);
+		$("#idPrecioPromo").attr('placeholder', $('#idPrecioPromo').val());
+		
+	}
+	
+	function editar(){
+		var cantMin = $("#idCantMin").val();
+		if(cantMin == ''){
+			$("#idCantMinError").text('<fmt:message key="NotNull.promocionForm.cantidadMinima" />');
+			return;
+		}
+		submitInBody($('#idForm'))
 	}
 	
 </script>
@@ -113,7 +131,21 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" >
+			<div class="form-group" style="white-space: nowrap;">
+				<label class="col-sm-2 control-label" for="idPrecioPromo">
+					<fmt:message key="promocion.precio.por.kilo" />
+				</label>
+			</div>
+        </div>
+        <div class='col-sm-8'>
+        	<div class="form-group">
+				<input type="text" class="form-validate" id="idPrecioPromo" />
+			</div>
+        </div>
+    </div>
+    <div class='row'>
+    	<div class='col-sm-4'>    
+			<div class="form-group" style="white-space: nowrap;">
 				<label class="col-sm-2 control-label" for="idDesc">
 					<fmt:message key="promocion.descuento" />
 				</label>
@@ -121,26 +153,12 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="descuento" cssClass="form-control" id="idDesc" for="idDescError"/>
+				<form:input path="descuento" cssClass="form-control" id="idDesc" for="idDescError" readonly="true"/>
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="descuento" cssClass="form-validate" id="idDescError"/>
-			</div>
-        </div>
-    </div>
-    <div class='row'>
-    	<div class='col-sm-4'>    
-			<div class="form-group" >
-				<label class="col-sm-2 control-label" for="idDesc">
-					<fmt:message key="promocion.precio.por.kilo" />
-				</label>
-			</div>
-        </div>
-        <div class='col-sm-8'>
-        	<div class="form-group">
-				<label id="idLblPrecioPromo"></label>
 			</div>
         </div>
     </div>
@@ -151,10 +169,10 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:editar()">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('promocion?estado=A&sortFieldName=fechaDesde&sortOrder=desc')">
+						onclick="javascript:loadInBody('promocion?vigente=V&sortFieldName=fechaDesde&sortOrder=desc')">
 			</div>
         </div>
     </div>

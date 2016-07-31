@@ -32,8 +32,8 @@ public class PromocionServiceImpl implements PromocionService {
 	}
 
 	@Override
-	public List<Promocion> obtenerPromociones(String sortFieldName, String sortOrder) {
-		return promocionDao.findAll(sortFieldName, sortOrder);
+	public List<Promocion> obtenerPromociones(Boolean vigente, String sortFieldName, String sortOrder) {
+		return promocionDao.obtenerPromociones(vigente, sortFieldName, sortOrder);
 	}
 
 	@Override

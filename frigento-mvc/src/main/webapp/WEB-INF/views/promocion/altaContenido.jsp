@@ -4,12 +4,13 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
+		//Inicio los valores
 		var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
 		var idRPC = $('#idRelProdCat').val();
 		var precio = rpcPrecioVtaJsonMap[idRPC];
 		$("#idPrecioPromo").val(precio);
-		$("#idPrecioPromo").attr('placeholder', precio)
+		$("#idPrecioPromo").attr('placeholder', precio);
+		calcularDescuento(precio);
 		
 		//Se evita el submit del form al apretar la tecla ENTER
 		$('#idForm').on('keyup keypress', function(e) {
@@ -18,6 +19,15 @@
 			    e.preventDefault();
 			    return false;
 			  }
+		});
+		
+		$("#idRelProdCat").change(function(){
+			var idRPC=$(this).val();
+			var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
+			var precio = rpcPrecioVtaJsonMap[idRPC];
+			$('#idPrecioPromo').val(precio);
+			$("#idPrecioPromo").attr('placeholder', precio);
+			calcularDescuento(precio);
 		});
 		
 		//Aplico restricciones
@@ -31,15 +41,14 @@
 			 value=value.replace(/([^0-9.]*)/g, "");
 			$(this).val(value);
 			//Calculo precio
-			calcularPrecioPromo(value);
+			calcularDescuento(value);
 		});
-	})
+	});
 	
-	function calcularPrecioPromo(precioPromo){
+	function calcularDescuento(precioPromo){
 		console.log(precioPromo);
 		if(precioPromo == ''){
-			$('#idDesc').val('');
-			return
+			precioPromo = $("#idPrecioPromo").attr('placeholder');
 		}
 		console.log('${idRpcPrecioVtaJson}');
 		var rpcPrecioVtaJsonMap = JSON.parse('${idRpcPrecioVtaJson}');
@@ -52,6 +61,15 @@
 		console.log(descuento);
 		$('#idDesc').val(Math.round(descuento * 100) / 100);
 		
+	}
+	
+	function generar(){
+		var cantMin = $("#idCantMin").val();
+		if(cantMin == ''){
+			$("#idCantMinError").text('<fmt:message key="NotNull.promocionForm.cantidadMinima" />');
+			return;
+		}
+		submitInBody($('#idForm'))
 	}
 </script>
 
@@ -82,12 +100,12 @@
         </div>
         <div class='col-sm-4'>
         	<div class="form-group">
-				<form:input path="cantidadMinima" cssClass="form-control" id="idCantMin" for="idNumError" />
+				<form:input path="cantidadMinima" cssClass="form-control" id="idCantMin" for="idCantMinError" />
 			</div>
         </div>
         <div class='col-sm-4'>
         	<div class="form-group" >
-				<form:errors path="cantidadMinima" cssClass="form-validate" id="idNumError" />
+				<label class="form-validate" id="idCantMinError" ></label>
 			</div>
         </div>
     </div>
@@ -131,10 +149,10 @@
 			<div class="form-group">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:submitInBody($('#idForm'))">
+						onclick="javascript:generar()">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('promocion?estado=A&sortFieldName=fechaDesde&sortOrder=desc')">
+						onclick="javascript:loadInBody('promocion?vigente=V&sortFieldName=fechaDesde&sortOrder=desc')">
 			</div>
         </div>
     </div>
