@@ -1,5 +1,6 @@
 package com.soutech.frigento.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,9 @@ public class PromocionServiceImpl implements PromocionService {
 
 	@Override
 	public void eliminarPromocion(Promocion promocion) throws EntityExistException {
-		// TODO Auto-generated method stub
-
+		Promocion promoActual = promocionDao.findById(promocion.getId());
+		promoActual.setFechaHasta(new Date());
+		promocionDao.update(promoActual);
 	}
 
 }

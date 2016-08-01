@@ -42,7 +42,7 @@ import com.soutech.frigento.web.validator.JSONHandler;
 public class PromocionController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String BUSQUEDA_DEFAULT = "promocion?vigente=V&sortFieldName=fechaDesde&sortOrder=desc";
+    public static final String BUSQUEDA_DEFAULT = "promocion?vigente=true&sortFieldName=fechaDesde&sortOrder=desc";
     
     @Autowired
     public PromocionService promocionService;

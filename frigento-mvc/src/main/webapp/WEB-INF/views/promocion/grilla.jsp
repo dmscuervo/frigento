@@ -26,7 +26,7 @@
 			
 </script>
 
-<div style="float: left; min-width: 300px">
+<div style="width: 100%; float: left; min-width: 300px">
 <h3>
 	<fmt:message key="promocion.grilla.title" />
 </h3>
@@ -53,6 +53,7 @@
         <thead>
             <tr>
                 <th style="white-space: nowrap;"><fmt:message key="promocion.id" /></th>
+                <th style="white-space: nowrap;"><fmt:message key="promocion.producto" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="promocion.descuento" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="promocion.cant.minima" /></th>
                 <th style="white-space: nowrap;"><fmt:message key="promocion.fecha.desde" /></th>
@@ -64,6 +65,7 @@
         <c:forEach var="promo" items="${promociones}">
         	<tr>
         		<td style="white-space: nowrap;">${promo.id}</td>
+        		<td style="white-space: nowrap;">${promo.relProdCat.producto.descripcionCompuesta}</td>
         		<td style="white-space: nowrap;"><fmt:formatNumber value="${promo.descuento}" minFractionDigits="2" maxFractionDigits="2" /></td>
         		<td style="white-space: nowrap;"><fmt:formatNumber value="${promo.cantidadMinima}" maxFractionDigits="2" minFractionDigits="2" /></td>
         		<td style="white-space: nowrap;"><fmt:formatDate value="${promo.fechaDesde}" pattern="dd/MM/yyyy HH:mm:ss"/></td>

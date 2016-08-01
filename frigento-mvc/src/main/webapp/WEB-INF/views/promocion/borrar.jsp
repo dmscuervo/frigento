@@ -29,7 +29,7 @@
 			<div class="modal-body">
 				<p>
 					<fmt:message key="promocion.borrar.confirm">
-						<fmt:param value='${promoForm.descripcion}'/>
+						<fmt:param value='${promoForm.id}'/>
 					</fmt:message>
 				</p>
 			</div>
@@ -39,7 +39,6 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="boton.cancelar"/></button>
 			</div>
 				<form:hidden path="id" />
-				<form:hidden path="descripcion" />
 			</form:form>
 		</div>
 		<!-- /.modal-content -->

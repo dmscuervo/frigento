@@ -55,7 +55,7 @@
 	                    <a href="javascript:loadInBody('promocion?alta')"><fmt:message key="menu.promocion.alta"/></a>
 	                </li>
 	                <li>
-	                    <a href="javascript:loadInBody('promocion?vigente=V&sortFieldName=fechaDesde&sortOrder=desc')"><fmt:message key="menu.promocion.listar"/></a>
+	                    <a href="javascript:loadInBody('promocion?vigente=true&sortFieldName=fechaDesde&sortOrder=desc')"><fmt:message key="menu.promocion.listar"/></a>
 	                </li>
 	            </ul>
 	            <!-- /.nav-second-level -->
