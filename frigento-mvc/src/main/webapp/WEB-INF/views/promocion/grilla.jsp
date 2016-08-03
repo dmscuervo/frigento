@@ -21,7 +21,19 @@
 	    	loadInBody('promocion?vigente='+estado+'&sortFieldName=fechaDesde&sortOrder=desc');
 	    });
 	    
-	    
+	    if('${estadoSel}'==''){
+	    	$('#idSelEstado option[value="V"]').prop('selected', false);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', false);
+	    	$('#idSelEstado option[value=""]').prop('selected', true);	
+	    }else if('${estadoSel}'=='true'){
+	    	$('#idSelEstado option[value="V"]').prop('selected', true);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', false);
+	    	$('#idSelEstado option[value=""]').prop('selected', false);
+	    }else {
+	    	$('#idSelEstado option[value="V"]').prop('selected', false);
+	    	$('#idSelEstado option[value="NV"]').prop('selected', true);
+	    	$('#idSelEstado option[value=""]').prop('selected', false);
+	    }
 	});
 			
 </script>
@@ -76,8 +88,10 @@
 			    	</c:choose>
 	    		</td>
         		<td style="white-space: nowrap;">
-        			<i class="fa fa-edit" onclick="loadInBody('promocion/${promo.id}?editar')"></i>
-        			&nbsp;&nbsp;<i class="fa fa-trash" onclick="confirmarAccion('promocion/${promo.id}?borrar')"></i>
+        			<i class="fa fa-edit" onclick="loadInBody('promocion/${promo.id}?editar')"></i>&nbsp;&nbsp;
+        			<c:if test="${empty promo.fechaHasta}">
+        				<i class="fa fa-trash" onclick="confirmarAccion('promocion/${promo.id}?borrar')"></i>
+        			</c:if>
 				</td>
         	</tr>
         </c:forEach>
