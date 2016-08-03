@@ -92,8 +92,8 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" style="white-space: nowrap;">
-				<label class="col-sm-2 control-label" for="idCantMin">
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="idCantMin" style="white-space: nowrap;">
 					<fmt:message key="promocion.cant.minima" />
 				</label>
 			</div>
@@ -111,8 +111,8 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" style="white-space: nowrap;">
-				<label class="col-sm-2 control-label" for="idPrecioPromo">
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="idPrecioPromo" style="white-space: nowrap;">
 					<fmt:message key="promocion.precio.por.kilo" />
 				</label>
 			</div>
@@ -125,8 +125,8 @@
     </div>
     <div class='row'>
     	<div class='col-sm-4'>    
-			<div class="form-group" style="white-space: nowrap;">
-				<label class="col-sm-2 control-label" for="idDesc">
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="idDesc" style="white-space: nowrap;">
 					<fmt:message key="promocion.descuento" />
 				</label>
 			</div>
@@ -139,20 +139,6 @@
         <div class='col-sm-4'>
         	<div class="form-group" >
 				<form:errors path="descuento" cssClass="form-validate" id="idDescError"/>
-			</div>
-        </div>
-    </div>
-    <br/>
-	<div class='row'>
-		<div class='col-sm-4'>&nbsp;</div>
-        <div class='col-sm-8'> 
-			<div class="form-group">
-					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.aceptar"/>'
-						onclick="javascript:generar()">
-					<input type="button" class="btn btn-default btn-primary"
-						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('promocion?vigente=true&sortFieldName=fechaDesde&sortOrder=desc')">
 			</div>
         </div>
     </div>

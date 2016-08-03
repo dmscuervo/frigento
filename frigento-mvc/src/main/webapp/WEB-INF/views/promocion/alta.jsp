@@ -66,5 +66,19 @@
 			</div>
         </div>
     </div>
+	<div style="width: 100%; float: left; min-width: 300px" id="idDivPromo" ></div>
+    <br/>
+	<div class='row'>
+		<div class='col-sm-4'>&nbsp;</div>
+        <div class='col-sm-8'> 
+			<div class="form-group">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.aceptar"/>'
+						onclick="javascript:generar()">
+					<input type="button" class="btn btn-default btn-primary"
+						value='<fmt:message key="boton.cancelar"/>'
+						onclick="javascript:loadInBody('promocion?vigente=${estadoSel}&sortFieldName=fechaDesde&sortOrder=desc')">
+			</div>
+        </div>
+    </div>
 </div>
-<div style="width: 100%; float: left; min-width: 300px" id="idDivPromo" ></div>

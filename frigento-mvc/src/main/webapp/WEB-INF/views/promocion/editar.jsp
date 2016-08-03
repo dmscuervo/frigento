@@ -172,7 +172,7 @@
 						onclick="javascript:editar()">
 					<input type="button" class="btn btn-default btn-primary"
 						value='<fmt:message key="boton.cancelar"/>'
-						onclick="javascript:loadInBody('promocion?vigente=true&sortFieldName=fechaDesde&sortOrder=desc')">
+						onclick="javascript:loadInBody('promocion?vigente=${estadoSel}&sortFieldName=fechaDesde&sortOrder=desc')">
 			</div>
         </div>
     </div>

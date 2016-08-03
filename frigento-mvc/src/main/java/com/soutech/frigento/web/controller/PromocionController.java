@@ -116,7 +116,10 @@ public class PromocionController extends GenericController {
     @RequestMapping(produces = "text/html")
     public String listar(@RequestParam(value = "vigente", required = false) String estado, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, @RequestParam(value = "informar", required = false) String informar, Model uiModel) {
     	Boolean vigente = Boolean.FALSE;
-    	if(estado == null || estado.equals("")){
+    	if(estado == null){
+    		estado = "true";
+    	}
+    	if(estado.equals("")){
     		vigente = null;
     	}else if(estado.toLowerCase().equals("true")){
     		vigente = Boolean.TRUE;
