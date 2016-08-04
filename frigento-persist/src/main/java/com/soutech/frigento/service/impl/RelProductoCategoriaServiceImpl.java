@@ -139,7 +139,7 @@ public class RelProductoCategoriaServiceImpl implements RelProductoCategoriaServ
 					if(rpcUpd.getFechaHasta() != null && Utils.esMenor(rpcUpd.getFechaHasta(), rpcActual.getFechaHasta())){
 						//Verifico si existe una venta entre la fechaHasta actual y la nueva
 						Date ultimaFecha = relVentaProductoDao.obtenerFechaUltimaVentaNoAnulada(rpcActual.getProducto().getId(), rpcActual.getCategoria().getId(), rpcUpd.getFechaHasta(), rpcActual.getFechaHasta());
-						if(ultimaFecha == null ){
+						if(ultimaFecha != null && Utils.esMenor(rpcUpd.getFechaHasta(), ultimaFecha)){
 							throw new FechaDesdeException("relProdCatForm.fechaHasta.anterior", new Object[]{Utils.formatDate(ultimaFecha, Utils.SDF_DDMMYYYY_HHMM)});
 						}
 					}
