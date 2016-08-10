@@ -10,6 +10,8 @@
 			maxDate: moment(),
 			locale: 'es'
 	    });
+		
+		visualizarEnvioMail();
 	});
 
 	function confirmar(){
@@ -18,6 +20,17 @@
 			submitInBody($('#idForm'));
 		});
 		$('#idModalAccion').modal('hide');
+	}
+	
+	function visualizarEnvioMail(){
+		if($('#idEstado').val() == 2){
+			if($('#idEmail').val() == ''){
+				$('#idConfirmarContenido').html('<fmt:message key="venta.usuario.sin.email" />');
+			}
+			$('#idConfirmar').slideDown( "slow" );
+		}else{
+			$('#idConfirmar').hide();
+		}
 	}
 
 </script>
@@ -29,11 +42,12 @@
 			<form:form action="${urlBorrar}" method="post"
 				class="form-horizontal" commandName="ventaForm" id="idForm">
 			<form:hidden path="id" />
-			<form:hidden path="usuario.email" />
+			<form:hidden path="usuario.email" id="idEmail" />
 			<form:hidden path="usuario.calle"/>
 			<form:hidden path="usuario.altura"/>
 			<form:hidden path="usuario.depto"/>
 			<form:hidden path="fecha" />
+			<form:hidden path="estado.id" id="idEstado"/>
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
@@ -47,6 +61,13 @@
 						<fmt:param value='${ventaForm.id}'/>
 					</fmt:message>
 				</p>
+				<div class='row' id="idConfirmar">
+			    	<div class='col-sm-10 col-md-offset-1'>    
+						<div class="form-group" id="idConfirmarContenido">
+							<form:checkbox path="envioMail" value="true" id="idEnvioMail"/><fmt:message key="venta.enviar.mail" />
+						</div>
+			        </div>
+			    </div>
 				<div class='row'>
 			        <div class='col-sm-4'>    
 						<div class="form-group" >

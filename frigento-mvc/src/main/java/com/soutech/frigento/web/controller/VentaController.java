@@ -229,7 +229,7 @@ public class VentaController extends GenericController {
 		}
 		
 		venta.setItems(new ArrayList<ItemVentaDTO>(relProdCatList.size()));
-		venta.setConIva(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO));
+		venta.setConIva(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)));
 		for (RelProductoCategoria rpc : relProdCatList) {
 			Producto producto = rpc.getProducto();
 			ItemVentaDTO item = new ItemVentaDTO();
@@ -406,7 +406,7 @@ public class VentaController extends GenericController {
 		ventaService.anularVenta(ventaForm.getId(), ventaForm.getFechaAnulado());
 		String mensaje = getMessage("venta.anular.ok", ventaForm.getId());
 
-		if(ventaForm.getUsuario().getEmail() != null && !ventaForm.getUsuario().getEmail().equals("")){
+		if(ventaForm.getUsuario().getEmail() != null && ventaForm.getEnvioMail()){
 			List<RelVentaProducto> relVtaProdList = relVentaProductoService.obtenerByVenta(ventaForm.getId(), "relProductoCategoria.producto.codigo", "asc");
 			ByteArrayOutputStream bytes;
 			try {
@@ -450,7 +450,7 @@ public class VentaController extends GenericController {
 		ventaService.cumplirVenta(ventaForm.getId(), ventaForm.getFechaEntregado());
 		String mensaje = getMessage("venta.cumplir.ok", ventaForm.getId());
 
-		if(ventaForm.getUsuario().getEmail() != null && !ventaForm.getUsuario().getEmail().equals("")){
+		if(ventaForm.getUsuario().getEmail() != null && ventaForm.getEnvioMail()){
 			List<RelVentaProducto> relVtaProdList = relVentaProductoService.obtenerByVenta(ventaForm.getId(), "relProductoCategoria.producto.codigo", "asc");
 			ByteArrayOutputStream bytes;
 			try {

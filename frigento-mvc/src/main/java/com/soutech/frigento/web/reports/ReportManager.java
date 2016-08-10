@@ -155,7 +155,7 @@ public class ReportManager{
     		domicilio = domicilio.concat(venta.getUsuario().getDepto() != null ? " ".concat(venta.getUsuario().getDepto()) : " ");
     	}
     	parameters.put("domicilio", domicilio);
-    	if(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO)){
+    	if(venta.getIncrementoIva() != null && !venta.getIncrementoIva().equals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP))){
     		parameters.put("iva", venta.getIncrementoIva());
     	}else{
     		parameters.put("iva", BigDecimal.ZERO);
