@@ -364,23 +364,24 @@ public class VentaController extends GenericController {
 		 List<RelVentaProducto> relVtaProdList = relVentaProductoService.obtenerByVenta(idVta, "relProductoCategoria.producto.codigo", "asc");
 		
 		 try {
-		 ByteArrayOutputStream bytes =
-		 reportManager.generarRemitoVenta(relVtaProdList);
-		 Venta venta = relVtaProdList.get(0).getVenta();
-		 String fileDownload = "Venta_"+Utils.generarNroRemito(venta);
-		
-		 response.setHeader("Content-Disposition", "attachment;filename=" +
-		 fileDownload + ".pdf");
-		 response.setContentType( "application/pdf" );
-		 response.setContentLength((int) bytes.size());
-		
-		 OutputStream outStream = response.getOutputStream();
-		 bytes.writeTo(outStream);
-		 outStream.flush();
-		 outStream.close();
-		 bytes.close();
+			 ByteArrayOutputStream bytes =
+			 reportManager.generarRemitoVenta(relVtaProdList);
+			 Venta venta = relVtaProdList.get(0).getVenta();
+			 String fileDownload = "Venta_"+Utils.generarNroRemito(venta);
+			
+			 response.setHeader("Content-Disposition", "attachment;filename=" +
+			 fileDownload + ".pdf");
+			 response.setContentType( "application/pdf" );
+			 response.setContentLength((int) bytes.size());
+			
+			 OutputStream outStream = response.getOutputStream();
+			 bytes.writeTo(outStream);
+			 outStream.flush();
+			 outStream.close();
+			 bytes.close();
 		 } catch (Exception e) {
-		 return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("venta.generar.remito.error")));
+			 PrinterStack.getStackTraceAsString(e);
+			 return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("venta.generar.remito.error")));
 		 }
 		 return null;
 	 }
