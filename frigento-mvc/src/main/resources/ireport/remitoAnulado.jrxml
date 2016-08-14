@@ -87,7 +87,7 @@
 			<staticText>
 				<reportElement x="20" y="104" width="226" height="60" uuid="606ca3d8-7022-4342-b98a-df26ff0cf398"/>
 				<textElement textAlignment="Center">
-					<font fontName="Calibri" size="14"/>
+					<font size="13"/>
 				</textElement>
 				<text><![CDATA[Pedidos al 4584-6581
 Cel. 11-5513-1243
