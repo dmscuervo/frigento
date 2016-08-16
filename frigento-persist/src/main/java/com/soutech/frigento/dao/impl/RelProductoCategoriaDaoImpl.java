@@ -19,7 +19,7 @@ public class RelProductoCategoriaDaoImpl extends AbstractSpringDao<RelProductoCa
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RelProductoCategoria> findAllByCategoria(Date fecha, Short idCat, String[] sortFieldName, String[] sortOrder) {
-		StringBuilder hql = new StringBuilder("from ");
+		StringBuilder hql = new StringBuilder("select distinct r from ");
 		hql.append(RelProductoCategoria.class.getCanonicalName());
 		hql.append(" r left outer join fetch r.promociones p ");
 		hql.append(" where r.categoria.id = :catId");
