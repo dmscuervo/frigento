@@ -69,16 +69,23 @@
             </tr>
         </thead>
         <tbody>
-        <c:forEach var="rpc" items="${rpcList}" varStatus="index">
+        <c:forEach var="prod" items="${productoList}" varStatus="index">
         	<tr>
         		<td style="white-space: nowrap;">
         			${index.index+1}
         		</td>
         		<td style="white-space: nowrap;">
-        			${rpc.producto.codigo}
+        			${prod.codigo}
         			<input type="hidden" id="idRow-${index.index}" value="${index.index}">
         		</td>
-        		<td style="white-space: nowrap;">${rpc.producto.descripcion}</td>
+        		<td style="white-space: nowrap;">
+        			<c:if test="${ not empty prod.promocion }">
+	       				<fmt:message key="venta.promocion">
+	       					<fmt:param value="${prod.promocion.cantidadMinima}" />
+	       				</fmt:message>
+	       			</c:if>
+        			${prod.descripcion}
+        		</td>
         	</tr>
         </c:forEach>
         </tbody>

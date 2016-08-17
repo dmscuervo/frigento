@@ -15,6 +15,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +27,7 @@ import com.soutech.frigento.model.annotattions.Numeric;
 
 @Entity
 @Table(name = "PRODUCTO", uniqueConstraints=@UniqueConstraint(columnNames={"CODIGO"}, name="ux_codigo"))
-public class Producto implements Serializable {
+public class Producto implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 7139237922807940949L;
 
@@ -105,6 +107,8 @@ public class Producto implements Serializable {
     private BigDecimal importeVenta;
     @Transient
     private BigDecimal costoVenta;
+    @Transient
+    private Promocion promocion;
     
 	public String getCodigo() {
         return this.codigo;
@@ -242,6 +246,14 @@ public class Producto implements Serializable {
 		this.costoVenta = costoVenta;
 	}
 
+	public Promocion getPromocion() {
+		return promocion;
+	}
+
+	public void setPromocion(Promocion promocion) {
+		this.promocion = promocion;
+	}
+
 	public byte[] getImagen() {
 		return imagen;
 	}
@@ -261,4 +273,16 @@ public class Producto implements Serializable {
 	public String getDescripcionCompuesta() {
 		return codigo + " - " + descripcion;
 	}
+
+	@Override
+	public Producto clone() throws CloneNotSupportedException {
+		return (Producto) super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+	
+	
 }

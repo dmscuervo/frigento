@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.soutech.frigento.model.Categoria;
 import com.soutech.frigento.model.Producto;
+import com.soutech.frigento.model.Promocion;
 import com.soutech.frigento.model.RelProductoCategoria;
 import com.soutech.frigento.service.CategoriaService;
 import com.soutech.frigento.service.RelProductoCategoriaService;
 import com.soutech.frigento.util.Utils;
+import com.soutech.frigento.web.dto.reports.ColumnDescripcionPromoDTO;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioCajaConIvaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioCajaDTO;
 import com.soutech.frigento.web.dto.reports.ColumnPrecioConIvaDTO;
@@ -42,7 +44,7 @@ import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 @Controller
 @RequestMapping(value="/planilla")
 @Secured({"ROLE_ADMIN"})
-@SessionAttributes(names={"planillaDTO", "rpcList"})
+@SessionAttributes(names={"planillaDTO", "productoList"})
 public class PlanillaController extends GenericController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -58,24 +60,48 @@ public class PlanillaController extends GenericController {
     private JSONHandler jSONHandler;
     
     @RequestMapping(value = "/cliente", params = "filtro", produces = "text/html")
-    public String filtroCliente(Model uiModel) {
+    public String filtroCliente(Model uiModel) throws CloneNotSupportedException {
     	List<Categoria> categorias = categoriaService.obtenerCategorias();
     	uiModel.addAttribute("categoriaList", categorias);
     	PlanillaClienteDTO planilla = new PlanillaClienteDTO();
     	uiModel.addAttribute("planillaDTO", planilla);
     	if(!categorias.isEmpty()){
-    		List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(new Date(), categorias.get(0).getId());
-    		uiModel.addAttribute("rpcList", rpcList);
+    		generarListaProductos(new Date(), categorias.get(0).getId(), uiModel);
     	}
     	return "planilla/cliente/filtro";
     }
     
     @RequestMapping(value = "/cliente/{time}/{idCat}", produces = "text/html")
-    public String getProductos(@PathVariable("time") Long time, @PathVariable("idCat") Short idCat, Model uiModel) {
-    	List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(new Date(time), idCat);
-    	uiModel.addAttribute("rpcList", rpcList);
+    public String getProductos(@PathVariable("time") Long time, @PathVariable("idCat") Short idCat, Model uiModel) throws CloneNotSupportedException {
+    	generarListaProductos(new Date(time), idCat, uiModel);
         return "planilla/cliente/grilla";
     }
+
+    /**
+     * Genera la lista de productos para armar presupuestos. Duplica los productos por cada promocion que contenga
+     * @param fecha
+     * @param idCat
+     * @param uiModel
+     * @throws CloneNotSupportedException
+     */
+	private void generarListaProductos(Date fecha, Short idCat, Model uiModel) throws CloneNotSupportedException {
+		List<RelProductoCategoria> rpcList = relProductoCategoriaService.obtenerProductosCategoriaParaVenta(fecha, idCat);
+    	
+    	List<Producto> productos = new ArrayList<Producto>();
+    	
+    	for (RelProductoCategoria rpc : rpcList) {
+    		productos.add(rpc.getProducto());
+			for (Promocion promo : rpc.getPromociones()) {
+				if(Utils.estaDentroDeRelacion(fecha, promo.getFechaDesde(), promo.getFechaHasta())){
+					Producto clone = rpc.getProducto().clone();
+					clone.setPromocion(promo);
+					productos.add(clone);
+				}
+			}
+		}
+    	
+    	uiModel.addAttribute("productoList", productos);
+	}
     
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/cliente/{time}/{idCat}/{indices}", produces = "text/html")
@@ -84,12 +110,12 @@ public class PlanillaController extends GenericController {
     	planilla.setFecha(new Date(time));
     	planilla.setIdCategoria(idCat);
     	
-    	List<RelProductoCategoria> rpcList = (List<RelProductoCategoria>) uiModel.asMap().get("rpcList");
-    	List<Producto> productos = new ArrayList<Producto>();
+    	List<Producto> productos = (List<Producto>) uiModel.asMap().get("productoList");
+    	List<Producto> productosSel = new ArrayList<Producto>();
     	for (Integer indice : indices) {
-    		productos.add(rpcList.get(indice).getProducto());
+    		productosSel.add(productos.get(indice));
 		}
-    	planilla.setRows(productos);
+    	planilla.setRows(productosSel);
     	
     	List<ColumnReporteDTO> columnas = new ArrayList<ColumnReporteDTO>();
     	
@@ -102,21 +128,19 @@ public class PlanillaController extends GenericController {
     	columna.setAjustarAncho(false);
     	columnas.add(columna);
     	
-    	columna = new ColumnReporteDTO();
+    	columna = new ColumnDescripcionPromoDTO(messageSource, "descripcion");
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcion"));
     	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcion").toUpperCase());
-    	columna.setProperty("descripcion");
-    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
+    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setAncho(100);
     	columnas.add(columna);
     	
-    	columna = new ColumnReporteDTO();
+    	columna = new ColumnDescripcionPromoDTO(messageSource, "descripcionVenta");
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.descripcionCliente"));
     	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.descripcionCliente").toUpperCase());
-    	columna.setProperty("descripcionVenta");
-    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setClassName(String.class.getName());
+    	columna.setAlineacionHorizontal(HorizontalAlign.LEFT);
     	columna.setAncho(100);
     	columnas.add(columna);
     	
@@ -130,10 +154,9 @@ public class PlanillaController extends GenericController {
     	columna.setPattern("#,##0.00");
     	columnas.add(columna);
     	
-    	columna = new ColumnReporteDTO();
+    	columna = new ColumnPrecioConIvaDTO(0f);
     	columna.setNombre(getMessage("planilla.cliente.columna.producto.precio.kg"));
     	columna.setNombreElegido(getMessage("planilla.cliente.columna.producto.precio.kg").toUpperCase());
-    	columna.setProperty("importeVenta");
     	columna.setClassName(BigDecimal.class.getName());
     	columna.setAncho(30);
     	columna.setAjustarAncho(false);

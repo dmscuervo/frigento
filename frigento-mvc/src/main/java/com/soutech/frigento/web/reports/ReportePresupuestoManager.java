@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.soutech.frigento.model.Promocion;
 import com.soutech.frigento.util.PrinterStack;
 import com.soutech.frigento.util.Utils;
 import com.soutech.frigento.web.dto.reports.ColumnExpressionReporteDTO;
@@ -73,6 +74,10 @@ public class ReportePresupuestoManager {
 			//campos xq son obligatorios para poder calcular precios con IVA.
 			drb.addField("importeVenta", BigDecimal.class);
 			drb.addField("pesoCaja", Float.class);
+			//Necesarios para obtener la descripcion del producto. Se hizo asi por las promociones
+			drb.addField("descripcion", String.class);
+			drb.addField("descripcionVenta", String.class);
+			drb.addField("promocion", Promocion.class);
 			for (int i = 0; i < indicesSel.length; i++) {
 				Integer indice = indicesSel[i];
 				ColumnReporteDTO column = contenido.getColumns().get(indice);

@@ -14,7 +14,7 @@ public class GenericController {
 	@Autowired
 	protected FormValidator formValidator;
 	@Autowired
-	private MessageSource messageSource;
+	protected MessageSource messageSource;
 	@Autowired
     protected ServletContext servletContext;
 	
