@@ -2,7 +2,7 @@ package com.soutech.frigento.util;
 
 public class Constantes {
 	
-	public static final String VERSION_APP = "DESA_1.2";
+	public static final String VERSION_APP = "2.0";
 	
 	public static final String ESTADO_ACTIVO = "A";
 	public static final String ESTADO_INACTIVO = "I";

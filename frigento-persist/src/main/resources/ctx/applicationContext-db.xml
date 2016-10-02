@@ -27,13 +27,6 @@
         <property name="url" value="${database.url}"/>
         <property name="username" value="${database.username}"/>
         <property name="password" value="${database.password}"/>
-        <property name="testOnBorrow" value="true"/>
-        <property name="testOnReturn" value="true"/>
-        <property name="testWhileIdle" value="true"/>
-        <property name="timeBetweenEvictionRunsMillis" value="1800000"/>
-        <property name="numTestsPerEvictionRun" value="3"/>
-        <property name="minEvictableIdleTimeMillis" value="1800000"/>
-        <property name="validationQuery" value="SELECT version();"/>
     </bean>
 
 	<bean id="sessionFactory"
@@ -48,7 +41,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
 				<!-- value="create" to build a new database on each run; value="update" to modify an existing database; value="create-drop" means the same as "create" but also drops tables when Hibernate closes; value="validate" makes no changes to the database -->
-            	<prop key="hibernate.hbm2ddl.auto">validate</prop>
+            	<!-- prop key="hibernate.hbm2ddl.auto">validate</prop -->
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
 			</props>
