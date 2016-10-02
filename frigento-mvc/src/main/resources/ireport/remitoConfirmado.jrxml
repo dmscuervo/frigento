@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="remitoConfirmado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7242a6bb-de6e-4263-acfd-1b64c76b5926">
-	<property name="ireport.zoom" value="4.5949729863572255"/>
-	<property name="ireport.x" value="1936"/>
-	<property name="ireport.y" value="1391"/>
+	<property name="ireport.zoom" value="2.1435888100000042"/>
+	<property name="ireport.x" value="118"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="dia" class="java.lang.String"/>
 	<parameter name="mes" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
@@ -73,11 +73,11 @@
 				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="303" y="80" width="107" height="33" uuid="e589e72d-3a88-43b1-9f09-4b4bcd745bfa"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="20" isBold="true"/>
+				<reportElement x="303" y="80" width="100" height="33" uuid="e589e72d-3a88-43b1-9f09-4b4bcd745bfa"/>
+				<textElement verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PEDIDO N°]]></text>
+				<text><![CDATA[PEDIDO NÂ°]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="20" y="104" width="226" height="60" uuid="606ca3d8-7022-4342-b98a-df26ff0cf398"/>
@@ -115,7 +115,7 @@ info.frigento@gmail.com]]></text>
 				<textElement verticalAlignment="Bottom">
 					<font size="18"/>
 				</textElement>
-				<text><![CDATA[Señores:]]></text>
+				<text><![CDATA[Seï¿½ores:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="25" y="206" width="90" height="30" uuid="7e9f4874-b418-4aac-9a92-a84c0f092100"/>
@@ -125,9 +125,9 @@ info.frigento@gmail.com]]></text>
 				<text><![CDATA[Domicilio:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="410" y="80" width="144" height="33" uuid="1a279e0e-bec7-4990-8a6b-70bbb93cd597"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="20" isBold="true"/>
+				<reportElement x="403" y="80" width="150" height="33" uuid="1a279e0e-bec7-4990-8a6b-70bbb93cd597"/>
+				<textElement verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nroPedido}]]></textFieldExpression>
 			</textField>
@@ -166,7 +166,7 @@ info.frigento@gmail.com]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Descripción]]></text>
+				<text><![CDATA[Descripciï¿½n]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="481" y="251" width="64" height="23" forecolor="#FFFFFF" backcolor="#999999" uuid="4c56fc02-ddc5-43ee-8cf6-1d752fbb391e"/>
