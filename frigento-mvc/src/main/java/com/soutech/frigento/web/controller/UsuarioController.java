@@ -10,7 +10,9 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -63,10 +65,12 @@ public class UsuarioController extends GenericController {
     public String preAlta(Model uiModel) {
     	Usuario usuario = new Usuario();
     	usuario.setHabilitado(Boolean.FALSE);
-		usuario.setUsername("");
+    	usuario.setEsAdmin(Boolean.FALSE);
+		usuario.setUsername("prueba");
 		usuario.setPassword("S1nCl4v3");
 		usuario.setPasswordReingresada("S1nCl4v3");
-		usuario.setEsAdmin(Boolean.FALSE);
+		usuario.setLocalidad(LocalidadesDTO.getLocalidadDefault());
+		usuario.setDistancia(0);
     	uiModel.addAttribute("usuarioForm", usuario);
     	
     	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
@@ -77,10 +81,22 @@ public class UsuarioController extends GenericController {
     @RequestMapping(value = "/alta", method = RequestMethod.POST, produces = "text/html")
     public String alta(@Valid @ModelAttribute("usuarioForm") Usuario usuarioForm, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
+        	uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
         	return "usuario/alta";
         }
+        if(usuarioForm.getApellido() == null){
+        	usuarioForm.setApellido("");
+        }
+        try {
+			usuarioService.saveUsuario(usuarioForm);
+		} catch (EmailExistenteException e) {
+			//Esto esta mal
+			BeanPropertyBindingResult error = new BeanPropertyBindingResult(usuarioForm, "usuarioForm");
+			ObjectError oe = new ObjectError("email", "El correo ya existes");
+			error.addError(oe );
+			return "usuario/alta";
+		}
         uiModel.asMap().clear();
-        usuarioService.saveUsuario(usuarioForm);
         return "redirect:/".concat(BUSQUEDA_DEFAULT).concat("&informar=".concat(getMessage("usuario.alta.ok", usuarioForm.getUsername())));
     }
     

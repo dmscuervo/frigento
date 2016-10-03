@@ -21,16 +21,27 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioDao usuarioDao;
 
 	@Override
-	public void saveUsuario(Usuario usuario) {
+	public void saveUsuario(Usuario usuario) throws EmailExistenteException {
 		int i = 1;
+		usuario.setNombre(Utils.controlEspacioMultiple(usuario.getNombre()));
+		usuario.setApellido(Utils.controlEspacioMultiple(usuario.getApellido()));
+		usuario.setUsername(Utils.generarUsername(usuario));
 		while(true){
 			try {
-				generarUserName(usuario);
+				Usuario usuarioExiste = usuarioDao.findByUserName(usuario.getUsername());
+				if(usuarioExiste != null){
+					throw new UserNameExistenteException("usuario.registracion.username.existente");
+				}
+				//generarUserName(usuario);
 				break;
 			} catch (UserNameExistenteException e) {
 				usuario.setUsername(Utils.generarUsername(usuario).concat(String.valueOf(i)));
 				i++;
 			}
+		}
+		Usuario usu = usuarioDao.findByEmail(usuario.getEmail());
+		if(usu != null){
+			throw new EmailExistenteException("usuario.registracion.email.existente");
 		}
 		if(usuario.getCategoriaProducto().getId() == null){
 			usuario.setCategoriaProducto(null);
@@ -107,16 +118,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public List<Usuario> obtenerUsuariosConCategoria(Boolean estado, String[] sortFieldName, String[] sortOrder) {
 		return usuarioDao.findAllConCategoria(estado, sortFieldName, sortOrder);
-	}
-
-	private void generarUserName(Usuario usuario) throws UserNameExistenteException {
-		usuario.setNombre(Utils.controlEspacioMultiple(usuario.getNombre()));
-		usuario.setApellido(Utils.controlEspacioMultiple(usuario.getApellido()));
-		usuario.setUsername(Utils.generarUsername(usuario));
-		Usuario usuarioExiste = usuarioDao.findByUserName(usuario.getUsername());
-		if(usuarioExiste != null){
-			throw new UserNameExistenteException("usuario.registracion.username.existente");
-		}
 	}
 
 	@Override

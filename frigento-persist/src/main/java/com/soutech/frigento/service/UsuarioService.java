@@ -9,7 +9,7 @@ import com.soutech.frigento.model.Usuario;
 
 public interface UsuarioService {
 
-	void saveUsuario(Usuario usuario);
+	void saveUsuario(Usuario usuario) throws EmailExistenteException;
 	
 	void registrarUsuario(Usuario usuario) throws UserNameExistenteException, EmailExistenteException;
 

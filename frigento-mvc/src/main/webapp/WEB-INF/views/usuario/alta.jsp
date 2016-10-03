@@ -10,8 +10,11 @@
 	<form:form action="${urlAlta}" method="post" class="form-horizontal" commandName="usuarioForm" id="idForm">
 	<form:hidden path="username"/>
 	<form:hidden path="password"/>
+	<form:hidden path="passwordReingresada"/>
 	<form:hidden path="esAdmin"/>
 	<form:hidden path="habilitado"/>
+	<form:hidden path="distancia"/>
+	<form:hidden path="localidad.id"/>
 	<div class='row'>
         <div class='col-sm-4'>    
 			<div class="form-group" >
