@@ -91,9 +91,8 @@ public class UsuarioController extends GenericController {
 			usuarioService.saveUsuario(usuarioForm);
 		} catch (EmailExistenteException e) {
 			//Esto esta mal
-			BeanPropertyBindingResult error = new BeanPropertyBindingResult(usuarioForm, "usuarioForm");
-			ObjectError oe = new ObjectError("email", "El correo ya existes");
-			error.addError(oe );
+			bindingResult.rejectValue("email", "Duplicate");
+			uiModel.addAttribute("categoriaList", categoriaService.obtenerCategorias());
 			return "usuario/alta";
 		}
         uiModel.asMap().clear();
