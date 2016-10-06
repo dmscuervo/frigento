@@ -58,29 +58,29 @@
 			</line>
 			<textField>
 				<reportElement x="390" y="32" width="40" height="35" uuid="0d97f781-ae32-4f93-b69c-62fc64ac68fe"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font size="18" isBold="true"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dia}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="441" y="32" width="40" height="35" uuid="444a39d2-adf0-43cc-9574-2a6dadc4f9c0"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font size="18" isBold="true"/>
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="492" y="32" width="50" height="35" uuid="d024bc0f-c182-4adf-8cdf-482807ae4558"/>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font size="18" isBold="true"/>
+				<reportElement x="492" y="32" width="60" height="35" uuid="d024bc0f-c182-4adf-8cdf-482807ae4558"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="303" y="80" width="100" height="33" uuid="e589e72d-3a88-43b1-9f09-4b4bcd745bfa"/>
+				<reportElement x="303" y="80" width="107" height="33" uuid="e589e72d-3a88-43b1-9f09-4b4bcd745bfa"/>
 				<textElement verticalAlignment="Middle">
-					<font size="18" isBold="true"/>
+					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PEDIDO N°]]></text>
 			</staticText>
@@ -130,9 +130,9 @@ info.frigento@gmail.com]]></text>
 				<text><![CDATA[Domicilio:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="403" y="80" width="150" height="33" uuid="1a279e0e-bec7-4990-8a6b-70bbb93cd597"/>
+				<reportElement x="410" y="80" width="142" height="33" uuid="1a279e0e-bec7-4990-8a6b-70bbb93cd597"/>
 				<textElement verticalAlignment="Middle">
-					<font size="18" isBold="true"/>
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nroPedido}]]></textFieldExpression>
 			</textField>
